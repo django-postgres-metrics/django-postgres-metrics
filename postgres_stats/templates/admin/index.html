@@ -1,0 +1,28 @@
+{% extends "admin/index.html" %}
+{% load i18n static %}
+
+{% block extrastyle %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% static "postgres_stats/css/base.css" %}" />
+{% if LANGUAGE_BIDI %}<link rel="stylesheet" type="text/css" href="{% block stylesheet_rtl %}{% static "postgres_stats/css/rtl.css" %}{% endblock %}" />{% endif %}
+{% endblock %}
+
+{% block sidebar %}
+{{ block.super }}
+
+<div id="postgres-stats">
+    <div class="app-postgres_stats module">
+        <table>
+            <caption>
+                <a href="/" class="section" title="{% trans 'PostgreSQL statistics' %}">{% trans 'PostgreSQL statistics' %}</a>
+            </caption>
+            <tbody>
+                <tr>
+                    <th scope="row"><a href="/">Cache Hits</a></th>
+                    <td><a href="/" class="viewlink">{% trans 'Show' %}</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,5 +1,6 @@
 from setuptools import find_packages, setup
 
+author = __import__('postgres_stats').__author__
 version = __import__('postgres_stats').__version__
 
 
@@ -7,7 +8,7 @@ setup(
     name='django-postgres-stats',
     version=version,
     url='https://github.com/MarkusH/django-postgres-stats',
-    author='Markus Holtermann',
+    author=author,
     author_email='info@markusholtermann.eu',
     description='',
     license='BSD',
