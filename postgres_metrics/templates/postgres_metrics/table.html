@@ -12,24 +12,24 @@
 <div class="breadcrumbs">
     <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
     &rsaquo; <a href="{% url 'admin:index' %}#postgres-metrics">{% trans 'PostgreSQL Metrics' %}</a>
-    &rsaquo; {{ metrics_name|format_metrics_name|title }}
+    &rsaquo; {{ metric.name|format_metrics_name|title }}
 </div>
 {% endblock %}
 
 {% block coltype %}flex{% endblock %}
 
 {% block content %}
-<h1>{{ metrics_name|format_metrics_name|title }}</h1>
+<h1>{{ metric.name|format_metrics_name|title }}</h1>
 
 <div id="content-main">
-    {% for metric in metrics %}
-    <h2>{{ metric.alias }} ({{metric.dsn }})</h2>
+    {% for result in results %}
+    <h2>{{ result.alias }} ({{ result.dsn }})</h2>
     <div class="module" id="changelist">
         <div class="results">
             <table id="result_list">
                 <thead>
                     <tr>
-                        {% for header in metric.headers %}
+                        {% for header in result.headers %}
                         <th scope="col">
                             <div class="text">{{ header|format_metrics_name }}</div>
                         </th>
@@ -37,8 +37,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for result in metric.records %}
-                    <tr class="{% cycle 'row1' 'row2' %}">{% for item in result %}<td>{{ item }}</td>{% endfor %}</tr>
+                    {% for row in result.records %}
+                    <tr class="{% cycle 'row1' 'row2' %}">{% for item in row %}<td>{{ item }}</td>{% endfor %}</tr>
                     {% endfor %}
                     {% resetcycle %}
                 </tbody>

@@ -3,7 +3,7 @@ from django.core.exceptions import PermissionDenied
 from django.http import Http404
 from django.shortcuts import render
 
-from .metrics import METRICS
+from .metrics import registry as metrics_registry
 
 
 class MetricResult:
@@ -23,9 +23,9 @@ class MetricResult:
     def dsn(self):
         return self._connection.connection.dsn
 
-    def _get_metrics(self, name):
+    def _get_metrics(self, metric):
         with self._connection.cursor() as cursor:
-            cursor.execute(METRICS[name])
+            cursor.execute(metric.sql)
             self.headers = [c.name for c in cursor.description]
             self.records = cursor.fetchall()
 
@@ -34,18 +34,20 @@ def metrics_view(request, name):
     if not request.user or not request.user.is_superuser:
         raise PermissionDenied
 
-    if name not in METRICS:
+    if name not in metrics_registry:
         raise Http404
 
+    metric = metrics_registry[name]
+
     context = {
-        'metrics': [],
-        'metrics_name': name,
+        'metric': metric,
+        'results': [],
     }
 
     for connection in connections.all():
         if connection.vendor != 'postgresql':
             continue
-        db = MetricResult(connection, name)
-        context['metrics'].append(db)
+        db = MetricResult(connection, metric)
+        context['results'].append(db)
 
     return render(request, 'postgres_metrics/table.html', context=context)

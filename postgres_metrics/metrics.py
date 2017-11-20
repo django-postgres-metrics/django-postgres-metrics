@@ -1,3 +1,36 @@
+class MetricRegistry:
+    
+    def __init__(self):
+        self._registry = {}
+
+    def __contains__(self, item):
+        return item in self._registry
+
+    def __getitem__(self, key):
+        return self._registry[key]
+
+    def __iter__(self):
+        return iter(self._registry.items())
+
+    def register(self, name, sql):
+        metric = Metric(name, sql)
+        self._registry[name] = metric
+
+    @property
+    def names(self):
+        return sorted(self._registry.keys())
+
+
+registry = MetricRegistry()
+
+
+class Metric:
+    
+    def __init__(self, name, sql):
+        self.name = name
+        self.sql = sql
+
+
 CACHE_HITS_NAME = 'cache-hits'
 CACHE_HITS_SQL = '''
     SELECT
@@ -7,6 +40,7 @@ CACHE_HITS_SQL = '''
     FROM
         pg_statio_user_tables;
 '''
+registry.register(CACHE_HITS_NAME, CACHE_HITS_SQL)
 
 INDEX_USAGE_NAME = 'index-usage'
 INDEX_USAGE_SQL = '''
@@ -21,8 +55,4 @@ INDEX_USAGE_SQL = '''
     ORDER BY
         percent_of_times_index_used DESC;
 '''
-
-METRICS = {
-    CACHE_HITS_NAME: CACHE_HITS_SQL,
-    INDEX_USAGE_NAME: INDEX_USAGE_SQL,
-}
+registry.register(INDEX_USAGE_NAME, INDEX_USAGE_SQL)

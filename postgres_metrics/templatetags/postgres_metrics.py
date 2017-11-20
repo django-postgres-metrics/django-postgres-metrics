@@ -1,13 +1,13 @@
 from django import template
 
-from ..metrics import METRICS
+from ..metrics import registry as metrics_registry
 
 register = template.Library()
 
 
 @register.simple_tag
 def get_postgres_metrics():
-    return sorted(METRICS)
+    return metrics_registry.names
 
 
 @register.filter
