@@ -1,4 +1,9 @@
+import re
+
+from django.utils.encoding import force_text
 from django.utils.functional import cached_property
+from django.utils.html import escape, urlize
+from django.utils.text import normalize_newlines
 
 
 class MetricRegistry:
@@ -31,9 +36,15 @@ class Metric:
     slug = ''
     sql = ''
 
-    @property
+    @cached_property
     def description(self):
-        return self.__doc__
+        value = normalize_newlines(force_text(self.__doc__))
+        paras = re.split('\n{2,}', value)
+        paras = [
+            '<p>%s</p>' % urlize(escape(p).replace('\n', ' '))
+            for p in paras
+        ]
+        return '\n\n'.join(paras)
 
 
 class CacheHitsMetric(Metric):
@@ -45,7 +56,8 @@ class CacheHitsMetric(Metric):
     patterns of your data and will on its own keep frequently accessed data in
     cache. Generally you want your database to have a cache hit rate of about
     99%.
-    (<a href="http://www.craigkerstiens.com/2012/10/01/understanding-postgres-performance/">Source</a>)
+
+    (Source: http://www.craigkerstiens.com/2012/10/01/understanding-postgres-performance/)
     """
     label = 'Cache Hits'
     slug = 'cache-hits'
@@ -70,7 +82,8 @@ class IndexUsageMetric(Metric):
     you're running. Generally you'll want to add indexes where you're looking
     up by some other id or on values that you're commonly filtering on such as
     created_at fields.
-    (<a href="http://www.craigkerstiens.com/2012/10/01/understanding-postgres-performance/">Source</a>)
+
+    (Source: http://www.craigkerstiens.com/2012/10/01/understanding-postgres-performance/)
     """
     label = 'Index Usage'
     slug = 'index-usage'
