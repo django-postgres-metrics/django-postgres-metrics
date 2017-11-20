@@ -7,7 +7,7 @@ version = __import__('postgres_stats').__version__
 setup(
     name='django-postgres-stats',
     version=version,
-    url='https://github.com/MarkusH/django-postgres-stats',
+    url='https://github.com/django-postgres-stats/django-postgres-stats',
     author=author,
     author_email='info@markusholtermann.eu',
     description='',
