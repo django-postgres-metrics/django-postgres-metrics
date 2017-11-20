@@ -6,6 +6,9 @@ from .constants import STATS
 
 
 def stats_view(request, name):
+    if not request.user or not request.user.is_superuser:
+        raise PermissionDenied
+
     if name not in STATS:
         raise Http404
 
