@@ -65,3 +65,10 @@ If you found or if you think you found a security issue please get in touch via
 I'm working about this in my free time. I don't have time to monitor the email
 24/7. But you should normally receive a response within a week. If I haven't
 got back to you within 2 weeks, please reach out again.
+
+TESTING
+=======
+
+To run the unit tests:
+
+django-admin.py test --settings=tests.settings
