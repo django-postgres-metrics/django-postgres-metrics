@@ -1,5 +1,5 @@
 {% extends "admin/index.html" %}
-{% load i18n static %}
+{% load i18n static postgres_stats %}
 
 {% block extrastyle %}
 {{ block.super }}
@@ -14,13 +14,17 @@
     <div class="app-postgres_stats module">
         <table>
             <caption>
-                <a href="/" class="section" title="{% trans 'PostgreSQL statistics' %}">{% trans 'PostgreSQL statistics' %}</a>
+                <a href="{% url "admin:index" %}#postgres-stats" class="section" title="{% trans 'PostgreSQL statistics' %}">{% trans 'PostgreSQL statistics' %}</a>
             </caption>
             <tbody>
+                {% get_postgres_stats as postgres_stats %}
+                {% for stat in postgres_stats %}
+                {% url "postgres-stats:show" name=stat as stat_url %}
                 <tr>
-                    <th scope="row"><a href="/">Cache Hits</a></th>
-                    <td><a href="/" class="viewlink">{% trans 'Show' %}</a></td>
+                    <th scope="row"><a href="{{ stat_url }}">{{ stat|format_stats_name|title }}</a></th>
+                    <td><a href="{{ stat_url }}" class="viewlink">{% trans 'Show' %}</a></td>
                 </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>

@@ -1,5 +1,5 @@
 {% extends "admin/base_site.html" %}
-{% load i18n static %}
+{% load i18n static postgres_stats %}
 
 {% block extrastyle %}
     {{ block.super }}
@@ -11,7 +11,8 @@
 {% block breadcrumbs %}
 <div class="breadcrumbs">
     <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
-    &rsaquo; {% trans 'PostgreSQL Statistics' %}
+    &rsaquo; <a href="{% url 'admin:index' %}#postgres-stats">{% trans 'PostgreSQL Statistics' %}</a>
+    &rsaquo; {{ stats_name|format_stats_name|title }}
 </div>
 {% endblock %}
 

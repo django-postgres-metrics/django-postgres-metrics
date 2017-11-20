@@ -3,10 +3,9 @@ try:
 except ImportError:
     from django.conf.urls import url as re_path
 
-from .views import STATS, stats_view
+from .views import stats_view
 
-app_name = 'postgres_stats'
+app_name = 'postgres-stats'
 urlpatterns = [
-    re_path(name + r'/$', stats_view, name=name, kwargs={'name': name})
-    for name in STATS
+    re_path(r'(?P<name>[a-zA-Z0-9_-]+)/$', stats_view, name='show')
 ]
