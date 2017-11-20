@@ -27,23 +27,26 @@ registry = MetricRegistry()
 
 
 class Metric:
-    description = ''
     label = ''
     slug = ''
     sql = ''
 
+    @property
+    def description(self):
+        return self.__doc__
+
 
 class CacheHitsMetric(Metric):
-    description = '''
-        The typical rule for most applications is that only a fraction of its
-        data is regularly accessed. As with many other things data can tend to
-        follow the 80/20 rule with 20% of your data accounting for 80% of the
-        reads and often times its higher than this. Postgres itself actually
-        tracks access patterns of your data and will on its own keep frequently
-        accessed data in cache. Generally you want your database to have a
-        cache hit rate of about 99%.
-        (<a href="http://www.craigkerstiens.com/2012/10/01/understanding-postgres-performance/">Source</a>)
-    '''
+    """
+    The typical rule for most applications is that only a fraction of its data
+    is regularly accessed. As with many other things data can tend to follow
+    the 80/20 rule with 20% of your data accounting for 80% of the reads and
+    often times its higher than this. Postgres itself actually tracks access
+    patterns of your data and will on its own keep frequently accessed data in
+    cache. Generally you want your database to have a cache hit rate of about
+    99%.
+    (<a href="http://www.craigkerstiens.com/2012/10/01/understanding-postgres-performance/">Source</a>)
+    """
     label = 'Cache Hits'
     slug = 'cache-hits'
     sql = '''
@@ -60,15 +63,15 @@ registry.register(CacheHitsMetric)
 
 
 class IndexUsageMetric(Metric):
-    description = '''
-        While there is no perfect answer, if you're not somewhere around 99% on
-        any table over 10,000 rows you may want to consider adding an index.
-        When examining where to add an index you should look at what kind of
-        queries you're running. Generally you'll want to add indexes where
-        you're looking up by some other id or on values that you're commonly
-        filtering on such as created_at fields.
-        (<a href="http://www.craigkerstiens.com/2012/10/01/understanding-postgres-performance/">Source</a>)
-    '''
+    """
+    While there is no perfect answer, if you're not somewhere around 99% on any
+    table over 10,000 rows you may want to consider adding an index. When
+    examining where to add an index you should look at what kind of queries
+    you're running. Generally you'll want to add indexes where you're looking
+    up by some other id or on values that you're commonly filtering on such as
+    created_at fields.
+    (<a href="http://www.craigkerstiens.com/2012/10/01/understanding-postgres-performance/">Source</a>)
+    """
     label = 'Index Usage'
     slug = 'index-usage'
     sql = '''
