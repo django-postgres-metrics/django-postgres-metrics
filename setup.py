@@ -8,7 +8,7 @@ setup(
     version=version,
     url='https://github.com/django-postgres-metrics/django-postgres-metrics',
     author=author,
-    author_email='info@markusholtermann.eu',
+    author_email='info+django-postgres-stats@markusholtermann.eu',
     description='',
     license='BSD',
     packages=find_packages(),

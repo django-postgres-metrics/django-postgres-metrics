@@ -55,3 +55,13 @@ For Django 1.11 and before::
         url(r'^admin/postgres-metrics/', include('postgres_metrics.urls')),
         url(r'^admin/', admin.site.urls),
     ]
+
+Security
+========
+
+If you found or if you think you found a security issue please get in touch via
+``info+django-postgres-stats *AT* markusholtermann *DOT* eu``.
+
+I'm working about this in my free time. I don't have time to monitor the email
+24/7. But you should normally receive a response within a week. If I haven't
+got back to you within 2 weeks, please reach out again.
