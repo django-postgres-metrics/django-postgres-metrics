@@ -19,6 +19,9 @@ try:
 except ImportError:
     from django.conf.urls import url as path
 
+from django.urls import include
+
 urlpatterns = [
+    path('admin/postgres-stats/', include('postgres_stats.urls')),
     path('admin/', admin.site.urls),
 ]
