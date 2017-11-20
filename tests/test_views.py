@@ -56,3 +56,5 @@ class TestMetricsView(TestCase):
         result = self.client.get('/postgres-metrics/cache-hits/')
         metrics_dbs = result.context['results']
         self.assertEqual(2, len(metrics_dbs))
+        self.assertEqual(['heap_read', 'heap_hit', 'ratio'], metrics_dbs[0].headers)
+        self.assertEqual(['heap_read', 'heap_hit', 'ratio'], metrics_dbs[1].headers)
