@@ -69,6 +69,7 @@ got back to you within 2 weeks, please reach out again.
 TESTING
 =======
 
-To run the unit tests:
+To run the unit tests::
 
-django-admin.py test --settings=tests.settings
+    $ pip install tox
+    $ tox

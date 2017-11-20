@@ -62,12 +62,23 @@ class CacheHitsMetric(Metric):
     label = 'Cache Hits'
     slug = 'cache-hits'
     sql = '''
-        SELECT
-            sum(heap_blks_read) heap_read,
-            sum(heap_blks_hit)  heap_hit,
-            sum(heap_blks_hit) / (sum(heap_blks_hit) + sum(heap_blks_read)) ratio
+        WITH cache AS (
+            SELECT
+                sum(heap_blks_read) heap_read,
+                sum(heap_blks_hit) heap_hit,
+                sum(heap_blks_hit) + sum(heap_blks_read) heap_sum
+            FROM
+                pg_statio_user_tables
+        ) SELECT
+            heap_read,
+            heap_hit,
+            CASE
+                WHEN heap_sum = 0 THEN 'N/A'
+                ELSE (heap_hit / heap_sum)::text
+            END ratio
         FROM
-            pg_statio_user_tables;
+            cache
+        ;
     '''
 
 

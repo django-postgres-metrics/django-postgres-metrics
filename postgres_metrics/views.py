@@ -1,5 +1,5 @@
-from django.db import connections
 from django.core.exceptions import PermissionDenied
+from django.db import connections
 from django.http import Http404
 from django.shortcuts import render
 

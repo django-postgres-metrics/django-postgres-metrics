@@ -77,6 +77,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'somedb',
         'USER': 'someuser',
+        'PASSWORD': 'somepass',
     },
     'second': {
         'ENGINE': 'django.db.backends.postgresql',
