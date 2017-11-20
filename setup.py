@@ -1,13 +1,13 @@
 from setuptools import find_packages, setup
 
-author = __import__('postgres_stats').__author__
-version = __import__('postgres_stats').__version__
+author = __import__('postgres_metrics').__author__
+version = __import__('postgres_metrics').__version__
 
 
 setup(
-    name='django-postgres-stats',
+    name='django-postgres-metrics',
     version=version,
-    url='https://github.com/django-postgres-stats/django-postgres-stats',
+    url='https://github.com/django-postgres-metrics/django-postgres-metrics',
     author=author,
     author_email='info@markusholtermann.eu',
     description='',

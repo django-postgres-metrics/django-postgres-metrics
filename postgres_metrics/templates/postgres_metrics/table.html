@@ -1,5 +1,5 @@
 {% extends "admin/base_site.html" %}
-{% load i18n static postgres_stats %}
+{% load i18n static postgres_metrics %}
 
 {% block extrastyle %}
     {{ block.super }}
@@ -11,33 +11,33 @@
 {% block breadcrumbs %}
 <div class="breadcrumbs">
     <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
-    &rsaquo; <a href="{% url 'admin:index' %}#postgres-stats">{% trans 'PostgreSQL Statistics' %}</a>
-    &rsaquo; {{ stats_name|format_stats_name|title }}
+    &rsaquo; <a href="{% url 'admin:index' %}#postgres-metrics">{% trans 'PostgreSQL Metrics' %}</a>
+    &rsaquo; {{ metrics_name|format_metrics_name|title }}
 </div>
 {% endblock %}
 
 {% block coltype %}flex{% endblock %}
 
 {% block content %}
-<h1>{{ stats_name|format_stats_name|title }}</h1>
+<h1>{{ metrics_name|format_metrics_name|title }}</h1>
 
 <div id="content-main">
-    {% for statistic in statistics %}
-    <h2>{{ statistic.alias }} ({{statistic.dsn }})</h2>
+    {% for metric in metrics %}
+    <h2>{{ metric.alias }} ({{metric.dsn }})</h2>
     <div class="module" id="changelist">
         <div class="results">
             <table id="result_list">
                 <thead>
                     <tr>
-                        {% for header in statistic.headers %}
+                        {% for header in metric.headers %}
                         <th scope="col">
-                            <div class="text">{{ header|format_stats_name }}</div>
+                            <div class="text">{{ header|format_metrics_name }}</div>
                         </th>
                         {% endfor %}
                     </tr>
                 </thead>
                 <tbody>
-                    {% for result in statistic.records %}
+                    {% for result in metric.records %}
                     <tr class="{% cycle 'row1' 'row2' %}">{% for item in result %}<td>{{ item }}</td>{% endfor %}</tr>
                     {% endfor %}
                     {% resetcycle %}

@@ -22,6 +22,6 @@ except ImportError:
 from django.urls import include
 
 urlpatterns = [
-    path('admin/postgres-stats/', include('postgres_stats.urls')),
+    path('admin/postgres-metrics/', include('postgres_metrics.urls')),
     path('admin/', admin.site.urls),
 ]

@@ -1,0 +1,32 @@
+{% extends "admin/index.html" %}
+{% load i18n static postgres_metrics %}
+
+{% block extrastyle %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% static "postgres_metrics/css/base.css" %}" />
+{% if LANGUAGE_BIDI %}<link rel="stylesheet" type="text/css" href="{% block stylesheet_rtl %}{% static "postgres_metrics/css/rtl.css" %}{% endblock %}" />{% endif %}
+{% endblock %}
+
+{% block sidebar %}
+{{ block.super }}
+
+<div id="postgres-metrics">
+    <div class="app-postgres_metrics module">
+        <table>
+            <caption>
+                <a href="{% url "admin:index" %}#postgres-metrics" class="section" title="{% trans 'PostgreSQL Metrics' %}">{% trans 'PostgreSQL Metrics' %}</a>
+            </caption>
+            <tbody>
+                {% get_postgres_metrics as postgres_metrics %}
+                {% for stat in postgres_metrics %}
+                {% url "postgres-metrics:show" name=stat as stat_url %}
+                <tr>
+                    <th scope="row"><a href="{{ stat_url }}">{{ stat|format_metrics_name|title }}</a></th>
+                    <td><a href="{{ stat_url }}" class="viewlink">{% trans 'Show' %}</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

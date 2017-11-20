@@ -3,11 +3,11 @@
  * at 244cc401559e924355cf943b6b8e66ccf2f6da3a
  */
 
-#postgres-stats {
+#postgres-metrics {
     float: right;
 }
 
-#postgres-stats .viewlink {
+#postgres-metrics .viewlink {
     padding-left: 0;
     padding-right: 16px;
     background-position: 100% 1px;

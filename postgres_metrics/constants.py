@@ -22,7 +22,7 @@ INDEX_USAGE_SQL = '''
         percent_of_times_index_used DESC;
 '''
 
-STATS = {
+METRICS = {
     CACHE_HITS_NAME: CACHE_HITS_SQL,
     INDEX_USAGE_NAME: INDEX_USAGE_SQL,
 }

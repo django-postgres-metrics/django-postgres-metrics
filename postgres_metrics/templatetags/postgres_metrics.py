@@ -1,15 +1,15 @@
 from django import template
 
-from ..constants import STATS
+from ..constants import METRICS
 
 register = template.Library()
 
 
 @register.simple_tag
-def get_postgres_stats():
-    return sorted(STATS)
+def get_postgres_metrics():
+    return sorted(METRICS)
 
 
 @register.filter
-def format_stats_name(value):
+def format_metrics_name(value):
     return value.replace('-', ' ').replace('_', ' ')

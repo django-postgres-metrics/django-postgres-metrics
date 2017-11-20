@@ -2,16 +2,16 @@
  * Derived from Django's contrib.admin base.css
  * at 244cc401559e924355cf943b6b8e66ccf2f6da3a
  */
-#postgres-stats {
+#postgres-metrics {
     float: left;
     width: 100%;
 }
 
-.colSM #postgres-stats {
+.colSM #postgres-metrics {
     float: right;
 }
 
-#postgres-stats .viewlink {
+#postgres-metrics .viewlink {
     padding-left: 16px;
     background: url(../../admin/img/search.svg) 0 1px no-repeat;
 }

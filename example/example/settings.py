@@ -31,7 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'postgres_stats.apps.PostgresStats',
+    'postgres_metrics.apps.PostgresMetrics',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

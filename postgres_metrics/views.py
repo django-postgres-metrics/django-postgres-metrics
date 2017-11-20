@@ -3,14 +3,14 @@ from django.core.exceptions import PermissionDenied
 from django.http import Http404
 from django.shortcuts import render
 
-from .constants import STATS
+from .constants import METRICS
 
 
-class Statistic:
+class MetricResult:
 
     def __init__(self, connection, name):
         self._connection = connection
-        self._get_stats(name)
+        self._get_metrics(name)
 
     def __repr__(self):
         return '<Database "%s">' % self._connection.alias
@@ -23,29 +23,29 @@ class Statistic:
     def dsn(self):
         return self._connection.connection.dsn
 
-    def _get_stats(self, name):
+    def _get_metrics(self, name):
         with self._connection.cursor() as cursor:
-            cursor.execute(STATS[name])
+            cursor.execute(METRICS[name])
             self.headers = [c.name for c in cursor.description]
             self.records = cursor.fetchall()
 
 
-def stats_view(request, name):
+def metrics_view(request, name):
     if not request.user or not request.user.is_superuser:
         raise PermissionDenied
 
-    if name not in STATS:
+    if name not in METRICS:
         raise Http404
 
     context = {
-        'statistics': [],
-        'stats_name': name,
+        'metrics': [],
+        'metrics_name': name,
     }
 
     for connection in connections.all():
         if connection.vendor != 'postgresql':
             continue
-        db = Statistic(connection, name)
-        context['statistics'].append(db)
+        db = MetricResult(connection, name)
+        context['metrics'].append(db)
 
-    return render(request, 'postgres_stats/table.html', context=context)
+    return render(request, 'postgres_metrics/table.html', context=context)

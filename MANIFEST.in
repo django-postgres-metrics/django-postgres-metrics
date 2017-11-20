@@ -1,6 +1,6 @@
 include AUTHORS
 include LICENSE
 include MANIFEST.in
-graft postgres_stats
+graft postgres_metrics
 global-exclude __pycache__
 global-exclude *.py[co]
