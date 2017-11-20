@@ -19,26 +19,32 @@
 {% block coltype %}flex{% endblock %}
 
 {% block content %}
+<h1>{{ stats_name|format_stats_name|title }}</h1>
+
 <div id="content-main">
+    {% for statistic in statistics %}
+    <h2>{{ statistic.alias }} ({{statistic.dsn }})</h2>
     <div class="module" id="changelist">
         <div class="results">
             <table id="result_list">
                 <thead>
                     <tr>
-                        {% for header in result_headers %}
+                        {% for header in statistic.headers %}
                         <th scope="col">
-                            <div class="text">{{ header }}
+                            <div class="text">{{ header|format_stats_name }}</div>
                         </th>
                         {% endfor %}
                     </tr>
                 </thead>
                 <tbody>
-                    {% for result in results %}
+                    {% for result in statistic.records %}
                     <tr class="{% cycle 'row1' 'row2' %}">{% for item in result %}<td>{{ item }}</td>{% endfor %}</tr>
                     {% endfor %}
+                    {% resetcycle %}
                 </tbody>
             </table>
         </div>
     </div>
+    {% endfor %}
 </div>
 {% endblock %}
