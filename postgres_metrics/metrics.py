@@ -1,5 +1,5 @@
 class MetricRegistry:
-    
+
     def __init__(self):
         self._registry = {}
 
@@ -25,7 +25,7 @@ registry = MetricRegistry()
 
 
 class Metric:
-    
+
     def __init__(self, name, sql):
         self.name = name
         self.sql = sql
