@@ -13,15 +13,19 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+import django
 from django.contrib import admin
-try:
-    from django.urls import path
-except ImportError:
-    from django.conf.urls import url as path
 
-from django.conf.urls import include
-
-urlpatterns = [
-    path('admin/postgres-metrics/', include('postgres_metrics.urls')),
-    path('admin/', admin.site.urls),
-]
+if django.VERSION >= (2, 0):
+    from django.urls import include, path
+    urlpatterns = [
+        path('admin/postgres-metrics/', include('postgres_metrics.urls')),
+        path('admin/', admin.site.urls),
+    ]
+else:
+    # Remove when dropping Django 1.11
+    from django.conf.urls import include, url
+    urlpatterns = [
+        url(r'^admin/postgres-metrics/', include('postgres_metrics.urls')),
+        url(r'^admin/', admin.site.urls),
+    ]
