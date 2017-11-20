@@ -18,11 +18,11 @@
             </caption>
             <tbody>
                 {% get_postgres_metrics as postgres_metrics %}
-                {% for stat in postgres_metrics %}
-                {% url "postgres-metrics:show" name=stat as stat_url %}
+                {% for metric in postgres_metrics %}
+                {% url "postgres-metrics:show" name=metric.slug as metric_url %}
                 <tr>
-                    <th scope="row"><a href="{{ stat_url }}">{{ stat|format_metrics_name|title }}</a></th>
-                    <td><a href="{{ stat_url }}" class="viewlink">{% trans 'Show' %}</a></td>
+                    <th scope="row"><a href="{{ metric_url }}">{{ metric.label }}</a></th>
+                    <td><a href="{{ metric_url }}" class="viewlink">{% trans 'Show' %}</a></td>
                 </tr>
                 {% endfor %}
             </tbody>

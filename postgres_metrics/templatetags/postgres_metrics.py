@@ -7,9 +7,4 @@ register = template.Library()
 
 @register.simple_tag
 def get_postgres_metrics():
-    return metrics_registry.names
-
-
-@register.filter
-def format_metrics_name(value):
-    return value.replace('-', ' ').replace('_', ' ')
+    return metrics_registry.sorted

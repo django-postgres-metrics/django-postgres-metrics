@@ -26,7 +26,7 @@ class MetricResult:
     def _get_metrics(self, metric):
         with self._connection.cursor() as cursor:
             cursor.execute(metric.sql)
-            self.headers = [c.name for c in cursor.description]
+            self.headers = [c.name.replace('-', ' ') for c in cursor.description]
             self.records = cursor.fetchall()
 
 

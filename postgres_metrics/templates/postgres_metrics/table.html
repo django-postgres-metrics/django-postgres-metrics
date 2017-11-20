@@ -12,14 +12,18 @@
 <div class="breadcrumbs">
     <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
     &rsaquo; <a href="{% url 'admin:index' %}#postgres-metrics">{% trans 'PostgreSQL Metrics' %}</a>
-    &rsaquo; {{ metric.name|format_metrics_name|title }}
+    &rsaquo; {{ metric.label }}
 </div>
 {% endblock %}
 
 {% block coltype %}flex{% endblock %}
 
 {% block content %}
-<h1>{{ metric.name|format_metrics_name|title }}</h1>
+<h1>{{ metric.label }}</h1>
+
+<div>
+    {{ metric.description|safe }}
+</div>
 
 <div id="content-main">
     {% for result in results %}
@@ -31,7 +35,7 @@
                     <tr>
                         {% for header in result.headers %}
                         <th scope="col">
-                            <div class="text">{{ header|format_metrics_name }}</div>
+                            <div class="text">{{ header }}</div>
                         </th>
                         {% endfor %}
                     </tr>
