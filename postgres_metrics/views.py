@@ -3,7 +3,7 @@ from django.core.exceptions import PermissionDenied
 from django.http import Http404
 from django.shortcuts import render
 
-from .constants import METRICS
+from .metrics import METRICS
 
 
 class MetricResult:

@@ -1,6 +1,6 @@
 from django import template
 
-from ..constants import METRICS
+from ..metrics import METRICS
 
 register = template.Library()
 
