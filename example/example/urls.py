@@ -19,7 +19,7 @@ try:
 except ImportError:
     from django.conf.urls import url as path
 
-from django.urls import include
+from django.conf.urls import include
 
 urlpatterns = [
     path('admin/postgres-metrics/', include('postgres_metrics.urls')),

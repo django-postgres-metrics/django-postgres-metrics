@@ -3,7 +3,6 @@ from setuptools import find_packages, setup
 author = __import__('postgres_metrics').__author__
 version = __import__('postgres_metrics').__version__
 
-
 setup(
     name='django-postgres-metrics',
     version=version,
@@ -14,7 +13,7 @@ setup(
     license='BSD',
     packages=find_packages(),
     include_package_data=True,
-    install_requires=['Django>=1.11'],
+    install_requires=['Django>=1.11', 'psycopg2'],
     zip_safe=False,
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
