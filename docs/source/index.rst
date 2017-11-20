@@ -10,6 +10,8 @@ Welcome to django-postgres-metrics's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   ref/modules
+
 
 
 Indices and tables
