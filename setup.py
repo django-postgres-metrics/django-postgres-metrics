@@ -16,7 +16,7 @@ setup(
     install_requires=['Django>=1.11', 'psycopg2'],
     zip_safe=False,
     classifiers=[
-        'Development Status :: 2 - Pre-Alpha',
+        'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
         'Framework :: Django',
         'Intended Audience :: Developers',
