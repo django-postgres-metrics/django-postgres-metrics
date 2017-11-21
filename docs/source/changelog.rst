@@ -10,6 +10,9 @@ Changelog
 
 * Added "Available Extensions" metric.
 
+* Fixed table styling in metric views. The tables now look more like Django
+  Admin's ChangeList
+
 0.1.1
 =====
 

@@ -20,22 +20,23 @@
 
 {% block content %}
 <h1>{{ metric.label }}</h1>
-
-<div>
-    {{ metric.description|safe }}
-</div>
-
 <div id="content-main">
     {% for result in results %}
-    <h2>{{ result.alias }} ({{ result.dsn }})</h2>
     <div class="module" id="changelist">
+        {% if forloop.first %}
+        <div id="toolbar">
+            {{ metric.description|safe }}
+        </div>
+        {% endif %}
         <div class="results">
             <table id="result_list">
+                <caption>{{ result.alias }} ({{ result.dsn }})</caption>
                 <thead>
                     <tr>
                         {% for header in result.headers %}
                         <th scope="col">
-                            <div class="text">{{ header }}</div>
+                            <div class="text"><a>{{ header }}</a></div>
+                            <div class="clear"></div>
                         </th>
                         {% endfor %}
                     </tr>
