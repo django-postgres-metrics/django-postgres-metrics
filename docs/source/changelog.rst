@@ -2,8 +2,8 @@
 Changelog
 =========
 
-0.2.0 (under development)
-=========================
+0.2.0
+=====
 
 * Switched to `Read The Docs <https://github.com/rtfd/sphinx_rtd_theme>`_ theme
   for docs.
