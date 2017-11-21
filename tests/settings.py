@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/dev/ref/settings/
 
 import os
 
+import django
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -72,15 +74,17 @@ WSGI_APPLICATION = 'wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
 
+pg_engine = 'postgresql_psycopg2' if django.VERSION[:2] <= (1, 8) else 'postgresql'
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.db.backends.%s' % pg_engine,
         'NAME': 'somedb',
         'USER': 'someuser',
         'PASSWORD': 'somepass',
     },
     'second': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.db.backends.%s' % pg_engine,
         'NAME': 'otherdb',
         'USER': 'otheruser',
     },

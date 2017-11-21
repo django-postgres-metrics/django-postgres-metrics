@@ -7,6 +7,9 @@ Changelog
 
 * Added description to ``setup.py``
 
+* Added support from Django 1.8, 1.9 and 1.10. Now supporting 1.8 - 1.11 (and
+  2.0 preliminary)
+
 0.2.0
 =====
 

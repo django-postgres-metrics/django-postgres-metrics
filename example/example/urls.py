@@ -16,7 +16,7 @@ Including another URLconf
 import django
 from django.contrib import admin
 
-if django.VERSION >= (2, 0):
+if django.VERSION[:2] >= (2, 0):
     from django.urls import include, path
     urlpatterns = [
         path('admin/postgres-metrics/', include('postgres_metrics.urls')),
