@@ -1,8 +1,3 @@
-.. django-postgres-metrics documentation master file, created by
-   sphinx-quickstart on Mon Nov 20 12:48:56 2017.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
 Welcome to django-postgres-metrics's documentation!
 ===================================================
 
@@ -10,8 +5,9 @@ Welcome to django-postgres-metrics's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   contributing/index
    ref/modules
-
+   changelog
 
 
 Indices and tables
