@@ -108,8 +108,34 @@ class IndexUsageMetric(Metric):
         WHERE
             seq_scan + idx_scan > 0
         ORDER BY
-            percent_of_times_index_used DESC;
+            percent_of_times_index_used DESC
+        ;
     '''
 
 
 registry.register(IndexUsageMetric)
+
+
+class AvailableExtensions(Metric):
+    """
+    PostgreSQL can be extended by installing extensions with the CREATE
+    EXTENSION command. The list of available extensions on each database is
+    shown below.
+    """
+    label = 'Available Extensions'
+    slug = 'available-extensions'
+    sql = '''
+        SELECT
+            name,
+            default_version,
+            installed_version,
+            comment
+        FROM
+            pg_available_extensions
+        ORDER BY
+            name
+        ;
+    '''
+
+
+registry.register(AvailableExtensions)

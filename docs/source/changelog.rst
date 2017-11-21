@@ -6,12 +6,14 @@ Changelog
 =========================
 
 * Switched to `Read The Docs <https://github.com/rtfd/sphinx_rtd_theme>`_ theme
-  from docs
+  for docs.
+
+* Added "Available Extensions" metric.
 
 0.1.1
 =====
 
-* Excluded ``tests`` from built packages
+* Excluded ``tests`` from built packages.
 
 0.1.0
 =====
