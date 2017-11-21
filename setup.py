@@ -11,7 +11,7 @@ setup(
     author_email='info+django-postgres-stats@markusholtermann.eu',
     description='',
     license='BSD',
-    packages=find_packages(),
+    packages=find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
     include_package_data=True,
     install_requires=['Django>=1.11', 'psycopg2'],
     zip_safe=False,
