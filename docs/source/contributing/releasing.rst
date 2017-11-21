@@ -29,6 +29,6 @@ Issuing a new Release
 
 * Upload artifacts with::
 
-     $ twine upload -s dist/laterpay*$newver*
+     $ twine upload -s dist/*$newver*
 
 * Add likely new version to at the top of ``changelog.rst``
