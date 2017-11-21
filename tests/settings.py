@@ -84,6 +84,10 @@ DATABASES = {
         'NAME': 'otherdb',
         'USER': 'otheruser',
     },
+    'sqlite': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': ':memory:',
+    },
 }
 
 # Password validation

@@ -12,9 +12,6 @@ class MetricResult:
         self._connection = connection
         self._get_metrics(name)
 
-    def __repr__(self):
-        return '<Database "%s">' % self._connection.alias
-
     @property
     def alias(self):
         return self._connection.alias

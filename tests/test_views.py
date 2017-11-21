@@ -50,3 +50,17 @@ class TestMetricsView(TestCase):
         self.assertEqual(2, len(metrics_dbs))
         self.assertEqual(['heap_read', 'heap_hit', 'ratio'], metrics_dbs[0].headers)
         self.assertEqual(['heap_read', 'heap_hit', 'ratio'], metrics_dbs[1].headers)
+
+    def test_admin_index_list(self):
+        self.client.force_login(self.admin)
+        result = self.client.get('/admin/')
+        self.assertContains(
+            result,
+            '<th scope="row"><a href="/postgres-metrics/cache-hits/">Cache Hits</a></th>',
+            html=True,
+        )
+        self.assertContains(
+            result,
+            '<th scope="row"><a href="/postgres-metrics/index-usage/">Index Usage</a></th>',
+            html=True,
+        )
