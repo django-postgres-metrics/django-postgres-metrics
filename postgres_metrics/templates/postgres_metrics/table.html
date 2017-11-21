@@ -45,7 +45,6 @@
                     {% for row in result.records %}
                     <tr class="{% cycle 'row1' 'row2' %}">{% for item in row %}<td>{{ item }}</td>{% endfor %}</tr>
                     {% endfor %}
-                    {% resetcycle %}
                 </tbody>
             </table>
         </div>

@@ -16,7 +16,10 @@ setup(
     license='BSD',
     packages=find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
     include_package_data=True,
-    install_requires=['Django>=1.11', 'psycopg2'],
+    install_requires=[
+        'Django>=1.8',
+        'psycopg2',
+    ],
     zip_safe=False,
     classifiers=[
         'Development Status :: 5 - Production/Stable',
