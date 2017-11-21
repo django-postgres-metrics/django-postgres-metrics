@@ -2,7 +2,7 @@ sudo: false
 addons:
   postgresql: "9.6"
 language: python
-install: pip install -U pip tox codecov
+install: pip install -U pip tox
 before_script:
   - psql -c "CREATE ROLE someuser WITH LOGIN PASSWORD 'somepass' CREATEDB;" -U postgres
   - psql -c "CREATE ROLE otheruser WITH LOGIN CREATEDB;" -U postgres
@@ -31,5 +31,3 @@ matrix:
       env: TOXENV=flake8
     - python: 3.5
       env: TOXENV=isort
-after_success:
-    codecov
