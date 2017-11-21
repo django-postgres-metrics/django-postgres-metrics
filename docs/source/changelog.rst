@@ -5,6 +5,8 @@ Changelog
 0.3.0 (under development)
 =========================
 
+* Added description to ``setup.py``
+
 0.2.0
 =====
 
