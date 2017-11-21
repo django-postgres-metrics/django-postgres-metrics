@@ -3,13 +3,16 @@ from setuptools import find_packages, setup
 author = __import__('postgres_metrics').__author__
 version = __import__('postgres_metrics').__version__
 
+with open('README.rst') as fp:
+    description = fp.read()
+
 setup(
     name='django-postgres-metrics',
     version=version,
     url='https://github.com/django-postgres-metrics/django-postgres-metrics',
     author=author,
     author_email='info+django-postgres-stats@markusholtermann.eu',
-    description='',
+    description=description,
     license='BSD',
     packages=find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
     include_package_data=True,
