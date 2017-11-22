@@ -34,8 +34,15 @@
                 <thead>
                     <tr>
                         {% for header in result.headers %}
-                        <th scope="col">
-                            <div class="text"><a>{{ header }}</a></div>
+                        <th scope="col" class="sortable{% if header.sort_priority > 0 %} sorted {% if header.ascending %}ascending{% else %}descending{% endif %}{% endif %}">
+                            {% if header.sort_priority > 0 %}
+                            <div class="sortoptions">
+                                <a class="sortremove" href="?o={{ header.url_remove }}" title="{% trans "Remove from sorting" %}"></a>
+                                <span class="sortpriority" title="{% blocktrans with priority_number=header.sort_priority %}Sorting priority: {{ priority_number }}{% endblocktrans %}">{{ header.sort_priority }}</span>
+                                <a href="?o={{ header.url_toggle }}" class="toggle {% if header.ascending %}ascending{% else %}descending{% endif %}" title="{% trans "Toggle sorting" %}"></a>
+                            </div>
+                            {% endif %}
+                            <div class="text"><a href="?o={{ header.url_primary }}">{{ header }}</a></div>
                             <div class="clear"></div>
                         </th>
                         {% endfor %}

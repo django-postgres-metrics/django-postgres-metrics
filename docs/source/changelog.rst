@@ -7,6 +7,8 @@ Changelog
 
 * Added description to ``setup.py``
 
+* The metric results can now be sorted on any column
+
 0.2.0
 =====
 

@@ -1,5 +1,6 @@
 import re
 
+from django.db import connections
 from django.utils.encoding import force_text
 from django.utils.functional import cached_property
 from django.utils.html import escape, urlize
@@ -31,10 +32,103 @@ class MetricRegistry:
 registry = MetricRegistry()
 
 
+def join_ordering(ordering):
+    return '.'.join('%s%d' % o for o in ordering)
+
+
+class Header:
+
+    def __init__(self, name, index, ordering):
+        self.name = name.replace('-', ' ')
+        self.index = index
+        self.ordering = ordering
+
+    def __repr__(self):
+        return '<Header "%s">' % self.name
+
+    def __str__(self):
+        return self.name
+
+    @cached_property
+    def ascending(self):
+        for index, (direction, column) in enumerate(self.ordering, start=1):
+            if column == self.index and direction == '':
+                return True
+        return False
+
+    @cached_property
+    def sort_priority(self):
+        for index, (direction, column) in enumerate(self.ordering, start=1):
+            if column == self.index:
+                return index
+        return 0
+
+    @cached_property
+    def url_primary(self):
+        return join_ordering(
+            [('-' if self.ascending else '', self.index)] +
+            [
+                (direction, column)
+                for direction, column in self.ordering
+                if column != self.index
+            ],
+        )
+
+    @cached_property
+    def url_remove(self):
+        return join_ordering(
+            (direction, column)
+            for direction, column in self.ordering
+            if column != self.index
+        )
+
+    @cached_property
+    def url_toggle(self):
+        return join_ordering(
+            (
+                direction
+                if column != self.index
+                else
+                ('' if direction else '-'),
+                column,
+            )
+            for direction, column in self.ordering
+        )
+
+
+class MetricResult:
+
+    def __init__(self, connection, metric):
+        self._connection = connection
+        self._get_data(metric)
+
+    @property
+    def alias(self):
+        return self._connection.alias
+
+    @property
+    def dsn(self):
+        return self._connection.connection.dsn
+
+    def _get_data(self, metric):
+        sql = metric.full_sql
+        with self._connection.cursor() as cursor:
+            cursor.execute(sql)
+            self.headers = [
+                Header(c.name, index, metric.parsed_ordering)
+                for index, c in enumerate(cursor.description, start=1)
+            ]
+            self.records = cursor.fetchall()
+
+
 class Metric:
     label = ''
+    ordering = ''
     slug = ''
     sql = ''
+
+    def __init__(self, ordering=None):
+        self.ordering = ordering or self.ordering
 
     @cached_property
     def description(self):
@@ -45,6 +139,53 @@ class Metric:
             for p in paras
         ]
         return '\n\n'.join(paras)
+
+    @property
+    def full_sql(self):
+        return self.sql.format(ORDER_BY=self.get_order_by_clause())
+
+    def get_data(self):
+        results = []
+        for connection in connections.all():
+            if connection.vendor != 'postgresql':
+                continue
+            db = MetricResult(connection, self)
+            results.append(db)
+        return results
+
+    @cached_property
+    def parsed_ordering(self):
+        """
+        Turn an ordering string like ``1.5.-3.-2.6`` into the respective abstraction.
+
+        Given :attr:`self.ordering` as ``1.5.-3.-2.6`` return a lis of 2-tuples
+        like ``[('', 1), ('', 5), ('-', 3), ('-', 2), ('', 6)]``.
+        """
+        if self.ordering:
+            return [
+                ('-' if o.startswith('-') else '', int(o.lstrip('-')))
+                for o in self.ordering.split('.')
+            ]
+        return []
+
+    def get_order_by_clause(self):
+        """
+        Turn an ordering string like ``1.5.-3.-2.6`` into the respective SQL.
+
+        SQL's column numbering starts at 1, so do we here. Given
+        :attr:`self.ordering` as ``1.5.-3.-2.6`` return a string
+        ``ORDER BY 1 ASC, 5 ASC, 3 DESC, 2 DESC, 6 ASC``.
+
+        Ensures that each column (excluding the ``-`` prefix) is an integer by
+        calling ``int()`` on it.
+        """
+        if self.parsed_ordering:
+            ordering = [
+                ('%d DESC' if direction == '-' else '%d ASC') % column
+                for direction, column in self.parsed_ordering
+            ]
+            return 'ORDER BY ' + ', '.join(ordering)
+        return ''
 
 
 class CacheHitsMetric(Metric):
@@ -78,6 +219,7 @@ class CacheHitsMetric(Metric):
             END ratio
         FROM
             cache
+        {ORDER_BY}
         ;
     '''
 
@@ -97,6 +239,7 @@ class IndexUsageMetric(Metric):
     (Source: http://www.craigkerstiens.com/2012/10/01/understanding-postgres-performance/)
     """
     label = 'Index Usage'
+    ordering = '2'
     slug = 'index-usage'
     sql = '''
         SELECT
@@ -107,8 +250,7 @@ class IndexUsageMetric(Metric):
             pg_stat_user_tables
         WHERE
             seq_scan + idx_scan > 0
-        ORDER BY
-            percent_of_times_index_used DESC
+        {ORDER_BY}
         ;
     '''
 
@@ -123,6 +265,7 @@ class AvailableExtensions(Metric):
     shown below.
     """
     label = 'Available Extensions'
+    # ordering = '1'
     slug = 'available-extensions'
     sql = '''
         SELECT
@@ -132,8 +275,7 @@ class AvailableExtensions(Metric):
             comment
         FROM
             pg_available_extensions
-        ORDER BY
-            name
+        {ORDER_BY}
         ;
     '''
 
