@@ -1,5 +1,5 @@
-postgres\_metrics\.urls module
-==============================
+URLs
+====
 
 .. automodule:: postgres_metrics.urls
     :members:

@@ -1,13 +1,10 @@
-postgres\_metrics package
-=========================
+Reference Documentation
+=======================
 
 .. automodule:: postgres_metrics
     :members:
     :undoc-members:
     :show-inheritance:
-
-Submodules
-----------
 
 .. toctree::
 
@@ -15,4 +12,3 @@ Submodules
    postgres_metrics.metrics
    postgres_metrics.urls
    postgres_metrics.views
-

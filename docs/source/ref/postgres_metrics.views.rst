@@ -1,5 +1,5 @@
-postgres\_metrics\.views module
-===============================
+Views
+=====
 
 .. automodule:: postgres_metrics.views
     :members:

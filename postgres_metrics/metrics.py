@@ -5,6 +5,7 @@ from django.utils.encoding import force_text
 from django.utils.functional import cached_property
 from django.utils.html import escape, urlize
 from django.utils.text import normalize_newlines
+from django.utils.translation import ugettext_lazy as _
 
 
 class MetricRegistry:
@@ -22,21 +23,24 @@ class MetricRegistry:
         return iter(self._registry.values())
 
     def register(self, metric):
+        """
+        Given a class (not class instance) of :class:`Metric`, adds it to the
+        available list of metrics to show it to a user.
+        """
         self._registry[metric.slug] = metric
 
-    @cached_property
+    @property
     def sorted(self):
+        """
+        All registered metrics ordered by their label.
+        """
         return sorted((m for m in self), key=lambda m: m.label)
 
 
 registry = MetricRegistry()
 
 
-def join_ordering(ordering):
-    return '.'.join('%s%d' % o for o in ordering)
-
-
-class Header:
+class MetricHeader:
 
     def __init__(self, name, index, ordering):
         self.name = name.replace('-', ' ')
@@ -44,10 +48,14 @@ class Header:
         self.ordering = ordering
 
     def __repr__(self):
-        return '<Header "%s">' % self.name
+        return '<MetricHeader "%s">' % self.name
 
     def __str__(self):
         return self.name
+
+    @staticmethod
+    def join_ordering(ordering):
+        return '.'.join('%s%d' % o for o in ordering)
 
     @cached_property
     def ascending(self):
@@ -65,7 +73,7 @@ class Header:
 
     @cached_property
     def url_primary(self):
-        return join_ordering(
+        return MetricHeader.join_ordering(
             [('-' if self.ascending else '', self.index)] +
             [
                 (direction, column)
@@ -76,7 +84,7 @@ class Header:
 
     @cached_property
     def url_remove(self):
-        return join_ordering(
+        return MetricHeader.join_ordering(
             (direction, column)
             for direction, column in self.ordering
             if column != self.index
@@ -84,7 +92,7 @@ class Header:
 
     @cached_property
     def url_toggle(self):
-        return join_ordering(
+        return MetricHeader.join_ordering(
             (
                 direction
                 if column != self.index
@@ -97,6 +105,9 @@ class Header:
 
 
 class MetricResult:
+    """
+    Hold a metric's data for a single database.
+    """
 
     def __init__(self, connection, metric):
         self._connection = connection
@@ -104,10 +115,17 @@ class MetricResult:
 
     @property
     def alias(self):
+        """
+        The alias under which a database connection is known to Django.
+        """
         return self._connection.alias
 
     @property
     def dsn(self):
+        """
+        The PostgreSQL connection string per `psycopg2
+        <http://initd.org/psycopg/docs/connection.html#connection.dsn>`_.
+        """
         return self._connection.connection.dsn
 
     def _get_data(self, metric):
@@ -115,16 +133,32 @@ class MetricResult:
         with self._connection.cursor() as cursor:
             cursor.execute(sql)
             self.headers = [
-                Header(c.name, index, metric.parsed_ordering)
+                MetricHeader(c.name, index, metric.parsed_ordering)
                 for index, c in enumerate(cursor.description, start=1)
             ]
             self.records = cursor.fetchall()
 
 
 class Metric:
+    """
+    """
+
+    #: The label is what is used in the Django Admin views. Consider marking
+    #: this string as translateable.
     label = ''
+
+    #: The default ordering that should be applied to the SQL query by default.
+    #: This needs to be a valid ordering string as defined on
+    #: :attr:`parsed_ordering`.
     ordering = ''
+
+    #: A URL safe representation of the label and unique across all metrics.
     slug = ''
+
+    #: The actual SQL statement that is being used to query the database. In
+    #: order to make use of the :attr:`ordering`, include the string
+    #: ``{ORDER_BY}`` in the query as necessary. For details on that value see
+    #: :meth:`get_order_by_clause`.
     sql = ''
 
     def __init__(self, ordering=None):
@@ -132,6 +166,17 @@ class Metric:
 
     @cached_property
     def description(self):
+        r"""
+        Don't define this value directly. Instead define a docstring on the
+        metric class.
+
+        The docstring will be processed by Python internals to trim leading
+        white spaces and fix newlines. ``'\r\n'`` and ``'\r'`` line breaks will
+        be normalized to ``'\n'``. Two or more consecutive occurances of
+        ``'\n'`` mark a paragraph which will be escaped and wrapped in
+        ``<p></p>`` HTML tags. Further, each paragraph will call into Django's
+        ``urlize()`` method to create ``<a></a>`` HTML tags around links.
+        """
         value = normalize_newlines(force_text(self.__doc__))
         paras = re.split('\n{2,}', value)
         paras = [
@@ -142,9 +187,19 @@ class Metric:
 
     @property
     def full_sql(self):
+        """
+        The :attr:`sql` formatted with :meth:`get_order_by_clause`.
+        """
         return self.sql.format(ORDER_BY=self.get_order_by_clause())
 
     def get_data(self):
+        """
+        Iterate over all configured PostgreSQL database and execute the
+        :attr:`full_sql` there.
+
+        :return: Returns a list of :class:`MetricResult` instances.
+        :rtype: list
+        """
         results = []
         for connection in connections.all():
             if connection.vendor != 'postgresql':
@@ -200,7 +255,7 @@ class CacheHitsMetric(Metric):
 
     (Source: http://www.craigkerstiens.com/2012/10/01/understanding-postgres-performance/)
     """
-    label = 'Cache Hits'
+    label = _('Cache Hits')
     slug = 'cache-hits'
     sql = '''
         WITH cache AS (
@@ -238,7 +293,7 @@ class IndexUsageMetric(Metric):
 
     (Source: http://www.craigkerstiens.com/2012/10/01/understanding-postgres-performance/)
     """
-    label = 'Index Usage'
+    label = _('Index Usage')
     ordering = '2'
     slug = 'index-usage'
     sql = '''
@@ -264,8 +319,8 @@ class AvailableExtensions(Metric):
     EXTENSION command. The list of available extensions on each database is
     shown below.
     """
-    label = 'Available Extensions'
-    # ordering = '1'
+    label = _('Available Extensions')
+    ordering = '1'
     slug = 'available-extensions'
     sql = '''
         SELECT

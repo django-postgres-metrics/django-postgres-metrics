@@ -1,5 +1,5 @@
-postgres\_metrics\.apps module
-==============================
+AppConfig
+=========
 
 .. automodule:: postgres_metrics.apps
     :members:
