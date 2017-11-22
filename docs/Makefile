@@ -3,6 +3,7 @@
 
 # You can set these variables from the command line.
 SPHINXOPTS    =
+SPHINXAPIDOC  = sphinx-apidoc
 SPHINXBUILD   = sphinx-build
 SPHINXPROJ    = django-postgres-metrics
 SOURCEDIR     = source
@@ -11,6 +12,9 @@ BUILDDIR      = build
 # Put it first so that "make" without argument is like "make help".
 help:
 	@$(SPHINXBUILD) -M help "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
+
+apidoc:
+	@$(SPHINXAPIDOC) --force --separate --module-first -o $(SOURCEDIR)/ref ../postgres_metrics
 
 .PHONY: help Makefile
 
