@@ -1,10 +1,11 @@
 import re
 
+from django.core.exceptions import ImproperlyConfigured
 from django.db import connections
 from django.utils.encoding import force_text
 from django.utils.functional import cached_property
 from django.utils.html import escape, urlize
-from django.utils.text import normalize_newlines
+from django.utils.text import normalize_newlines, slugify
 from django.utils.translation import ugettext_lazy as _
 
 
@@ -35,6 +36,13 @@ class MetricRegistry:
         All registered metrics ordered by their label.
         """
         return sorted((m for m in self), key=lambda m: m.label)
+
+    def unregister(self, slug):
+        """
+        Remove the metric ``slug`` from the registry. Raises a ``KeyError`` if
+        the metric isn't registered.
+        """
+        del self._registry[slug]
 
 
 registry = MetricRegistry()
@@ -116,16 +124,16 @@ class MetricResult:
     """
     Hold a metric's data for a single database.
 
-    .. attr:: alias
+    .. attribute:: alias
 
        The alias under which a database connection is known to Django.
 
-    .. attr:: dsn
+    .. attribute:: dsn
 
        The PostgreSQL connection string per `psycopg2
        <http://initd.org/psycopg/docs/connection.html#connection.dsn>`_.
 
-    .. attr:: records
+    .. attribute:: records
 
        The rows returned by a metric for the given database.
     """
@@ -134,14 +142,31 @@ class MetricResult:
         'alias', 'dsn', 'records',
     )
 
-    def __init__(self, alias, dsn, records):
-        self.alias = alias
-        self.dsn = dsn
+    def __init__(self, connection, records):
+        self.alias = connection.alias
+        self.dsn = connection.connection.dsn
         self.records = records
 
 
-class Metric:
+class MetricMeta(type):
+
+    def __new__(mcs, name, bases, attrs):
+        if bases:
+            # Only subclasses of `Metric`
+            if 'label' not in attrs:
+                attrs['label'] = name
+            if 'slug' not in attrs:
+                attrs['slug'] = slugify(attrs['label'])
+            if 'sql' not in attrs:
+                raise ImproperlyConfigured('Metric "%s" is missing a "sql" attribute.' % name)
+
+        return super().__new__(mcs, name, bases, attrs)
+
+
+class Metric(metaclass=MetricMeta):
     """
+    The superclass for all Metric implementations. Inherit from this to define
+    your own metric.
     """
 
     #: The label is what is used in the Django Admin views. Consider marking
@@ -212,12 +237,9 @@ class Metric:
                     for index, c in enumerate(cursor.description, start=1)
                 ]
                 data = cursor.fetchall()
-            db = MetricResult(connection.alias, connection.connection.dsn, data)
+            db = MetricResult(connection, data)
             results.append(db)
         return results
-
-    def dict_(self):
-        return self.__dict__
 
     @cached_property
     def parsed_ordering(self):
