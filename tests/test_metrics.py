@@ -27,17 +27,6 @@ class MetricRegistryTest(SimpleTestCase):
         with self.assertRaises(KeyError):
             registry['my-new-metric']
 
-        msg = 'Metric "MissingSQLMetric" is missing a "sql" attribute.'
-        with self.assertRaisesMessage(ImproperlyConfigured, msg):
-            class MissingSQLMetric(Metric):
-                pass
-
-        class MissingLabelAndSlugMetric(Metric):
-            sql = 'SELECT 1;'
-
-        self.assertEqual(MissingLabelAndSlugMetric.label, 'MissingLabelAndSlugMetric')
-        self.assertEqual(MissingLabelAndSlugMetric.slug, 'missinglabelandslugmetric')
-
     def test_sorted(self):
         class FooBar(Metric):
             sql = 'SELECT 1;'
@@ -57,7 +46,101 @@ class MetricRegistryTest(SimpleTestCase):
 
 
 class MetricTest(TestCase):
-    pass
+
+    def test_required_arguments(self):
+        msg = 'Metric "MissingSQLMetric" is missing a "sql" attribute or "sql" is empty.'
+        with self.assertRaisesMessage(ImproperlyConfigured, msg):
+            class MissingSQLMetric(Metric):
+                pass
+
+        msg = 'Metric "EmptySQLMetric" is missing a "sql" attribute or "sql" is empty.'
+        with self.assertRaisesMessage(ImproperlyConfigured, msg):
+            class EmptySQLMetric(Metric):
+                sql = ''
+
+        class MissingLabelAndSlugMetric(Metric):
+            sql = 'SELECT 1;'
+
+        self.assertEqual(MissingLabelAndSlugMetric.label, 'MissingLabelAndSlugMetric')
+        self.assertEqual(MissingLabelAndSlugMetric.slug, 'missinglabelandslugmetric')
+
+    def test_description(self):
+        class MyMetric(Metric):
+            sql = 'SELECT 1;'
+
+        self.assertEqual(MyMetric.description, '')
+
+        class MyDocumentedMetric(Metric):
+            """
+            Foo bar buz
+            lorem ipsum
+
+            New paragraph with https://an.url/to/something spanning
+            multiple
+            lines
+            """
+            sql = 'SELECT 1;'
+
+        expected = (
+            '<p>Foo bar buz lorem ipsum</p>\n'
+            '\n'
+            '<p>New paragraph with <a href="https://an.url/to/something">https://an.url/to/something</a> spanning multiple lines</p>'
+        )
+        self.assertEqual(
+            str(MyDocumentedMetric.description),
+            expected,
+        )
+
+    def test_full_sql(self):
+        class MyMetric(Metric):
+            sql = 'SELECT 1;'
+
+        self.assertEqual(MyMetric().full_sql, 'SELECT 1;')
+
+        class OrderedMetric(Metric):
+            ordering = '-2.1.3'
+            sql = 'SELECT 1 {ORDER_BY};'
+
+        self.assertEqual(OrderedMetric().full_sql, 'SELECT 1 ORDER BY 2 DESC, 1 ASC, 3 ASC;')
+
+    def test_get_data(self):
+        class DjangoMigrationStatistics(Metric):
+            """
+            Count the number of applied Django migrations per app and sort by
+            descending count and ascending app name.
+            """
+            label = 'Migration Statistics'
+            slug = 'django-migration-statistics'
+            ordering = '-2.1'
+            sql = '''
+                SELECT
+                    app, count(*)
+                FROM
+                    django_migrations
+                GROUP BY
+                    app
+                {ORDER_BY}
+                ;
+            '''
+
+        metric = DjangoMigrationStatistics()
+        data = metric.get_data()
+
+        self.assertEqual(
+            metric.headers,
+            [
+                MetricHeader('app', 1, [('-', 2), ('', 1)]),
+                MetricHeader('count', 2, [('-', 2), ('', 1)]),
+            ],
+        )
+        # Two databases
+        self.assertEqual(len(data), 2)
+        # 4 apps
+        self.assertEqual(len(data[0].records), 4)
+        self.assertEqual(len(data[1].records), 4)
+        # 2 columns
+        self.assertEqual(len(data[0].records[0]), 2)
+        self.assertEqual(len(data[1].records[0]), 2)
 
 
 class MetricHeaderTest(SimpleTestCase):
@@ -220,7 +303,7 @@ class MetricHeaderTest(SimpleTestCase):
         self.assertEqual(header.url_toggle, '-2.3.4')
 
 
-class MetricResultTest(SimpleTestCase):
+class MetricResultTest(TestCase):
 
     def test(self):
         result = MetricResult(connections['default'], [('foo', 1, 2), ('bar', 3, 4)])

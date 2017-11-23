@@ -64,6 +64,13 @@ class MetricHeader:
     def __str__(self):
         return self.name
 
+    def __eq__(self, other):
+        return (
+            self.name == other.name and
+            self.index == other.index and
+            self.ordering == other.ordering
+        )
+
     @staticmethod
     def join_ordering(ordering):
         return '.'.join('%s%d' % o for o in ordering)
@@ -153,12 +160,26 @@ class MetricMeta(type):
     def __new__(mcs, name, bases, attrs):
         if bases:
             # Only subclasses of `Metric`
-            if 'label' not in attrs:
+            if not attrs.get('label'):
                 attrs['label'] = name
-            if 'slug' not in attrs:
+            if not attrs.get('slug'):
                 attrs['slug'] = slugify(attrs['label'])
-            if 'sql' not in attrs:
-                raise ImproperlyConfigured('Metric "%s" is missing a "sql" attribute.' % name)
+            if not attrs.get('sql'):
+                msg = 'Metric "%s" is missing a "sql" attribute or "sql" is empty.'
+                raise ImproperlyConfigured(msg % name)
+
+            docstring = attrs.get('__doc__')
+            if docstring:
+                docstring = normalize_newlines(force_text(docstring))
+                docstring = '\n'.join(line.strip() for line in docstring.split('\n'))
+                paras = re.split('\n{2,}', docstring)
+                paras = [
+                    '<p>%s</p>' % urlize(escape(p).replace('\n', ' ').strip())
+                    for p in paras
+                ]
+                attrs['description'] = '\n\n'.join(paras)
+            else:
+                attrs['description'] = ''
 
         return super().__new__(mcs, name, bases, attrs)
 
@@ -167,6 +188,46 @@ class Metric(metaclass=MetricMeta):
     """
     The superclass for all Metric implementations. Inherit from this to define
     your own metric.
+
+    If you want to implement your own metric, here's a gist::
+
+       from django.utils.translation import ugettext_lazy as _
+       from postgres_metrics.metrics import Metric, registry
+
+
+       class DjangoMigrationStatistics(Metric):
+           \"\"\"
+           Count the number of applied Django migrations per app and sort by
+           descending count and ascending app name.
+           \"\"\"
+           label = _('Migration Statistics')
+           slug = 'django-migration-statistics'
+           ordering = '-2.1'
+           sql = '''
+               SELECT
+                   app, count(*)
+               FROM
+                   django_migrations
+               GROUP BY
+                   app
+               {ORDER_BY}
+               ;
+           '''
+
+
+       registry.register(DjangoMigrationStatistics)
+
+    .. attribute:: description
+
+       Don't define this value directly. Instead define a docstring on the
+       metric class.
+
+       The docstring will be processed by Python internals to trim leading
+       white spaces and fix newlines. ``'\\r\\n'`` and ``'\\r'`` line breaks will
+       be normalized to ``'\\n'``. Two or more consecutive occurances of
+       ``'\\n'`` mark a paragraph which will be escaped and wrapped in
+       ``<p></p>`` HTML tags. Further, each paragraph will call into Django's
+       ``urlize()`` method to create ``<a></a>`` HTML tags around links.
     """
 
     #: The label is what is used in the Django Admin views. Consider marking
@@ -189,27 +250,6 @@ class Metric(metaclass=MetricMeta):
 
     def __init__(self, ordering=None):
         self.ordering = ordering or self.ordering
-
-    @cached_property
-    def description(self):
-        r"""
-        Don't define this value directly. Instead define a docstring on the
-        metric class.
-
-        The docstring will be processed by Python internals to trim leading
-        white spaces and fix newlines. ``'\r\n'`` and ``'\r'`` line breaks will
-        be normalized to ``'\n'``. Two or more consecutive occurances of
-        ``'\n'`` mark a paragraph which will be escaped and wrapped in
-        ``<p></p>`` HTML tags. Further, each paragraph will call into Django's
-        ``urlize()`` method to create ``<a></a>`` HTML tags around links.
-        """
-        value = normalize_newlines(force_text(self.__doc__))
-        paras = re.split('\n{2,}', value)
-        paras = [
-            '<p>%s</p>' % urlize(escape(p).replace('\n', ' '))
-            for p in paras
-        ]
-        return '\n\n'.join(paras)
 
     @cached_property
     def full_sql(self):

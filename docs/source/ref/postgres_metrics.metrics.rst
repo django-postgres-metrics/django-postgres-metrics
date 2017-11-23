@@ -25,17 +25,8 @@ Metrics
     :undoc-members:
     :show-inheritance:
 
-.. autoclass:: AvailableExtensions
-    :members:
-    :undoc-members:
-    :show-inheritance:
+.. autoclass:: AvailableExtensions()
 
-.. autoclass:: CacheHitsMetric
-    :members:
-    :undoc-members:
-    :show-inheritance:
+.. autoclass:: CacheHitsMetric()
 
-.. autoclass:: IndexUsageMetric
-    :members:
-    :undoc-members:
-    :show-inheritance:
+.. autoclass:: IndexUsageMetric()

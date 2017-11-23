@@ -23,7 +23,7 @@
 <div id="content-main">
     {% for result in results %}
     <div class="module" id="changelist">
-        {% if forloop.first %}
+        {% if forloop.first and metric.description %}
         <div id="toolbar">
             {{ metric.description|safe }}
         </div>
