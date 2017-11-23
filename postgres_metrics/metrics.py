@@ -115,36 +115,29 @@ class MetricHeader:
 class MetricResult:
     """
     Hold a metric's data for a single database.
+
+    .. attr:: alias
+
+       The alias under which a database connection is known to Django.
+
+    .. attr:: dsn
+
+       The PostgreSQL connection string per `psycopg2
+       <http://initd.org/psycopg/docs/connection.html#connection.dsn>`_.
+
+    .. attr:: records
+
+       The rows returned by a metric for the given database.
     """
 
-    def __init__(self, connection, metric):
-        self._connection = connection
-        self._get_data(metric)
+    __slots__ = (
+        'alias', 'dsn', 'records',
+    )
 
-    @property
-    def alias(self):
-        """
-        The alias under which a database connection is known to Django.
-        """
-        return self._connection.alias
-
-    @property
-    def dsn(self):
-        """
-        The PostgreSQL connection string per `psycopg2
-        <http://initd.org/psycopg/docs/connection.html#connection.dsn>`_.
-        """
-        return self._connection.connection.dsn
-
-    def _get_data(self, metric):
-        sql = metric.full_sql
-        with self._connection.cursor() as cursor:
-            cursor.execute(sql)
-            self.headers = [
-                MetricHeader(c.name, index, metric.parsed_ordering)
-                for index, c in enumerate(cursor.description, start=1)
-            ]
-            self.records = cursor.fetchall()
+    def __init__(self, alias, dsn, records):
+        self.alias = alias
+        self.dsn = dsn
+        self.records = records
 
 
 class Metric:
@@ -193,7 +186,7 @@ class Metric:
         ]
         return '\n\n'.join(paras)
 
-    @property
+    @cached_property
     def full_sql(self):
         """
         The :attr:`sql` formatted with :meth:`get_order_by_clause`.
@@ -212,9 +205,19 @@ class Metric:
         for connection in connections.all():
             if connection.vendor != 'postgresql':
                 continue
-            db = MetricResult(connection, self)
+            with connection.cursor() as cursor:
+                cursor.execute(self.full_sql)
+                self.headers = [
+                    MetricHeader(c.name, index, self.parsed_ordering)
+                    for index, c in enumerate(cursor.description, start=1)
+                ]
+                data = cursor.fetchall()
+            db = MetricResult(connection.alias, connection.connection.dsn, data)
             results.append(db)
         return results
+
+    def dict_(self):
+        return self.__dict__
 
     @cached_property
     def parsed_ordering(self):

@@ -33,7 +33,7 @@
                 <caption>{{ result.alias }} ({{ result.dsn }})</caption>
                 <thead>
                     <tr>
-                        {% for header in result.headers %}
+                        {% for header in metric.headers %}
                         <th scope="col" class="sortable{% if header.sort_priority > 0 %} sorted {% if header.ascending %}ascending{% else %}descending{% endif %}{% endif %}">
                             {% if header.sort_priority > 0 %}
                             <div class="sortoptions">

@@ -16,11 +16,11 @@ def metrics_view(request, name):
     Metric = metrics_registry[name]
 
     ordering = request.GET.get(ORDER_VAR)
+    metric = Metric(ordering)
 
     context = {
-        'metric': Metric,
-        'results': Metric(ordering).get_data(),
-        'results_ordering': ordering,
+        'metric': metric,
+        'results': metric.get_data(),
     }
 
     return render(request, 'postgres_metrics/table.html', context=context)
