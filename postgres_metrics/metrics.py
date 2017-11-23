@@ -41,6 +41,9 @@ registry = MetricRegistry()
 
 
 class MetricHeader:
+    """
+    A single column header; mostly takes care of a column's sorting status.
+    """
 
     def __init__(self, name, index, ordering):
         self.name = name.replace('-', ' ')
@@ -59,6 +62,7 @@ class MetricHeader:
 
     @cached_property
     def ascending(self):
+        """``True`` if the column is in ascending order ``False`` otherwise"""
         for index, (direction, column) in enumerate(self.ordering, start=1):
             if column == self.index and direction == '':
                 return True
@@ -66,6 +70,7 @@ class MetricHeader:
 
     @cached_property
     def sort_priority(self):
+        """The priority of the columns order. 1 (high), n(low). Default 0."""
         for index, (direction, column) in enumerate(self.ordering, start=1):
             if column == self.index:
                 return index
@@ -73,6 +78,7 @@ class MetricHeader:
 
     @cached_property
     def url_primary(self):
+        """Querystring value making this the primary sorting header."""
         return MetricHeader.join_ordering(
             [('-' if self.ascending else '', self.index)] +
             [
@@ -84,6 +90,7 @@ class MetricHeader:
 
     @cached_property
     def url_remove(self):
+        """Querystring value removing this column from sorting."""
         return MetricHeader.join_ordering(
             (direction, column)
             for direction, column in self.ordering
@@ -92,6 +99,7 @@ class MetricHeader:
 
     @cached_property
     def url_toggle(self):
+        """Querystring value toggling ascending/descending for this header."""
         return MetricHeader.join_ordering(
             (
                 direction
