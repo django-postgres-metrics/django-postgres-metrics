@@ -21,9 +21,15 @@ import os
 import sys
 from pkg_resources import parse_version
 
+import django
+
 from postgres_metrics import __version__
 
 sys.path.insert(0, os.path.abspath('../../'))
+sys.path.insert(0, os.path.abspath('../../example/'))
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "example.settings")
+
+django.setup()
 
 
 # -- General configuration ------------------------------------------------
