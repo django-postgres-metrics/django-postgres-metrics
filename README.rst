@@ -1,11 +1,10 @@
-=======================
 django-postgres-metrics
 =======================
 
 A Django application that exposes a bunch of PostgreSQL database metrics.
 
 Background
-==========
+----------
 
 At `PyCon Canada 2017 <https://2017.pycon.ca/>`_ `Craig Kerstiens
 <http://www.craigkerstiens.com/>`_ gave a talk "`Postgres at any scale
@@ -17,7 +16,7 @@ This project adds a Django Admin view exposing these metrics to Django users
 with the ``is_superusers`` flag turned on.
 
 Installation
-============
+------------
 
 Start by installing ``django-postgres-metrics`` from PyPI::
 
@@ -57,7 +56,7 @@ For Django 1.11 and before::
     ]
 
 Security
-========
+--------
 
 If you found or if you think you found a security issue please get in touch via
 ``info+django-postgres-stats *AT* markusholtermann *DOT* eu``.
@@ -67,7 +66,7 @@ I'm working about this in my free time. I don't have time to monitor the email
 got back to you within 2 weeks, please reach out again.
 
 TESTING
-=======
+-------
 
 To run the unit tests::
 
