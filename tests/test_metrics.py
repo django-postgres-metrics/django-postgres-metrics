@@ -3,7 +3,8 @@ from django.db import connections
 from django.test import SimpleTestCase, TestCase
 
 from postgres_metrics.metrics import (
-    Metric, MetricHeader, MetricRegistry, MetricResult, registry,
+    AvailableExtensions, CacheHitsMetric, IndexUsageMetric, Metric,
+    MetricHeader, MetricRegistry, MetricResult, registry,
 )
 
 
@@ -148,6 +149,18 @@ class MetricTest(TestCase):
         # 2 columns
         self.assertEqual(len(data[0].records[0]), 2)
         self.assertEqual(len(data[1].records[0]), 2)
+
+    def test_get_record_style(self):
+        class MyMetric(Metric):
+            sql = 'SELECT 1;'
+
+        self.assertEqual(MyMetric().get_record_style(None), '')
+
+    def test_get_record_item_style(self):
+        class MyMetric(Metric):
+            sql = 'SELECT 1;'
+
+        self.assertEqual(MyMetric().get_record_item_style(None, None, None), '')
 
 
 class MetricHeaderTest(SimpleTestCase):
@@ -331,6 +344,86 @@ class MetricResultTest(TestCase):
         self.assertEqual(result.records, [('foo', 1, 2), ('bar', 3, 4)])
 
 
+class StyleAssertionMixin:
+
+    def assertRecordStylesEqual(self, metric_class, records, expecteds):
+        metric = metric_class()
+        for record, expected in zip(records, expecteds):
+            with self.subTest(record=record):
+                style = metric.get_record_style(record)
+                self.assertEqual(style, expected)
+
+    def assertRecordItemStylesEqual(self, metric_class, records, expecteds):
+        metric = metric_class()
+        for record, expected in zip(records, expecteds):
+            with self.subTest(record=record):
+                styles = tuple(
+                    metric.get_record_item_style(record, item, index)
+                    for index, item in enumerate(record)
+                )
+                self.assertEqual(styles, expected)
+
+
+class AvailableExtensionsTest(StyleAssertionMixin, SimpleTestCase):
+
+    def test_get_record_style(self):
+        records = [
+            ('ltree', '1.0', None, 'bla'),
+            ('ltree', '1.0', '0.0', 'bla'),
+            ('ltree', '4.0', '4.0', 'bla'),
+            ('ltree', '5.0', '5.0.1', 'bla'),
+        ]
+        expecteds = [
+            None,
+            'warning',
+            'ok',
+            'info',
+        ]
+        self.assertRecordStylesEqual(AvailableExtensions, records, expecteds)
+
+
+class CacheHitsMetricTest(StyleAssertionMixin, SimpleTestCase):
+
+    def test_get_record_item_style(self):
+        records = [
+            (123, 456, 'N/A'),
+            (123, 456, '0.94449'),
+            (123, 456, '0.95'),
+            (123, 456, '0.98999'),
+            (123, 456, '0.99'),
+        ]
+        expecteds = [
+            (None, None, None),
+            (None, None, 'critical'),
+            (None, None, 'warning'),
+            (None, None, 'warning'),
+            (None, None, 'ok'),
+        ]
+        self.assertRecordItemStylesEqual(CacheHitsMetric, records, expecteds)
+
+
+class IndexUsageMetricTest(StyleAssertionMixin, SimpleTestCase):
+
+    def test_get_record_style(self):
+        records = [
+            ('table1', 12.34, 0),
+            ('table1', 12.34, 9999),
+            ('table1', 94.99, 10000),
+            ('table1', 95.00, 10000),
+            ('table1', 98.99, 10000),
+            ('table1', 99.00, 10000),
+        ]
+        expecteds = [
+            None,
+            None,
+            'critical',
+            'warning',
+            'warning',
+            'ok',
+        ]
+        self.assertRecordStylesEqual(IndexUsageMetric, records, expecteds)
+
+
 def gen_metric_test_case(metric_class):
     def test_get_data_default_ordering(self):
         metric = self.metric_class()
@@ -345,12 +438,16 @@ def gen_metric_test_case(metric_class):
         metric = self.metric_class(ordering='1.-2')
         metric.get_data()
 
-    tc_name = metric_class.__name__ + 'Test'
+    def test_repr(self):
+        self.assertEqual(repr(self.metric_class()), '<Metric "%s">' % self.metric_class.label)
+
+    tc_name = 'Dynamic_' + metric_class.__name__ + 'Test'
     attrs = {
         'metric_class': metric_class,
         'test_get_data_default_ordering': test_get_data_default_ordering,
         'test_get_data_no_ordering': test_get_data_no_ordering,
         'test_get_data_explicit_ordering': test_get_data_explicit_ordering,
+        'test_repr': test_repr,
     }
     cls = type(tc_name, (TestCase,), attrs)
     return tc_name, cls

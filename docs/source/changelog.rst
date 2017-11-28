@@ -13,6 +13,8 @@ Changelog
 
 * Added :class:`~metrics.IndexSizeMetric` and :class:`~metrics.TableSizeMetric`
 
+* Added per metric record and record item styling
+
 0.3.0
 =====
 

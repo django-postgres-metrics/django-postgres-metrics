@@ -252,6 +252,9 @@ class Metric(metaclass=MetricMeta):
     def __init__(self, ordering=None):
         self.ordering = ordering or self.ordering
 
+    def __repr__(self):
+        return '<Metric "%s">' % self.label
+
     @cached_property
     def full_sql(self):
         """
@@ -316,6 +319,45 @@ class Metric(metaclass=MetricMeta):
             return 'ORDER BY ' + ', '.join(ordering)
         return ''
 
+    def get_record_style(self, record):
+        """
+        Given a single record from :class:`MetricResult`, decide how to style
+        it. Most likely to be used with the template tag
+        :func:`~postgres_metrics.templatetags.postgres_metrics.record_style`.
+
+        By default, django-postgres-metrics supports for styling classes:
+
+        * ``ok``
+        * ``warning``
+        * ``critical``
+        * ``info``
+
+        Override this method and return one of the above strings or ``None``
+        to apply the given style to the entire record. In the Django Admin this
+        will highlight the entire row.
+        """
+        return ''
+
+    def get_record_item_style(self, record, item, index):
+        """
+        Given a single record from :class:`MetricResult`, the value of the
+        current item within, and the current item's index, decide how to style
+        it. Most likely to be used with the template tag
+        :func:`~postgres_metrics.templatetags.postgres_metrics.record_item_style`.
+
+        By default, django-postgres-metrics supports for styling classes:
+
+        * ``ok``
+        * ``warning``
+        * ``critical``
+        * ``info``
+
+        Override this method and return one of the above strings or ``None``
+        to apply the given style to the entire record. In the Django Admin this
+        will highlight the entire row.
+        """
+        return ''
+
 
 class CacheHitsMetric(Metric):
     """
@@ -351,6 +393,15 @@ class CacheHitsMetric(Metric):
         {ORDER_BY}
         ;
     '''
+
+    def get_record_item_style(self, record, item, index):
+        if index == 2 and item != 'N/A':
+            ratio = float(item)
+            if ratio < 0.95:
+                return 'critical'
+            if ratio < 0.99:
+                return 'warning'
+            return 'ok'
 
 
 registry.register(CacheHitsMetric)
@@ -402,6 +453,17 @@ class IndexUsageMetric(Metric):
         ;
     '''
 
+    def get_record_style(self, record):
+        if record[2]:
+            usage = record[1]
+            rowcount = record[2]
+            if rowcount >= 10000:
+                if usage < 95.00:
+                    return 'critical'
+                if usage < 99.00:
+                    return 'warning'
+                return 'ok'
+
 
 registry.register(IndexUsageMetric)
 
@@ -444,6 +506,16 @@ class AvailableExtensions(Metric):
         {ORDER_BY}
         ;
     '''
+
+    def get_record_style(self, record):
+        if record[2]:
+            default_version = tuple(record[1].split('.'))
+            installed_version = tuple(record[2].split('.'))
+            if default_version == installed_version:
+                return 'ok'
+            if default_version < installed_version:
+                return 'info'
+            return 'warning'
 
 
 registry.register(AvailableExtensions)
