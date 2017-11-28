@@ -2,8 +2,8 @@
 Changelog
 =========
 
-0.3.0 (under development)
-=========================
+0.3.0
+=====
 
 * Added description to ``setup.py``
 
