@@ -1,5 +1,5 @@
 from django.contrib.admin.views.main import ORDER_VAR
-from django.contrib.auth.views.decorators import staff_member_required
+from django.contrib.admin.views.decorators import staff_member_required
 from django.http import Http404
 from django.shortcuts import render
 
