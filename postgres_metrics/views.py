@@ -7,20 +7,18 @@ from .metrics import registry as metrics_registry
 
 
 def metrics_view(request, name):
-    if not request.user or not request.user.is_superuser:
+    if not request.user.is_superuser:
         raise PermissionDenied
 
-    if name not in metrics_registry:
+    try:
+        Metric = metrics_registry[name]
+    except KeyError:
         raise Http404
-
-    Metric = metrics_registry[name]
 
     ordering = request.GET.get(ORDER_VAR)
     metric = Metric(ordering)
 
-    context = {
+    return render(request, 'postgres_metrics/table.html', {
         'metric': metric,
         'results': metric.get_data(),
-    }
-
-    return render(request, 'postgres_metrics/table.html', context=context)
+    })
