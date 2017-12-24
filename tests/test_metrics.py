@@ -305,7 +305,7 @@ class MetricHeaderTest(SimpleTestCase):
 
 class MetricResultTest(TestCase):
 
-    def test(self):
+    def test_default(self):
         result = MetricResult(connections['default'], [('foo', 1, 2), ('bar', 3, 4)])
         self.assertEqual(result.alias, 'default')
         self.assertEqual(
@@ -314,6 +314,7 @@ class MetricResultTest(TestCase):
         )
         self.assertEqual(result.records, [('foo', 1, 2), ('bar', 3, 4)])
 
+    def test_second(self):
         result = MetricResult(connections['second'], [('foo', 1, 2), ('bar', 3, 4)])
         self.assertEqual(result.alias, 'second')
         self.assertEqual(

@@ -150,6 +150,7 @@ class MetricResult:
     )
 
     def __init__(self, connection, records):
+        connection.ensure_connection()
         self.alias = connection.alias
         self.dsn = connection.connection.dsn
         self.records = records
