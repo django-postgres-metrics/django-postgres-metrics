@@ -54,7 +54,7 @@ class MetricHeader:
     """
 
     def __init__(self, name, index, ordering):
-        self.name = name.replace('-', ' ')
+        self.name = name.replace('-', ' ').replace('_', ' ')
         self.index = index
         self.ordering = ordering
 

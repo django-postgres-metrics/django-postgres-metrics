@@ -49,7 +49,7 @@ class TestMetricsView(TestCase):
         self.assertEqual(2, len(result.context['results']))
         metric = result.context['metric']
         self.assertEqual(
-            ['heap_read', 'heap_hit', 'ratio'],
+            ['heap read', 'heap hit', 'ratio'],
             [str(h) for h in metric.headers],
         )
 
