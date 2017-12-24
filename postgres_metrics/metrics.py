@@ -170,7 +170,7 @@ class MetricMeta(type):
                 raise ImproperlyConfigured(msg % name)
 
             docstring = attrs.get('__doc__')
-            if docstring:
+            if docstring and docstring.strip():
                 docstring = normalize_newlines(force_text(docstring))
                 docstring = '\n'.join(line.strip() for line in docstring.split('\n'))
                 paras = re.split('\n{2,}', docstring)

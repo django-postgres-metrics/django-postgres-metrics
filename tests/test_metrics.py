@@ -70,6 +70,13 @@ class MetricTest(TestCase):
 
         self.assertEqual(MyMetric.description, '')
 
+        class MyEmptyDocstringMetric(Metric):
+            """
+            """
+            sql = 'SELECT 1;'
+
+        self.assertEqual(MyEmptyDocstringMetric.description, '')
+
         class MyDocumentedMetric(Metric):
             """
             Foo bar buz
