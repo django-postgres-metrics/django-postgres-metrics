@@ -322,3 +322,33 @@ class MetricResultTest(TestCase):
             sorted('user=otheruser dbname=test_otherdb'.split()),
         )
         self.assertEqual(result.records, [('foo', 1, 2), ('bar', 3, 4)])
+
+
+def gen_metric_test_case(metric_class):
+    def test_get_data_default_ordering(self):
+        metric = self.metric_class()
+        metric.get_data()
+
+    def test_get_data_no_ordering(self):
+        metric = self.metric_class()
+        metric.ordering = ''
+        metric.get_data()
+
+    def test_get_data_explicit_ordering(self):
+        metric = self.metric_class(ordering='1.-2')
+        metric.get_data()
+
+    tc_name = metric_class.__name__ + 'Test'
+    attrs = {
+        'metric_class': metric_class,
+        'test_get_data_default_ordering': test_get_data_default_ordering,
+        'test_get_data_no_ordering': test_get_data_no_ordering,
+        'test_get_data_explicit_ordering': test_get_data_explicit_ordering,
+    }
+    cls = type(tc_name, (TestCase,), attrs)
+    return tc_name, cls
+
+
+for metric_class in registry:
+    tc_name, tc = gen_metric_test_case(metric_class)
+    locals()[tc_name] = tc
