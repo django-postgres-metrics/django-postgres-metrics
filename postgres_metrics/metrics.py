@@ -356,6 +356,25 @@ class CacheHitsMetric(Metric):
 registry.register(CacheHitsMetric)
 
 
+class IndexSizeMetric(Metric):
+    label = _('Index Size')
+    ordering = '1.2'
+    slugify = 'index-size'
+    sql = '''
+        SELECT
+            relname "table",
+            indexrelname "index",
+            pg_size_pretty(pg_relation_size(indexrelid)) size
+        FROM
+            pg_stat_user_indexes
+        {ORDER_BY}
+        ;
+    '''
+
+
+registry.register(IndexSizeMetric)
+
+
 class IndexUsageMetric(Metric):
     """
     While there is no perfect answer, if you're not somewhere around 99% on any
@@ -385,6 +404,24 @@ class IndexUsageMetric(Metric):
 
 
 registry.register(IndexUsageMetric)
+
+
+class TableSizeMetric(Metric):
+    label = _('Table Size')
+    ordering = '1'
+    slugify = 'table-size'
+    sql = '''
+        SELECT
+            relname "table",
+            pg_size_pretty(pg_relation_size(relid)) size
+        FROM
+            pg_stat_user_tables
+        {ORDER_BY}
+        ;
+    '''
+
+
+registry.register(TableSizeMetric)
 
 
 class AvailableExtensions(Metric):
