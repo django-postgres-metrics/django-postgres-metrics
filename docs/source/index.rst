@@ -6,6 +6,7 @@ Welcome to django-postgres-metrics's documentation!
    :caption: Contents:
 
    background
+   getting-started
    contributing/index
    ref/index
    changelog
