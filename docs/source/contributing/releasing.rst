@@ -32,3 +32,7 @@ Issuing a new Release
      $ twine upload -s dist/*$newver*
 
 * Add likely new version to at the top of ``changelog.rst``
+
+* Go to https://github.com/django-postgres-metrics/django-postgres-metrics/tags
+  and click "Add release notes" for the newly pushed release, and publish the
+  release notes there as well.
