@@ -53,16 +53,35 @@ class TestMetricsView(TestCase):
             [str(h) for h in metric.headers],
         )
 
+    def test_detail_view_sidebar(self):
+        self.client.force_login(self.admin)
+        result = self.client.get('/postgres-metrics/index-size/')
+        self.assertContains(
+            result,
+            '<h2>PostgreSQL Metrics</h2>',
+            html=True,
+        )
+        self.assertInHTML(
+            '<li><a href="/postgres-metrics/available-extensions/" '
+            'title="Available Extensions">Available Extensions</a></li>',
+            result.content.decode(),
+        )
+        self.assertInHTML(
+            '<li class="selected"><a href="/postgres-metrics/index-size/" '
+            'title="Index Size">Index Size</a></li>',
+            result.content.decode(),
+        )
+
     def test_admin_index_list(self):
         self.client.force_login(self.admin)
         result = self.client.get('/admin/')
         self.assertContains(
             result,
-            '<th scope="row"><a href="/postgres-metrics/cache-hits/">Cache Hits</a></th>',
+            '<th scope="row"><a href="/postgres-metrics/cache-hits/" title="Cache Hits">Cache Hits</a></th>',
             html=True,
         )
         self.assertContains(
             result,
-            '<th scope="row"><a href="/postgres-metrics/index-usage/">Index Usage</a></th>',
+            '<th scope="row"><a href="/postgres-metrics/index-usage/" title="Index Usage">Index Usage</a></th>',
             html=True,
         )

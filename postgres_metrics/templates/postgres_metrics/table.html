@@ -23,11 +23,25 @@
 <h1>{{ metric.label }}</h1>
 <div id="content-main">
     {% for result in results %}
-    <div class="module" id="changelist">
-        {% if forloop.first and metric.description %}
-        <div id="toolbar">
-            {{ metric.description|safe }}
-        </div>
+    <div class="module filtered" id="changelist">
+        {% if forloop.first %}
+            {% if metric.description %}
+            <div id="toolbar">
+                {{ metric.description|safe }}
+            </div>
+            {% endif %}
+            <div id="changelist-filter">
+                <h2>{% trans 'PostgreSQL Metrics' %}</h2>
+                {% get_postgres_metrics as postgres_metrics %}
+                <ul>
+                    {% for iter_metric in postgres_metrics %}
+                    {% url "postgres-metrics:show" name=iter_metric.slug as metric_url %}
+                        <li{% if metric.slug == iter_metric.slug %} class="selected"{% endif %}>
+                            <a href="{{ metric_url }}" title="{{ iter_metric.label }}">{{ iter_metric.label }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
         {% endif %}
         <div class="results">
             <table id="result_list">

@@ -21,8 +21,8 @@
                 {% for metric in postgres_metrics %}
                 {% url "postgres-metrics:show" name=metric.slug as metric_url %}
                 <tr>
-                    <th scope="row"><a href="{{ metric_url }}">{{ metric.label }}</a></th>
-                    <td><a href="{{ metric_url }}" class="viewlink">{% trans 'Show' %}</a></td>
+                    <th scope="row"><a href="{{ metric_url }}" title="{{ metric.label }}">{{ metric.label }}</a></th>
+                    <td><a href="{{ metric_url }}" class="viewlink" title="{{ metric.label }}">{% trans 'Show' %}</a></td>
                 </tr>
                 {% endfor %}
             </tbody>
