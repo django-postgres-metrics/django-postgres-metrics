@@ -4,10 +4,10 @@ Changelog
 
 .. currentmodule:: postgres_metrics
 
-0.5.0 (under development)
-=========================
+0.5.0
+=====
 
-* ...
+* Added the list of metrics on a metric's detail page
 
 0.4.0
 =====
