@@ -29,4 +29,8 @@ Metrics
 
 .. autoclass:: CacheHitsMetric()
 
+.. autoclass:: IndexSizeMetric()
+
 .. autoclass:: IndexUsageMetric()
+
+.. autoclass:: TableSizeMetric()

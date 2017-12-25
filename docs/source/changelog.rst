@@ -2,10 +2,16 @@
 Changelog
 =========
 
+.. currentmodule:: postgres_metrics
+
 0.4.0 (under development)
 =========================
 
-* ...
+* Underscores in metric column headers are now replaced by spaces
+
+* The :class:`~metrics.IndexUsageMetric` now shows floating point percentages
+
+* Added :class:`~metrics.IndexSizeMetric` and :class:`~metrics.TableSizeMetric`
 
 0.3.0
 =====
