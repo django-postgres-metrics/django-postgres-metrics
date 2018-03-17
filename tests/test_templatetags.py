@@ -1,7 +1,43 @@
+from django.contrib.auth.models import AnonymousUser, Permission, User
 from django.template import Context, Template
-from django.test import SimpleTestCase
+from django.test import RequestFactory, SimpleTestCase, TestCase
 
 from postgres_metrics.metrics import Metric
+
+
+class GetPostgresMetricsTest(TestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = User.objects.create_user('user', 'user@local')
+        cls.superuser = User.objects.create_superuser('superuser', 'superuser@local', 'secret')
+        cls.staff_denied = User.objects.create_user('staff_denied', 'staff_denied@local', is_staff=True)
+        cls.staff_permitted = User.objects.create_user('staff_permitted', 'staff_permitted@local', is_staff=True)
+        cls.staff_permitted.user_permissions.add(Permission.objects.get(codename='can_view_metric_cache_hits'))
+
+    def test(self):
+        t = Template(
+            r'{% load postgres_metrics %}{% get_postgres_metrics as postgres_metrics %}'
+            r'{% for iter_metric in postgres_metrics %}'
+            r'{{ iter_metric.slug }} '
+            r'{% endfor %}',
+        )
+        data = [
+            (AnonymousUser(), ''),
+            (self.user, ''),
+            (self.staff_denied, ''),
+            (self.staff_permitted, 'cache-hits '),
+            (self.superuser, 'available-extensions cache-hits index-size index-usage table-size '),
+        ]
+        rf = RequestFactory()
+        for user, expected in data:
+            with self.subTest(user=user):
+                request = rf.get('/')
+                request.user = user
+                output = t.render(Context({
+                    'request': request,
+                }))
+                self.assertEqual(output, expected)
 
 
 class RecordStyleTest(SimpleTestCase):
@@ -16,7 +52,7 @@ class RecordStyleTest(SimpleTestCase):
         records = [
             ('',),
             '',
-            ('abc', 123,),
+            ('abc', 123),
         ]
         expecteds = [
             'pgm-(&#39;&#39;,)',
@@ -45,10 +81,10 @@ class RecordItemStyleTest(SimpleTestCase):
                     return str((record, item, index))
 
         records = [
-            ('', '',),
-            ('a', '',),
-            ('', 'b',),
-            ('a', 4,),
+            ('', ''),
+            ('a', ''),
+            ('', 'b'),
+            ('a', 4),
         ]
         expecteds = [
             ',,',

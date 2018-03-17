@@ -1,6 +1,6 @@
 from django.conf.urls import include, url as path
 from django.contrib import admin
-from django.contrib.auth.models import User
+from django.contrib.auth.models import Permission, User
 from django.test import TestCase, override_settings
 
 urlpatterns = [
@@ -15,46 +15,51 @@ class TestMetricsView(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.user = User.objects.create_user('user', 'user@local')
-        cls.admin = User.objects.create_superuser('admin', 'admin@local', 'secret')
+        cls.superuser = User.objects.create_superuser('superuser', 'superuser@local', 'secret')
+        cls.staff_denied = User.objects.create_user('staff_denied', 'staff_denied@local', is_staff=True)
+        cls.staff_permitted = User.objects.create_user('staff_permitted', 'staff_permitted@local', is_staff=True)
+        cls.staff_permitted.user_permissions.add(Permission.objects.get(codename='can_view_metric_cache_hits'))
 
-    def test_unauthenticated(self):
-        result = self.client.get('/postgres-metrics/aname/')
+    def test_anonymous_check_access(self):
+        result = self.client.get('/postgres-metrics/cache-hits/')
         self.assertEqual(403, result.status_code)
 
-    def test_not_super(self):
-        self.client.force_login(self.user)
-        result = self.client.get('/postgres-metrics/aname/')
-        self.assertEqual(403, result.status_code)
+    def test_authenticated_check_access(self):
+        data = [
+            (self.user, 403),
+            (self.staff_denied, 403),
+            (self.staff_permitted, 200),
+            (self.superuser, 200),
+        ]
+        for user, expected in data:
+            with self.subTest(user=user):
+                self.client.force_login(user)
+                result = self.client.get('/postgres-metrics/cache-hits/')
+                self.assertEqual(result.status_code, expected)
 
-    def test_permitted_no_metric(self):
-        self.client.force_login(self.admin)
+    def test_anonymous_invalid_metric(self):
+        result = self.client.get('/postgres-metrics/bla/')
+        self.assertEqual(404, result.status_code)
+
+    def test_authenticated_invalid_metric(self):
+        data = [
+            (self.user, 404),
+            (self.staff_denied, 404),
+            (self.staff_permitted, 404),
+            (self.superuser, 404),
+        ]
+        for user, expected in data:
+            with self.subTest(user=user):
+                self.client.force_login(user)
+                result = self.client.get('/postgres-metrics/bla/')
+                self.assertEqual(result.status_code, expected)
+
+    def test_anonymous_no_metric(self):
         result = self.client.get('/postgres-metrics/')
         self.assertEqual(404, result.status_code)
 
-    def test_permitted_invalid_metric(self):
-        self.client.force_login(self.admin)
-        result = self.client.get('/postgres-metrics/NOT_A_METRIC/')
-        self.assertEqual(404, result.status_code)
-
-    def test_permitted_metric(self):
-        self.client.force_login(self.admin)
-        result = self.client.get('/postgres-metrics/cache-hits/')
-        self.assertEqual(200, result.status_code)
-        result = self.client.get('/postgres-metrics/index-usage/')
-        self.assertEqual(200, result.status_code)
-
-    def test_metric_results(self):
-        self.client.force_login(self.admin)
-        result = self.client.get('/postgres-metrics/cache-hits/')
-        self.assertEqual(2, len(result.context['results']))
-        metric = result.context['metric']
-        self.assertEqual(
-            ['heap read', 'heap hit', 'ratio'],
-            [str(h) for h in metric.headers],
-        )
-
     def test_detail_view_sidebar(self):
-        self.client.force_login(self.admin)
+        self.client.force_login(self.superuser)
         result = self.client.get('/postgres-metrics/index-size/')
         self.assertContains(
             result,
@@ -73,7 +78,7 @@ class TestMetricsView(TestCase):
         )
 
     def test_admin_index_list(self):
-        self.client.force_login(self.admin)
+        self.client.force_login(self.superuser)
         result = self.client.get('/admin/')
         self.assertContains(
             result,

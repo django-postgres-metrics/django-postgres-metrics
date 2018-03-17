@@ -182,6 +182,9 @@ class MetricMeta(type):
             else:
                 attrs['description'] = ''
 
+            attrs['permission_name'] = 'can_view_metric_%s' % attrs['slug'].replace('-', '_')
+            attrs['permission_key'] = 'postgres_metrics.%s' % attrs['permission_name']
+
         return super().__new__(mcs, name, bases, attrs)
 
 
@@ -254,6 +257,23 @@ class Metric(metaclass=MetricMeta):
 
     def __repr__(self):
         return '<Metric "%s">' % self.label
+
+    @classmethod
+    def can_view(cls, user):
+        """
+        Check that the given a user instance has access to the metric.
+
+        This requires the user instance to have the
+        :attr:`~django.contrib.auth.models.PermissionsMixin.is_superuser` and
+        :attr:`~django.contrib.auth.models.PermissionsMixin.is_staff` flags as
+        well as the
+        :meth:`~django.contrib.auth.models.PermissionsMixin.has_perm` method.
+
+        Users with ``is_superuser=True`` will always have access to a metric.
+        Users with ``is_staff=True`` will have access if and only if the user
+        has the permission :attr:`permission_name`.
+        """
+        return user.is_superuser or user.is_staff and user.has_perm(cls.permission_key)
 
     @cached_property
     def full_sql(self):

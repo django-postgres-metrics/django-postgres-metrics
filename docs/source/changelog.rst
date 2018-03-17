@@ -7,7 +7,14 @@ Changelog
 0.6.0 (under development)
 =========================
 
-* ...
+* Added permission support for metrics. Users with ``is_staff=True`` can now
+  be given access to each metric individually.
+
+* The :func:`~templatetags.postgres_metrics.get_postgres_metrics` template tag
+  now returns only metrics the current user (taken from the ``request`` object
+  in the template context) has access to.
+
+* The documentation now has an intersphinx setup to Python 3 and Django
 
 0.5.0
 =====
