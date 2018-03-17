@@ -5,14 +5,17 @@ from ..metrics import registry as metrics_registry
 register = template.Library()
 
 
-@register.simple_tag
-def get_postgres_metrics():
+@register.simple_tag(takes_context=True)
+def get_postgres_metrics(context):
     """
     Return an iterable over all registered metrics, sorted by their label.
     See :class:`MetricRegistry.sorted
     <postgres_metrics.metrics.MetricRegistry.sorted>` for details.
     """
-    return metrics_registry.sorted
+    user = context['request'].user
+    for metric in metrics_registry.sorted:
+        if metric.can_view(user):
+            yield metric
 
 
 @register.simple_tag(takes_context=True)

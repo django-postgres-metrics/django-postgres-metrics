@@ -16,7 +16,7 @@ class RecordStyleTest(SimpleTestCase):
         records = [
             ('',),
             '',
-            ('abc', 123,),
+            ('abc', 123),
         ]
         expecteds = [
             'pgm-(&#39;&#39;,)',
@@ -45,10 +45,10 @@ class RecordItemStyleTest(SimpleTestCase):
                     return str((record, item, index))
 
         records = [
-            ('', '',),
-            ('a', '',),
-            ('', 'b',),
-            ('a', 4,),
+            ('', ''),
+            ('a', ''),
+            ('', 'b'),
+            ('a', 4),
         ]
         expecteds = [
             ',,',

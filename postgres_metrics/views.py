@@ -7,13 +7,13 @@ from .metrics import registry as metrics_registry
 
 
 def metrics_view(request, name):
-    if not request.user.is_superuser:
-        raise PermissionDenied
-
     try:
         Metric = metrics_registry[name]
     except KeyError:
         raise Http404
+
+    if not Metric.can_view(request.user):
+        raise PermissionDenied
 
     ordering = request.GET.get(ORDER_VAR)
     metric = Metric(ordering)
