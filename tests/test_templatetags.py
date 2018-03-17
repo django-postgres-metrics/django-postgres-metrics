@@ -20,7 +20,7 @@ class GetPostgresMetricsTest(TestCase):
             r'{% load postgres_metrics %}{% get_postgres_metrics as postgres_metrics %}'
             r'{% for iter_metric in postgres_metrics %}'
             r'{{ iter_metric.slug }} '
-            r'{% endfor %}'
+            r'{% endfor %}',
         )
         data = [
             (AnonymousUser(), ''),

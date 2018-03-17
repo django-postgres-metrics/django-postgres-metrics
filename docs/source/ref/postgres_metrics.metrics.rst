@@ -27,7 +27,6 @@ Metrics
         For convenience when checking access to a metric, the permission key
         is ``postgres_metrics.$permission_name``.
 
-
 .. autoclass:: MetricResult
     :undoc-members:
     :show-inheritance:
