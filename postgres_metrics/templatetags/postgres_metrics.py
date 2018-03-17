@@ -9,6 +9,10 @@ register = template.Library()
 def get_postgres_metrics(context):
     """
     Return an iterable over all registered metrics, sorted by their label.
+
+    The template tag will filter out all metrics the current user does not
+    have access to.
+
     See :class:`MetricRegistry.sorted
     <postgres_metrics.metrics.MetricRegistry.sorted>` for details.
     """

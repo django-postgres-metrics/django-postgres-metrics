@@ -25,49 +25,38 @@ class TestMetricsView(TestCase):
         self.assertEqual(403, result.status_code)
 
     def test_authenticated_check_access(self):
-        params = [
+        data = [
             (self.user, 403),
             (self.staff_denied, 403),
             (self.staff_permitted, 200),
             (self.superuser, 200),
         ]
-        for user, status in params:
-            with self.subTest(user=user, status=status):
+        for user, expected in data:
+            with self.subTest(user=user):
                 self.client.force_login(user)
                 result = self.client.get('/postgres-metrics/cache-hits/')
-                self.assertEqual(status, result.status_code)
+                self.assertEqual(result.status_code, expected)
 
     def test_anonymous_invalid_metric(self):
         result = self.client.get('/postgres-metrics/bla/')
         self.assertEqual(404, result.status_code)
 
     def test_authenticated_invalid_metric(self):
-        params = [
+        data = [
             (self.user, 404),
             (self.staff_denied, 404),
             (self.staff_permitted, 404),
             (self.superuser, 404),
         ]
-        for user, status in params:
-            with self.subTest(user=user, status=status):
+        for user, expected in data:
+            with self.subTest(user=user):
                 self.client.force_login(user)
                 result = self.client.get('/postgres-metrics/bla/')
-                self.assertEqual(status, result.status_code)
+                self.assertEqual(result.status_code, expected)
 
-    def test_superuser_no_metric(self):
-        self.client.force_login(self.superuser)
+    def test_anonymous_no_metric(self):
         result = self.client.get('/postgres-metrics/')
         self.assertEqual(404, result.status_code)
-
-    def test_metric_results(self):
-        self.client.force_login(self.superuser)
-        result = self.client.get('/postgres-metrics/cache-hits/')
-        self.assertEqual(2, len(result.context['results']))
-        metric = result.context['metric']
-        self.assertEqual(
-            ['heap read', 'heap hit', 'ratio'],
-            [str(h) for h in metric.headers],
-        )
 
     def test_detail_view_sidebar(self):
         self.client.force_login(self.superuser)
