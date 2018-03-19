@@ -12,6 +12,10 @@ Start by installing ``django-postgres-metrics`` from PyPI:
 
     $ pip install django-postgres-metrics
 
+You will also need to make sure to have ``psycopg2`` or ``psycopg2-binary``
+installed which is already a requirement by Django for PostgreSQL support
+anyway.
+
 Then you need to add ``postgres_metrics`` to your ``INSTALLED_APPS`` list. Due
 to the wait postgres_metrics works, you need to include it *before* the
 ``admin`` app:
