@@ -4,8 +4,8 @@ Changelog
 
 .. currentmodule:: postgres_metrics
 
-0.6.0 (under development)
-=========================
+0.6.0
+=====
 
 * Added permission support for metrics. Users with ``is_staff=True`` can now
   be given access to each metric individually.
