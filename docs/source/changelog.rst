@@ -23,8 +23,8 @@ Changelog
   psycopg2-binary explicitly. This is usually not an issue as either one is
   required by Django anyway to use Django's PostgreSQL database backend.
 
-* Added a :class:`Detailed Index Usage <metrics.DetailedIndexUsageMetric>`
-  metric that shows the index usage off a table per index.
+* Added a :class:`Detailed Index Usage metric <metrics.DetailedIndexUsage>`
+  that shows the index usage off a table per index.
 
 0.5.0
 =====
@@ -36,9 +36,9 @@ Changelog
 
 * Underscores in metric column headers are now replaced by spaces
 
-* The :class:`~metrics.IndexUsageMetric` now shows floating point percentages
+* The :class:`~metrics.IndexUsage` now shows floating point percentages
 
-* Added :class:`~metrics.IndexSizeMetric` and :class:`~metrics.TableSizeMetric`
+* Added :class:`~metrics.IndexSize` and :class:`~metrics.TableSize`
 
 * Added per metric record and record item styling
 

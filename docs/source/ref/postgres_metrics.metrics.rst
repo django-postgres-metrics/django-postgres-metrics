@@ -41,12 +41,12 @@ Metrics
 
 .. autoclass:: AvailableExtensions()
 
-.. autoclass:: CacheHitsMetric()
+.. autoclass:: CacheHits()
 
-.. autoclass:: DetailedIndexUsageMetric()
+.. autoclass:: DetailedIndexUsage()
 
-.. autoclass:: IndexSizeMetric()
+.. autoclass:: IndexSize()
 
-.. autoclass:: IndexUsageMetric()
+.. autoclass:: IndexUsage()
 
-.. autoclass:: TableSizeMetric()
+.. autoclass:: TableSize()

@@ -379,7 +379,7 @@ class Metric(metaclass=MetricMeta):
         return ''
 
 
-class CacheHitsMetric(Metric):
+class CacheHits(Metric):
     """
     The typical rule for most applications is that only a fraction of its data
     is regularly accessed. As with many other things data can tend to follow
@@ -424,10 +424,10 @@ class CacheHitsMetric(Metric):
             return 'ok'
 
 
-registry.register(CacheHitsMetric)
+registry.register(CacheHits)
 
 
-class IndexSizeMetric(Metric):
+class IndexSize(Metric):
     label = _('Index Size')
     ordering = '1.2'
     slugify = 'index-size'
@@ -443,10 +443,10 @@ class IndexSizeMetric(Metric):
     '''
 
 
-registry.register(IndexSizeMetric)
+registry.register(IndexSize)
 
 
-class DetailedIndexUsageMetric(Metric):
+class DetailedIndexUsage(Metric):
     """
     A metric similar to "Index Usage" but broken down by index.
 
@@ -486,10 +486,10 @@ class DetailedIndexUsageMetric(Metric):
     '''
 
 
-registry.register(DetailedIndexUsageMetric)
+registry.register(DetailedIndexUsage)
 
 
-class IndexUsageMetric(Metric):
+class IndexUsage(Metric):
     """
     While there is no perfect answer, if you're not somewhere around 99% on any
     table over 10,000 rows you may want to consider adding an index. When
@@ -528,10 +528,10 @@ class IndexUsageMetric(Metric):
                 return 'ok'
 
 
-registry.register(IndexUsageMetric)
+registry.register(IndexUsage)
 
 
-class TableSizeMetric(Metric):
+class TableSize(Metric):
     label = _('Table Size')
     ordering = '1'
     slugify = 'table-size'
@@ -546,7 +546,7 @@ class TableSizeMetric(Metric):
     '''
 
 
-registry.register(TableSizeMetric)
+registry.register(TableSize)
 
 
 class AvailableExtensions(Metric):
