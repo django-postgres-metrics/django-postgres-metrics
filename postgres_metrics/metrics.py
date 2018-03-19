@@ -446,6 +446,49 @@ class IndexSizeMetric(Metric):
 registry.register(IndexSizeMetric)
 
 
+class DetailedIndexUsageMetric(Metric):
+    """
+    A metric similar to "Index Usage" but broken down by index.
+
+    The "index scan over sequential scan" column shows how frequently an index
+    was used in comparison to the total number of sequential and index scans on
+    the table.
+
+    Similarly, the "index scan on table" shows how often an index was used
+    compared to the other indexes on the table.
+    """
+    label = _('Detailed Index Usage')
+    ordering = '1.2'
+    slug = 'detailed-index-usage'
+    sql = '''
+        SELECT
+            t.relname "table",
+            i.indexrelname "index",
+            CASE t.seq_scan + t.idx_scan
+                WHEN 0
+                    THEN round(0.0, 2)
+                ELSE
+                    round((100::float * i.idx_scan / (t.seq_scan + t.idx_scan))::numeric, 2::int)
+            END "index scan over sequential scan",
+            CASE t.idx_scan
+                WHEN 0
+                    THEN round(0.0, 2)
+                ELSE
+                    round((100::float * i.idx_scan / t.idx_scan)::numeric, 2::int)
+            END "index scan on table"
+        FROM
+            pg_stat_user_tables t
+        INNER JOIN
+            pg_stat_user_indexes i
+            ON t.relid = i.relid
+        {ORDER_BY}
+        ;
+    '''
+
+
+registry.register(DetailedIndexUsageMetric)
+
+
 class IndexUsageMetric(Metric):
     """
     While there is no perfect answer, if you're not somewhere around 99% on any

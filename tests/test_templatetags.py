@@ -27,7 +27,8 @@ class GetPostgresMetricsTest(TestCase):
             (self.user, ''),
             (self.staff_denied, ''),
             (self.staff_permitted, 'cache-hits '),
-            (self.superuser, 'available-extensions cache-hits index-size index-usage table-size '),
+            (self.superuser,
+             'available-extensions cache-hits detailed-index-usage index-size index-usage table-size '),
         ]
         rf = RequestFactory()
         for user, expected in data:

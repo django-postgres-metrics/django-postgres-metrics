@@ -23,6 +23,9 @@ Changelog
   psycopg2-binary explicitly. This is usually not an issue as either one is
   required by Django anyway to use Django's PostgreSQL database backend.
 
+* Added a :class:`Detailed Index Usage <metrics.DetailedIndexUsageMetric>`
+  metric that shows the index usage off a table per index.
+
 0.5.0
 =====
 
