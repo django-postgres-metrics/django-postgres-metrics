@@ -3,8 +3,8 @@ from django.db import connections
 from django.test import SimpleTestCase, TestCase
 
 from postgres_metrics.metrics import (
-    AvailableExtensions, CacheHitsMetric, IndexUsageMetric, Metric,
-    MetricHeader, MetricRegistry, MetricResult, registry,
+    AvailableExtensions, CacheHits, IndexUsage, Metric, MetricHeader,
+    MetricRegistry, MetricResult, registry,
 )
 
 
@@ -382,7 +382,7 @@ class AvailableExtensionsTest(StyleAssertionMixin, SimpleTestCase):
         self.assertRecordStylesEqual(AvailableExtensions, records, expecteds)
 
 
-class CacheHitsMetricTest(StyleAssertionMixin, SimpleTestCase):
+class CacheHitsTest(StyleAssertionMixin, SimpleTestCase):
 
     def test_get_record_item_style(self):
         records = [
@@ -399,10 +399,10 @@ class CacheHitsMetricTest(StyleAssertionMixin, SimpleTestCase):
             (None, None, 'warning'),
             (None, None, 'ok'),
         ]
-        self.assertRecordItemStylesEqual(CacheHitsMetric, records, expecteds)
+        self.assertRecordItemStylesEqual(CacheHits, records, expecteds)
 
 
-class IndexUsageMetricTest(StyleAssertionMixin, SimpleTestCase):
+class IndexUsageTest(StyleAssertionMixin, SimpleTestCase):
 
     def test_get_record_style(self):
         records = [
@@ -421,7 +421,7 @@ class IndexUsageMetricTest(StyleAssertionMixin, SimpleTestCase):
             'warning',
             'ok',
         ]
-        self.assertRecordStylesEqual(IndexUsageMetric, records, expecteds)
+        self.assertRecordStylesEqual(IndexUsage, records, expecteds)
 
 
 def gen_metric_test_case(metric_class):
