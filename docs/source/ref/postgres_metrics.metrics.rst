@@ -43,6 +43,8 @@ Metrics
 
 .. autoclass:: CacheHitsMetric()
 
+.. autoclass:: DetailedIndexUsageMetric()
+
 .. autoclass:: IndexSizeMetric()
 
 .. autoclass:: IndexUsageMetric()
