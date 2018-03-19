@@ -11,7 +11,7 @@ Issuing a new Release
      $ pip install twine
 
 * Determine next version number from the ``changelog.rst`` (ensuring to follow
-  `SemVer <http://semver.org/>`_)
+  `SemVer <http://semver.org/>`__)
 * Ensure ``changelog.rst`` is representative with new version number and commit
   possible changes.
 * Update the version number with ``bumpversion``::

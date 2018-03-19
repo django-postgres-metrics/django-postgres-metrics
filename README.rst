@@ -6,9 +6,9 @@ A Django application that exposes a bunch of PostgreSQL database metrics.
 Background
 ----------
 
-At `PyCon Canada 2017 <https://2017.pycon.ca/>`_ `Craig Kerstiens
-<http://www.craigkerstiens.com/>`_ gave a talk "`Postgres at any scale
-<https://2017.pycon.ca/schedule/56/>`_". In his talk Craig pointed out a bunch
+At `PyCon Canada 2017 <https://2017.pycon.ca/>`__ `Craig Kerstiens
+<http://www.craigkerstiens.com/>`__ gave a talk "`Postgres at any scale
+<https://2017.pycon.ca/schedule/56/>`__". In his talk Craig pointed out a bunch
 of metrics one should look at to understand why a PostgreSQL database could be
 "slow" or not perform as expected.
 

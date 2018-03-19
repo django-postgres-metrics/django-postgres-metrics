@@ -2,9 +2,9 @@ Background. Why? What?
 ======================
 
 The original idea for this library comes from `Craig Kerstiens
-<http://www.craigkerstiens.com/>`_'s talk "`Postgres at any scale
-<https://2017.pycon.ca/schedule/56/>`_" at `PyCon Canada 2017
-<https://2017.pycon.ca/>`_. In his talk, Craig pointed out a bunch of metrics
+<http://www.craigkerstiens.com/>`__'s talk "`Postgres at any scale
+<https://2017.pycon.ca/schedule/56/>`__" at `PyCon Canada 2017
+<https://2017.pycon.ca/>`__. In his talk, Craig pointed out a bunch of metrics
 one should look at to understand why a PostgreSQL database could be "slow" or
 not perform as expected.
 

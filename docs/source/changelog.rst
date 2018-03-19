@@ -42,8 +42,8 @@ Changelog
 0.2.0
 =====
 
-* Switched to `Read The Docs <https://github.com/rtfd/sphinx_rtd_theme>`_ theme
-  for docs.
+* Switched to `Read The Docs <https://github.com/rtfd/sphinx_rtd_theme>`__
+  theme for docs.
 
 * Added "Available Extensions" metric.
 
