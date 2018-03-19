@@ -4,6 +4,11 @@ Changelog
 
 .. currentmodule:: postgres_metrics
 
+0.7.0 (under development)
+=========================
+
+* ...
+
 0.6.0
 =====
 
