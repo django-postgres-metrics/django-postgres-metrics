@@ -9,6 +9,11 @@ Changelog
 
 * ...
 
+0.6.1
+=====
+
+* Fix release bundling.
+
 0.6.0
 =====
 

@@ -1,10 +1,11 @@
 from setuptools import find_packages, setup
+from codecs import open
 
 author = __import__('postgres_metrics').__author__
 version = __import__('postgres_metrics').__version__
 
-with open('README.rst') as fp:
-    description = fp.read()
+with open('README.rst', encoding='utf-8') as fp:
+    long_description = fp.read()
 
 setup(
     name='django-postgres-metrics',
@@ -12,7 +13,7 @@ setup(
     url='https://github.com/django-postgres-metrics/django-postgres-metrics',
     author=author,
     author_email='info+django-postgres-stats@markusholtermann.eu',
-    description=description,
+    long_description=long_description,
     license='BSD',
     packages=find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
     include_package_data=True,
