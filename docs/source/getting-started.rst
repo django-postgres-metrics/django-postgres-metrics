@@ -17,7 +17,7 @@ installed which is already a requirement by Django for PostgreSQL support
 anyway.
 
 Then you need to add ``postgres_metrics`` to your ``INSTALLED_APPS`` list. Due
-to the wait postgres_metrics works, you need to include it *before* the
+to the way postgres_metrics works, you need to include it *before* the
 ``admin`` app:
 
 .. code-block:: python
@@ -30,6 +30,25 @@ to the wait postgres_metrics works, you need to include it *before* the
         'django.contrib.sessions',
         'django.contrib.messages',
         'django.contrib.staticfiles',
+    ]
+
+You also need to make sure that the ``request`` context processor is included
+in the ``TEMPLATES`` setting. It is included by default for projects that were
+started on Django 1.8 or later:
+
+.. code-block:: python
+
+    TEMPLATES = [
+        {
+            'BACKEND': 'django.template.backends.django.DjangoTemplates',
+            'OPTIONS': {
+                'context_processors': [
+                    ...,
+                    'django.template.context_processors.request',
+                    ...,
+                ],
+            },
+        },
     ]
 
 Lastly, you need to add a URL path to your global ``urls.py`` *before* the
