@@ -14,6 +14,8 @@ Changelog
 
 * Added missing installation instruction.
 
+* Documentation building is now part of the CI tests.
+
 0.6.1
 =====
 
