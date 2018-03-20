@@ -9,6 +9,11 @@ Changelog
 
 * ...
 
+0.6.2
+=====
+
+* Added missing installation instruction.
+
 0.6.1
 =====
 
@@ -22,7 +27,9 @@ Changelog
 
 * The :func:`~templatetags.postgres_metrics.get_postgres_metrics` template tag
   now returns only metrics the current user (taken from the ``request`` object
-  in the template context) has access to.
+  in the template context) has access to. This means the
+  ``'django.template.context_processors.request'`` context processor is now
+  required.
 
 * The documentation now has an intersphinx setup to Python 3 and Django
 
