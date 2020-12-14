@@ -4,24 +4,33 @@ from django.contrib.auth.models import Permission, User
 from django.test import TestCase, override_settings
 
 urlpatterns = [
-    path('^postgres-metrics/', include('postgres_metrics.urls')),
-    path('^admin/', admin.site.urls),
+    path("^postgres-metrics/", include("postgres_metrics.urls")),
+    path("^admin/", admin.site.urls),
 ]
 
 
 @override_settings(ROOT_URLCONF=__name__)
 class TestMetricsView(TestCase):
+    databases = {"default", "second"}
 
     @classmethod
     def setUpTestData(cls):
-        cls.user = User.objects.create_user('user', 'user@local')
-        cls.superuser = User.objects.create_superuser('superuser', 'superuser@local', 'secret')
-        cls.staff_denied = User.objects.create_user('staff_denied', 'staff_denied@local', is_staff=True)
-        cls.staff_permitted = User.objects.create_user('staff_permitted', 'staff_permitted@local', is_staff=True)
-        cls.staff_permitted.user_permissions.add(Permission.objects.get(codename='can_view_metric_cache_hits'))
+        cls.user = User.objects.create_user("user", "user@local")
+        cls.superuser = User.objects.create_superuser(
+            "superuser", "superuser@local", "secret"
+        )
+        cls.staff_denied = User.objects.create_user(
+            "staff_denied", "staff_denied@local", is_staff=True
+        )
+        cls.staff_permitted = User.objects.create_user(
+            "staff_permitted", "staff_permitted@local", is_staff=True
+        )
+        cls.staff_permitted.user_permissions.add(
+            Permission.objects.get(codename="can_view_metric_cache_hits")
+        )
 
     def test_anonymous_check_access(self):
-        result = self.client.get('/postgres-metrics/cache-hits/')
+        result = self.client.get("/postgres-metrics/cache-hits/")
         self.assertEqual(403, result.status_code)
 
     def test_authenticated_check_access(self):
@@ -34,11 +43,11 @@ class TestMetricsView(TestCase):
         for user, expected in data:
             with self.subTest(user=user):
                 self.client.force_login(user)
-                result = self.client.get('/postgres-metrics/cache-hits/')
+                result = self.client.get("/postgres-metrics/cache-hits/")
                 self.assertEqual(result.status_code, expected)
 
     def test_anonymous_invalid_metric(self):
-        result = self.client.get('/postgres-metrics/bla/')
+        result = self.client.get("/postgres-metrics/bla/")
         self.assertEqual(404, result.status_code)
 
     def test_authenticated_invalid_metric(self):
@@ -51,19 +60,19 @@ class TestMetricsView(TestCase):
         for user, expected in data:
             with self.subTest(user=user):
                 self.client.force_login(user)
-                result = self.client.get('/postgres-metrics/bla/')
+                result = self.client.get("/postgres-metrics/bla/")
                 self.assertEqual(result.status_code, expected)
 
     def test_anonymous_no_metric(self):
-        result = self.client.get('/postgres-metrics/')
+        result = self.client.get("/postgres-metrics/")
         self.assertEqual(404, result.status_code)
 
     def test_detail_view_sidebar(self):
         self.client.force_login(self.superuser)
-        result = self.client.get('/postgres-metrics/index-size/')
+        result = self.client.get("/postgres-metrics/index-size/")
         self.assertContains(
             result,
-            '<h2>PostgreSQL Metrics</h2>',
+            "<h2>PostgreSQL Metrics</h2>",
             html=True,
         )
         self.assertInHTML(
@@ -79,14 +88,16 @@ class TestMetricsView(TestCase):
 
     def test_admin_index_list(self):
         self.client.force_login(self.superuser)
-        result = self.client.get('/admin/')
+        result = self.client.get("/admin/")
         self.assertContains(
             result,
-            '<th scope="row"><a href="/postgres-metrics/cache-hits/" title="Cache Hits">Cache Hits</a></th>',
+            '<th scope="row"><a href="/postgres-metrics/cache-hits/" title="Cache Hits"'
+            ">Cache Hits</a></th>",
             html=True,
         )
         self.assertContains(
             result,
-            '<th scope="row"><a href="/postgres-metrics/index-usage/" title="Index Usage">Index Usage</a></th>',
+            '<th scope="row"><a href="/postgres-metrics/index-usage/" title="Index '
+            'Usage">Index Usage</a></th>',
             html=True,
         )

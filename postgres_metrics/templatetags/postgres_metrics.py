@@ -16,7 +16,7 @@ def get_postgres_metrics(context):
     See :class:`MetricRegistry.sorted
     <postgres_metrics.metrics.MetricRegistry.sorted>` for details.
     """
-    user = context['request'].user
+    user = context["request"].user
     for metric in metrics_registry.sorted:
         if metric.can_view(user):
             yield metric
@@ -35,12 +35,12 @@ def record_style(context):
     <postgres_metrics.metrics.Metric.get_record_style>` and will---if a return
     value was specified---prefix that one with ``'pgm-'``.
     """
-    metric = context['metric']
-    record = context['record']
+    metric = context["metric"]
+    record = context["record"]
     style = metric.get_record_style(record)
     if style:
-        return 'pgm-%s' % style
-    return ''
+        return "pgm-%s" % style
+    return ""
 
 
 @register.simple_tag(takes_context=True)
@@ -59,10 +59,10 @@ def record_item_style(context):
     <postgres_metrics.metrics.Metric.get_record_item_style>` and will---if a
     return value was specified---prefix that one with ``'pgm-'``.
     """
-    metric = context['metric']
-    record = context['record']
-    index = context['forloop']['counter0']
+    metric = context["metric"]
+    record = context["record"]
+    index = context["forloop"]["counter0"]
     style = metric.get_record_item_style(record, record[index], index)
     if style:
-        return 'pgm-%s' % style
-    return ''
+        return "pgm-%s" % style
+    return ""

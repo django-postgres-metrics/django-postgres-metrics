@@ -1,5 +1,9 @@
 # django-postgres-metrics
 
+![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/MarkusH/django-postgres-metrics/CI/master?style=for-the-badge)
+![Codecov branch](https://img.shields.io/codecov/c/gh/MarkusH/django-postgres-metrics/master?style=for-the-badge)
+![PyPI](https://img.shields.io/pypi/v/django-postgres-metrics?style=for-the-badge)
+
 A Django application that exposes a bunch of PostgreSQL database metrics.
 
 ## Background
@@ -89,11 +93,17 @@ I'm working about this in my free time. I don't have time to monitor the email 2
 should normally receive a response within a week. If I haven't got back to you within
 2 weeks, please reach out again.
 
-## Testing
+## Contributing
+
+The uses [pre-commit](https://pre-commit.com/) for linting and formatting of source code:
+
+```console
+(env)$ python -m pip install '.[dev,test]'
+(env)$ pre-commit install -t pre-commit -t pre-push --install-hooks
+```
 
 To run the unit tests:
 
 ```console
-(env)$ python -m pip install tox
-(env)$ tox
+(env)$ django-admin.py test -v 2 --settings=tests.settings
 ```

@@ -10,7 +10,6 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class MetricRegistry:
-
     def __init__(self):
         self._registry = {}
 
@@ -54,7 +53,7 @@ class MetricHeader:
     """
 
     def __init__(self, name, index, ordering):
-        self.name = name.replace('-', ' ').replace('_', ' ')
+        self.name = name.replace("-", " ").replace("_", " ")
         self.index = index
         self.ordering = ordering
 
@@ -66,20 +65,20 @@ class MetricHeader:
 
     def __eq__(self, other):
         return (
-            self.name == other.name and
-            self.index == other.index and
-            self.ordering == other.ordering
+            self.name == other.name
+            and self.index == other.index
+            and self.ordering == other.ordering
         )
 
     @staticmethod
     def join_ordering(ordering):
-        return '.'.join('%s%d' % o for o in ordering)
+        return ".".join("%s%d" % o for o in ordering)
 
     @cached_property
     def ascending(self):
         """``True`` if the column is in ascending order ``False`` otherwise"""
         for index, (direction, column) in enumerate(self.ordering, start=1):
-            if column == self.index and direction == '':
+            if column == self.index and direction == "":
                 return True
         return False
 
@@ -95,8 +94,8 @@ class MetricHeader:
     def url_primary(self):
         """Querystring value making this the primary sorting header."""
         return MetricHeader.join_ordering(
-            [('-' if self.ascending else '', self.index)] +
-            [
+            [("-" if self.ascending else "", self.index)]
+            + [
                 (direction, column)
                 for direction, column in self.ordering
                 if column != self.index
@@ -117,10 +116,7 @@ class MetricHeader:
         """Querystring value toggling ascending/descending for this header."""
         return MetricHeader.join_ordering(
             (
-                direction
-                if column != self.index
-                else
-                ('' if direction else '-'),
+                direction if column != self.index else ("" if direction else "-"),
                 column,
             )
             for direction, column in self.ordering
@@ -145,10 +141,6 @@ class MetricResult:
        The rows returned by a metric for the given database.
     """
 
-    __slots__ = (
-        'alias', 'dsn', 'records',
-    )
-
     def __init__(self, connection, records):
         connection.ensure_connection()
         self.alias = connection.alias
@@ -157,33 +149,34 @@ class MetricResult:
 
 
 class MetricMeta(type):
-
     def __new__(mcs, name, bases, attrs):
         if bases:
             # Only subclasses of `Metric`
-            if not attrs.get('label'):
-                attrs['label'] = name
-            if not attrs.get('slug'):
-                attrs['slug'] = slugify(attrs['label'])
-            if not attrs.get('sql'):
+            if not attrs.get("label"):
+                attrs["label"] = name
+            if not attrs.get("slug"):
+                attrs["slug"] = slugify(attrs["label"])
+            if not attrs.get("sql"):
                 msg = 'Metric "%s" is missing a "sql" attribute or "sql" is empty.'
                 raise ImproperlyConfigured(msg % name)
 
-            docstring = attrs.get('__doc__')
+            docstring = attrs.get("__doc__")
             if docstring and docstring.strip():
                 docstring = normalize_newlines(force_text(docstring))
-                docstring = '\n'.join(line.strip() for line in docstring.split('\n'))
-                paras = re.split('\n{2,}', docstring)
+                docstring = "\n".join(line.strip() for line in docstring.split("\n"))
+                paras = re.split("\n{2,}", docstring)
                 paras = [
-                    '<p>%s</p>' % urlize(escape(p).replace('\n', ' ').strip())
+                    "<p>%s</p>" % urlize(escape(p).replace("\n", " ").strip())
                     for p in paras
                 ]
-                attrs['description'] = '\n\n'.join(paras)
+                attrs["description"] = "\n\n".join(paras)
             else:
-                attrs['description'] = ''
+                attrs["description"] = ""
 
-            attrs['permission_name'] = 'can_view_metric_%s' % attrs['slug'].replace('-', '_')
-            attrs['permission_key'] = 'postgres_metrics.%s' % attrs['permission_name']
+            attrs["permission_name"] = "can_view_metric_%s" % attrs["slug"].replace(
+                "-", "_"
+            )
+            attrs["permission_key"] = "postgres_metrics.%s" % attrs["permission_name"]
 
         return super().__new__(mcs, name, bases, attrs)
 
@@ -236,21 +229,21 @@ class Metric(metaclass=MetricMeta):
 
     #: The label is what is used in the Django Admin views. Consider marking
     #: this string as translateable.
-    label = ''
+    label = ""
 
     #: The default ordering that should be applied to the SQL query by default.
     #: This needs to be a valid ordering string as defined on
     #: :attr:`parsed_ordering`.
-    ordering = ''
+    ordering = ""
 
     #: A URL safe representation of the label and unique across all metrics.
-    slug = ''
+    slug = ""
 
     #: The actual SQL statement that is being used to query the database. In
     #: order to make use of the :attr:`ordering`, include the string
     #: ``{ORDER_BY}`` in the query as necessary. For details on that value see
     #: :meth:`get_order_by_clause`.
-    sql = ''
+    sql = ""
 
     def __init__(self, ordering=None):
         self.ordering = ordering or self.ordering
@@ -264,14 +257,14 @@ class Metric(metaclass=MetricMeta):
         Check that the given a user instance has access to the metric.
 
         This requires the user instance to have the
-        :attr:`~django.contrib.auth.models.PermissionsMixin.is_superuser` and
-        :attr:`~django.contrib.auth.models.PermissionsMixin.is_staff` flags as
+        :attr:`django:django.contrib.auth.models.User.is_superuser` and
+        :attr:`django:django.contrib.auth.models.User.is_staff` flags as
         well as the
-        :meth:`~django.contrib.auth.models.PermissionsMixin.has_perm` method.
+        :meth:`django:django.contrib.auth.models.User.has_perm` method.
 
         Users with ``is_superuser=True`` will always have access to a metric.
         Users with ``is_staff=True`` will have access if and only if the user
-        has the permission :attr:`permission_name`.
+        has the permission for a metric.
         """
         return user.is_superuser or user.is_staff and user.has_perm(cls.permission_key)
 
@@ -292,7 +285,7 @@ class Metric(metaclass=MetricMeta):
         """
         results = []
         for connection in connections.all():
-            if connection.vendor != 'postgresql':
+            if connection.vendor != "postgresql":
                 continue
             with connection.cursor() as cursor:
                 cursor.execute(self.full_sql)
@@ -310,13 +303,13 @@ class Metric(metaclass=MetricMeta):
         """
         Turn an ordering string like ``1.5.-3.-2.6`` into the respective abstraction.
 
-        Given :attr:`self.ordering` as ``1.5.-3.-2.6`` return a lis of 2-tuples
+        Given :attr:`ordering` as ``1.5.-3.-2.6`` return a lis of 2-tuples
         like ``[('', 1), ('', 5), ('-', 3), ('-', 2), ('', 6)]``.
         """
         if self.ordering:
             return [
-                ('-' if o.startswith('-') else '', int(o.lstrip('-')))
-                for o in self.ordering.split('.')
+                ("-" if o.startswith("-") else "", int(o.lstrip("-")))
+                for o in self.ordering.split(".")
             ]
         return []
 
@@ -325,7 +318,7 @@ class Metric(metaclass=MetricMeta):
         Turn an ordering string like ``1.5.-3.-2.6`` into the respective SQL.
 
         SQL's column numbering starts at 1, so do we here. Given
-        :attr:`self.ordering` as ``1.5.-3.-2.6`` return a string
+        :attr:`ordering` as ``1.5.-3.-2.6`` return a string
         ``ORDER BY 1 ASC, 5 ASC, 3 DESC, 2 DESC, 6 ASC``.
 
         Ensures that each column (excluding the ``-`` prefix) is an integer by
@@ -333,11 +326,11 @@ class Metric(metaclass=MetricMeta):
         """
         if self.parsed_ordering:
             ordering = [
-                ('%d DESC' if direction == '-' else '%d ASC') % column
+                ("%d DESC" if direction == "-" else "%d ASC") % column
                 for direction, column in self.parsed_ordering
             ]
-            return 'ORDER BY ' + ', '.join(ordering)
-        return ''
+            return "ORDER BY " + ", ".join(ordering)
+        return ""
 
     def get_record_style(self, record):
         """
@@ -356,7 +349,7 @@ class Metric(metaclass=MetricMeta):
         to apply the given style to the entire record. In the Django Admin this
         will highlight the entire row.
         """
-        return ''
+        return ""
 
     def get_record_item_style(self, record, item, index):
         """
@@ -376,7 +369,7 @@ class Metric(metaclass=MetricMeta):
         to apply the given style to the entire record. In the Django Admin this
         will highlight the entire row.
         """
-        return ''
+        return ""
 
 
 class CacheHits(Metric):
@@ -389,11 +382,13 @@ class CacheHits(Metric):
     cache. Generally you want your database to have a cache hit rate of about
     99%.
 
-    (Source: http://www.craigkerstiens.com/2012/10/01/understanding-postgres-performance/)
+    (Source:
+    http://www.craigkerstiens.com/2012/10/01/understanding-postgres-performance/)
     """
-    label = _('Cache Hits')
-    slug = 'cache-hits'
-    sql = '''
+
+    label = _("Cache Hits")
+    slug = "cache-hits"
+    sql = """
         WITH cache AS (
             SELECT
                 sum(heap_blks_read) heap_read,
@@ -412,26 +407,26 @@ class CacheHits(Metric):
             cache
         {ORDER_BY}
         ;
-    '''
+    """
 
     def get_record_item_style(self, record, item, index):
-        if index == 2 and item != 'N/A':
+        if index == 2 and item != "N/A":
             ratio = float(item)
             if ratio < 0.95:
-                return 'critical'
+                return "critical"
             if ratio < 0.99:
-                return 'warning'
-            return 'ok'
+                return "warning"
+            return "ok"
 
 
 registry.register(CacheHits)
 
 
 class IndexSize(Metric):
-    label = _('Index Size')
-    ordering = '1.2'
-    slugify = 'index-size'
-    sql = '''
+    label = _("Index Size")
+    ordering = "1.2"
+    slugify = "index-size"
+    sql = """
         SELECT
             relname "table",
             indexrelname "index",
@@ -440,7 +435,7 @@ class IndexSize(Metric):
             pg_stat_user_indexes
         {ORDER_BY}
         ;
-    '''
+    """
 
 
 registry.register(IndexSize)
@@ -457,10 +452,11 @@ class DetailedIndexUsage(Metric):
     Similarly, the "index scan on table" shows how often an index was used
     compared to the other indexes on the table.
     """
-    label = _('Detailed Index Usage')
-    ordering = '1.2'
-    slug = 'detailed-index-usage'
-    sql = '''
+
+    label = _("Detailed Index Usage")
+    ordering = "1.2"
+    slug = "detailed-index-usage"
+    sql = """
         SELECT
             t.relname "table",
             i.indexrelname "index",
@@ -468,7 +464,10 @@ class DetailedIndexUsage(Metric):
                 WHEN 0
                     THEN round(0.0, 2)
                 ELSE
-                    round((100::float * i.idx_scan / (t.seq_scan + t.idx_scan))::numeric, 2::int)
+                    round(
+                        (100::float * i.idx_scan / (t.seq_scan + t.idx_scan))::numeric,
+                        2::int
+                    )
             END "index scan over sequential scan",
             CASE t.idx_scan
                 WHEN 0
@@ -483,7 +482,7 @@ class DetailedIndexUsage(Metric):
             ON t.relid = i.relid
         {ORDER_BY}
         ;
-    '''
+    """
 
 
 registry.register(DetailedIndexUsage)
@@ -498,15 +497,20 @@ class IndexUsage(Metric):
     up by some other id or on values that you're commonly filtering on such as
     created_at fields.
 
-    (Source: http://www.craigkerstiens.com/2012/10/01/understanding-postgres-performance/)
+    (Source:
+    http://www.craigkerstiens.com/2012/10/01/understanding-postgres-performance/)
     """
-    label = _('Index Usage')
-    ordering = '2'
-    slug = 'index-usage'
-    sql = '''
+
+    label = _("Index Usage")
+    ordering = "2"
+    slug = "index-usage"
+    sql = """
         SELECT
             relname,
-            round((100::float * idx_scan / (seq_scan + idx_scan))::numeric, 2::int) percent_of_times_index_used,
+            round(
+                (100::float * idx_scan / (seq_scan + idx_scan))::numeric,
+                2::int
+            ) percent_of_times_index_used,
             n_live_tup rows_in_table
         FROM
             pg_stat_user_tables
@@ -514,7 +518,7 @@ class IndexUsage(Metric):
             seq_scan + idx_scan > 0
         {ORDER_BY}
         ;
-    '''
+    """
 
     def get_record_style(self, record):
         if record[2]:
@@ -522,20 +526,20 @@ class IndexUsage(Metric):
             rowcount = record[2]
             if rowcount >= 10000:
                 if usage < 95.00:
-                    return 'critical'
+                    return "critical"
                 if usage < 99.00:
-                    return 'warning'
-                return 'ok'
+                    return "warning"
+                return "ok"
 
 
 registry.register(IndexUsage)
 
 
 class TableSize(Metric):
-    label = _('Table Size')
-    ordering = '1'
-    slugify = 'table-size'
-    sql = '''
+    label = _("Table Size")
+    ordering = "1"
+    slugify = "table-size"
+    sql = """
         SELECT
             relname "table",
             pg_size_pretty(pg_relation_size(relid)) size
@@ -543,7 +547,7 @@ class TableSize(Metric):
             pg_stat_user_tables
         {ORDER_BY}
         ;
-    '''
+    """
 
 
 registry.register(TableSize)
@@ -555,10 +559,11 @@ class AvailableExtensions(Metric):
     EXTENSION command. The list of available extensions on each database is
     shown below.
     """
-    label = _('Available Extensions')
-    ordering = '1'
-    slug = 'available-extensions'
-    sql = '''
+
+    label = _("Available Extensions")
+    ordering = "1"
+    slug = "available-extensions"
+    sql = """
         SELECT
             name,
             default_version,
@@ -568,17 +573,17 @@ class AvailableExtensions(Metric):
             pg_available_extensions
         {ORDER_BY}
         ;
-    '''
+    """
 
     def get_record_style(self, record):
         if record[2]:
-            default_version = tuple(record[1].split('.'))
-            installed_version = tuple(record[2].split('.'))
+            default_version = tuple(record[1].split("."))
+            installed_version = tuple(record[2].split("."))
             if default_version == installed_version:
-                return 'ok'
+                return "ok"
             if default_version < installed_version:
-                return 'info'
-            return 'warning'
+                return "info"
+            return "warning"
 
 
 registry.register(AvailableExtensions)

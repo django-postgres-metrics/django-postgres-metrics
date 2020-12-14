@@ -3,41 +3,46 @@ from django.db import connections
 from django.test import SimpleTestCase, TestCase
 
 from postgres_metrics.metrics import (
-    AvailableExtensions, CacheHits, IndexUsage, Metric, MetricHeader,
-    MetricRegistry, MetricResult, registry,
+    AvailableExtensions,
+    CacheHits,
+    IndexUsage,
+    Metric,
+    MetricHeader,
+    MetricRegistry,
+    MetricResult,
+    registry,
 )
 
 
 class MyMetric(Metric):
-    label = 'My Metric'
-    slug = 'my-new-metric'
-    sql = 'SELECT 1 col1, 2 col2, 3 col3;'
+    label = "My Metric"
+    slug = "my-new-metric"
+    sql = "SELECT 1 col1, 2 col2, 3 col3;"
 
 
 class MetricRegistryTest(SimpleTestCase):
-
     def test_registry(self):
         registry.register(MyMetric)
 
-        self.assertIn('my-new-metric', registry)
-        self.assertIs(registry['my-new-metric'], MyMetric)
+        self.assertIn("my-new-metric", registry)
+        self.assertIs(registry["my-new-metric"], MyMetric)
 
-        registry.unregister('my-new-metric')
+        registry.unregister("my-new-metric")
 
-        self.assertNotIn('my-new-metric', registry)
+        self.assertNotIn("my-new-metric", registry)
         with self.assertRaises(KeyError):
-            registry['my-new-metric']
+            registry["my-new-metric"]
 
     def test_sorted(self):
         class FooBar(Metric):
-            sql = 'SELECT 1;'
+            sql = "SELECT 1;"
 
         class BarFoo(Metric):
-            sql = 'SELECT 1;'
+            sql = "SELECT 1;"
 
         class LoremIpsum(Metric):
-            label = 'Lorem Ipsum'
-            sql = 'SELECT 1;'
+            label = "Lorem Ipsum"
+            sql = "SELECT 1;"
 
         registry = MetricRegistry()
         registry.register(FooBar)
@@ -47,36 +52,41 @@ class MetricRegistryTest(SimpleTestCase):
 
 
 class MetricTest(TestCase):
+    databases = {"default", "second"}
 
     def test_required_arguments(self):
-        msg = 'Metric "MissingSQLMetric" is missing a "sql" attribute or "sql" is empty.'
+        msg = (
+            'Metric "MissingSQLMetric" is missing a "sql" attribute or "sql" is empty.'
+        )
         with self.assertRaisesMessage(ImproperlyConfigured, msg):
+
             class MissingSQLMetric(Metric):
                 pass
 
         msg = 'Metric "EmptySQLMetric" is missing a "sql" attribute or "sql" is empty.'
         with self.assertRaisesMessage(ImproperlyConfigured, msg):
+
             class EmptySQLMetric(Metric):
-                sql = ''
+                sql = ""
 
         class MissingLabelAndSlugMetric(Metric):
-            sql = 'SELECT 1;'
+            sql = "SELECT 1;"
 
-        self.assertEqual(MissingLabelAndSlugMetric.label, 'MissingLabelAndSlugMetric')
-        self.assertEqual(MissingLabelAndSlugMetric.slug, 'missinglabelandslugmetric')
+        self.assertEqual(MissingLabelAndSlugMetric.label, "MissingLabelAndSlugMetric")
+        self.assertEqual(MissingLabelAndSlugMetric.slug, "missinglabelandslugmetric")
 
     def test_description(self):
         class MyMetric(Metric):
-            sql = 'SELECT 1;'
+            sql = "SELECT 1;"
 
-        self.assertEqual(MyMetric.description, '')
+        self.assertEqual(MyMetric.description, "")
 
         class MyEmptyDocstringMetric(Metric):
-            """
-            """
-            sql = 'SELECT 1;'
+            """"""
 
-        self.assertEqual(MyEmptyDocstringMetric.description, '')
+            sql = "SELECT 1;"
+
+        self.assertEqual(MyEmptyDocstringMetric.description, "")
 
         class MyDocumentedMetric(Metric):
             """
@@ -87,12 +97,14 @@ class MetricTest(TestCase):
             multiple
             lines
             """
-            sql = 'SELECT 1;'
+
+            sql = "SELECT 1;"
 
         expected = (
-            '<p>Foo bar buz lorem ipsum</p>\n'
-            '\n'
-            '<p>New paragraph with <a href="https://an.url/to/something">https://an.url/to/something</a> spanning multiple lines</p>'
+            "<p>Foo bar buz lorem ipsum</p>\n"
+            "\n"
+            '<p>New paragraph with <a href="https://an.url/to/something">'
+            "https://an.url/to/something</a> spanning multiple lines</p>"
         )
         self.assertEqual(
             str(MyDocumentedMetric.description),
@@ -101,15 +113,17 @@ class MetricTest(TestCase):
 
     def test_full_sql(self):
         class MyMetric(Metric):
-            sql = 'SELECT 1;'
+            sql = "SELECT 1;"
 
-        self.assertEqual(MyMetric().full_sql, 'SELECT 1;')
+        self.assertEqual(MyMetric().full_sql, "SELECT 1;")
 
         class OrderedMetric(Metric):
-            ordering = '-2.1.3'
-            sql = 'SELECT 1 {ORDER_BY};'
+            ordering = "-2.1.3"
+            sql = "SELECT 1 {ORDER_BY};"
 
-        self.assertEqual(OrderedMetric().full_sql, 'SELECT 1 ORDER BY 2 DESC, 1 ASC, 3 ASC;')
+        self.assertEqual(
+            OrderedMetric().full_sql, "SELECT 1 ORDER BY 2 DESC, 1 ASC, 3 ASC;"
+        )
 
     def test_get_data(self):
         class DjangoMigrationStatistics(Metric):
@@ -117,10 +131,11 @@ class MetricTest(TestCase):
             Count the number of applied Django migrations per app and sort by
             descending count and ascending app name.
             """
-            label = 'Migration Statistics'
-            slug = 'django-migration-statistics'
-            ordering = '-2.1'
-            sql = '''
+
+            label = "Migration Statistics"
+            slug = "django-migration-statistics"
+            ordering = "-2.1"
+            sql = """
                 SELECT
                     app, count(*)
                 FROM
@@ -129,7 +144,7 @@ class MetricTest(TestCase):
                     app
                 {ORDER_BY}
                 ;
-            '''
+            """
 
         metric = DjangoMigrationStatistics()
         data = metric.get_data()
@@ -137,8 +152,8 @@ class MetricTest(TestCase):
         self.assertEqual(
             metric.headers,
             [
-                MetricHeader('app', 1, [('-', 2), ('', 1)]),
-                MetricHeader('count', 2, [('-', 2), ('', 1)]),
+                MetricHeader("app", 1, [("-", 2), ("", 1)]),
+                MetricHeader("count", 2, [("-", 2), ("", 1)]),
             ],
         )
         # Two databases
@@ -152,200 +167,203 @@ class MetricTest(TestCase):
 
     def test_get_record_style(self):
         class MyMetric(Metric):
-            sql = 'SELECT 1;'
+            sql = "SELECT 1;"
 
-        self.assertEqual(MyMetric().get_record_style(None), '')
+        self.assertEqual(MyMetric().get_record_style(None), "")
 
     def test_get_record_item_style(self):
         class MyMetric(Metric):
-            sql = 'SELECT 1;'
+            sql = "SELECT 1;"
 
-        self.assertEqual(MyMetric().get_record_item_style(None, None, None), '')
+        self.assertEqual(MyMetric().get_record_item_style(None, None, None), "")
 
 
 class MetricHeaderTest(SimpleTestCase):
-
     def test_repr(self):
-        header = MetricHeader('Some Name', 1, [])
+        header = MetricHeader("Some Name", 1, [])
         self.assertEqual(repr(header), '<MetricHeader "Some Name">')
 
     def test_str(self):
-        header = MetricHeader('Some Name', 1, [])
-        self.assertEqual(str(header), 'Some Name')
+        header = MetricHeader("Some Name", 1, [])
+        self.assertEqual(str(header), "Some Name")
 
     def test_sort_priority(self):
-        header = MetricHeader('H', 1, [])
+        header = MetricHeader("H", 1, [])
         self.assertEqual(header.sort_priority, 0)
-        header = MetricHeader('H', 4, [])
+        header = MetricHeader("H", 4, [])
         self.assertEqual(header.sort_priority, 0)
 
-        header = MetricHeader('H', 1, [('', 1)])
+        header = MetricHeader("H", 1, [("", 1)])
         self.assertEqual(header.sort_priority, 1)
-        header = MetricHeader('H', 1, [('', 2), ('', 1)])
+        header = MetricHeader("H", 1, [("", 2), ("", 1)])
         self.assertEqual(header.sort_priority, 2)
-        header = MetricHeader('H', 1, [('-', 2), ('', 3), ('-', 1), ('-', 9)])
+        header = MetricHeader("H", 1, [("-", 2), ("", 3), ("-", 1), ("-", 9)])
         self.assertEqual(header.sort_priority, 3)
 
-        header = MetricHeader('H', 4, [('', 4)])
+        header = MetricHeader("H", 4, [("", 4)])
         self.assertEqual(header.sort_priority, 1)
-        header = MetricHeader('H', 4, [('', 2), ('', 4)])
+        header = MetricHeader("H", 4, [("", 2), ("", 4)])
         self.assertEqual(header.sort_priority, 2)
-        header = MetricHeader('H', 4, [('-', 2), ('', 3), ('-', 4), ('-', 9)])
+        header = MetricHeader("H", 4, [("-", 2), ("", 3), ("-", 4), ("-", 9)])
         self.assertEqual(header.sort_priority, 3)
 
     # Starting off from a non-existing sorting, make/remove/toggle the header
     # as a primary.
     def test_urls_from_empty_sorting_first_column_make_primary_url(self):
-        header = MetricHeader('H', 1, [])
-        self.assertEqual(header.url_primary, '1')
+        header = MetricHeader("H", 1, [])
+        self.assertEqual(header.url_primary, "1")
 
     def test_urls_from_empty_sorting_first_column_make_remove_url(self):
-        header = MetricHeader('H', 1, [])
-        self.assertEqual(header.url_remove, '')
+        header = MetricHeader("H", 1, [])
+        self.assertEqual(header.url_remove, "")
 
     def test_urls_from_empty_sorting_first_column_make_toggle_url(self):
-        header = MetricHeader('H', 1, [])
-        self.assertEqual(header.url_toggle, '')
+        header = MetricHeader("H", 1, [])
+        self.assertEqual(header.url_toggle, "")
 
     def test_urls_from_empty_sorting_later_column_make_primary_url(self):
-        header = MetricHeader('H', 4, [])
-        self.assertEqual(header.url_primary, '4')
+        header = MetricHeader("H", 4, [])
+        self.assertEqual(header.url_primary, "4")
 
     def test_urls_from_empty_sorting_later_column_make_remove_url(self):
-        header = MetricHeader('H', 4, [])
-        self.assertEqual(header.url_remove, '')
+        header = MetricHeader("H", 4, [])
+        self.assertEqual(header.url_remove, "")
 
     def test_urls_from_empty_sorting_later_column_make_toggle_url(self):
-        header = MetricHeader('H', 4, [])
-        self.assertEqual(header.url_toggle, '')
+        header = MetricHeader("H", 4, [])
+        self.assertEqual(header.url_toggle, "")
 
     # Starting off from primary sorting, make/remove/toggle the header
     # as a primary.
     def test_urls_from_primary_sorting_first_column_make_primary_url(self):
-        header = MetricHeader('H', 1, [('', 1)])
-        self.assertEqual(header.url_primary, '-1')
+        header = MetricHeader("H", 1, [("", 1)])
+        self.assertEqual(header.url_primary, "-1")
 
     def test_urls_from_primary_sorting_first_column_make_remove_url(self):
-        header = MetricHeader('H', 1, [('', 1)])
-        self.assertEqual(header.url_remove, '')
+        header = MetricHeader("H", 1, [("", 1)])
+        self.assertEqual(header.url_remove, "")
 
     def test_urls_from_primary_sorting_first_column_make_toggle_url(self):
-        header = MetricHeader('H', 1, [('', 1)])
-        self.assertEqual(header.url_toggle, '-1')
+        header = MetricHeader("H", 1, [("", 1)])
+        self.assertEqual(header.url_toggle, "-1")
 
     def test_urls_from_primary_sorting_later_column_make_primary_url(self):
-        header = MetricHeader('H', 4, [('', 4)])
-        self.assertEqual(header.url_primary, '-4')
+        header = MetricHeader("H", 4, [("", 4)])
+        self.assertEqual(header.url_primary, "-4")
 
     def test_urls_from_primary_sorting_later_column_make_remove_url(self):
-        header = MetricHeader('H', 4, [('', 4)])
-        self.assertEqual(header.url_remove, '')
+        header = MetricHeader("H", 4, [("", 4)])
+        self.assertEqual(header.url_remove, "")
 
     def test_urls_from_primary_sorting_later_column_make_toggle_url(self):
-        header = MetricHeader('H', 4, [('', 4)])
-        self.assertEqual(header.url_toggle, '-4')
+        header = MetricHeader("H", 4, [("", 4)])
+        self.assertEqual(header.url_toggle, "-4")
 
     # Starting off from descending primary sorting, make/remove/toggle the
     # header as a primary.
     def test_urls_from_desc_primary_sorting_first_column_make_primary_url(self):
-        header = MetricHeader('H', 1, [('-', 1)])
-        self.assertEqual(header.url_primary, '1')
+        header = MetricHeader("H", 1, [("-", 1)])
+        self.assertEqual(header.url_primary, "1")
 
     def test_urls_from_desc_primary_sorting_first_column_make_remove_url(self):
-        header = MetricHeader('H', 1, [('-', 1)])
-        self.assertEqual(header.url_remove, '')
+        header = MetricHeader("H", 1, [("-", 1)])
+        self.assertEqual(header.url_remove, "")
 
     def test_urls_from_desc_primary_sorting_first_column_make_toggle_url(self):
-        header = MetricHeader('H', 1, [('-', 1)])
-        self.assertEqual(header.url_toggle, '1')
+        header = MetricHeader("H", 1, [("-", 1)])
+        self.assertEqual(header.url_toggle, "1")
 
     def test_urls_from_desc_primary_sorting_later_column_make_primary_url(self):
-        header = MetricHeader('H', 4, [('-', 4)])
-        self.assertEqual(header.url_primary, '4')
+        header = MetricHeader("H", 4, [("-", 4)])
+        self.assertEqual(header.url_primary, "4")
 
     def test_urls_from_desc_primary_sorting_later_column_make_remove_url(self):
-        header = MetricHeader('H', 4, [('-', 4)])
-        self.assertEqual(header.url_remove, '')
+        header = MetricHeader("H", 4, [("-", 4)])
+        self.assertEqual(header.url_remove, "")
 
     def test_urls_from_desc_primary_sorting_later_column_make_toggle_url(self):
-        header = MetricHeader('H', 4, [('-', 4)])
-        self.assertEqual(header.url_toggle, '4')
+        header = MetricHeader("H", 4, [("-", 4)])
+        self.assertEqual(header.url_toggle, "4")
 
     # Starting off from non-primary sorting, make/remove/toggle the header
     def test_urls_from_non_primary_sorting_first_column_make_primary_url(self):
-        header = MetricHeader('H', 1, [('-', 2), ('', 3), ('', 1)])
-        self.assertEqual(header.url_primary, '-1.-2.3')
+        header = MetricHeader("H", 1, [("-", 2), ("", 3), ("", 1)])
+        self.assertEqual(header.url_primary, "-1.-2.3")
 
     def test_urls_from_non_primary_sorting_first_column_make_remove_url(self):
-        header = MetricHeader('H', 1, [('-', 2), ('', 3), ('', 1)])
-        self.assertEqual(header.url_remove, '-2.3')
+        header = MetricHeader("H", 1, [("-", 2), ("", 3), ("", 1)])
+        self.assertEqual(header.url_remove, "-2.3")
 
     def test_urls_from_non_primary_sorting_first_column_make_toggle_url(self):
-        header = MetricHeader('H', 1, [('-', 2), ('', 3), ('', 1)])
-        self.assertEqual(header.url_toggle, '-2.3.-1')
+        header = MetricHeader("H", 1, [("-", 2), ("", 3), ("", 1)])
+        self.assertEqual(header.url_toggle, "-2.3.-1")
 
     def test_urls_from_non_primary_sorting_later_column_make_primary_url(self):
-        header = MetricHeader('H', 4, [('-', 2), ('', 3), ('', 4)])
-        self.assertEqual(header.url_primary, '-4.-2.3')
+        header = MetricHeader("H", 4, [("-", 2), ("", 3), ("", 4)])
+        self.assertEqual(header.url_primary, "-4.-2.3")
 
     def test_urls_from_non_primary_sorting_later_column_make_remove_url(self):
-        header = MetricHeader('H', 4, [('-', 2), ('', 3), ('', 4)])
-        self.assertEqual(header.url_remove, '-2.3')
+        header = MetricHeader("H", 4, [("-", 2), ("", 3), ("", 4)])
+        self.assertEqual(header.url_remove, "-2.3")
 
     def test_urls_from_non_primary_sorting_later_column_make_toggle_url(self):
-        header = MetricHeader('H', 4, [('-', 2), ('', 3), ('', 4)])
-        self.assertEqual(header.url_toggle, '-2.3.-4')
+        header = MetricHeader("H", 4, [("-", 2), ("", 3), ("", 4)])
+        self.assertEqual(header.url_toggle, "-2.3.-4")
 
     # Starting off from descending non-primary sorting, make/remove/toggle the
     # header
     def test_urls_from_desc_non_primary_sorting_first_column_make_primary_url(self):
-        header = MetricHeader('H', 1, [('-', 2), ('', 3), ('-', 1)])
-        self.assertEqual(header.url_primary, '1.-2.3')
+        header = MetricHeader("H", 1, [("-", 2), ("", 3), ("-", 1)])
+        self.assertEqual(header.url_primary, "1.-2.3")
 
     def test_urls_from_desc_non_primary_sorting_first_column_make_remove_url(self):
-        header = MetricHeader('H', 1, [('-', 2), ('', 3), ('-', 1)])
-        self.assertEqual(header.url_remove, '-2.3')
+        header = MetricHeader("H", 1, [("-", 2), ("", 3), ("-", 1)])
+        self.assertEqual(header.url_remove, "-2.3")
 
     def test_urls_from_desc_non_primary_sorting_first_column_make_toggle_url(self):
-        header = MetricHeader('H', 1, [('-', 2), ('', 3), ('-', 1)])
-        self.assertEqual(header.url_toggle, '-2.3.1')
+        header = MetricHeader("H", 1, [("-", 2), ("", 3), ("-", 1)])
+        self.assertEqual(header.url_toggle, "-2.3.1")
 
     def test_urls_from_desc_non_primary_sorting_later_column_make_primary_url(self):
-        header = MetricHeader('H', 4, [('-', 2), ('', 3), ('-', 4)])
-        self.assertEqual(header.url_primary, '4.-2.3')
+        header = MetricHeader("H", 4, [("-", 2), ("", 3), ("-", 4)])
+        self.assertEqual(header.url_primary, "4.-2.3")
 
     def test_urls_from_desc_non_primary_sorting_later_column_make_remove_url(self):
-        header = MetricHeader('H', 4, [('-', 2), ('', 3), ('-', 4)])
-        self.assertEqual(header.url_remove, '-2.3')
+        header = MetricHeader("H", 4, [("-", 2), ("", 3), ("-", 4)])
+        self.assertEqual(header.url_remove, "-2.3")
 
     def test_urls_from_desc_non_primary_sorting_later_column_make_toggle_url(self):
-        header = MetricHeader('H', 4, [('-', 2), ('', 3), ('-', 4)])
-        self.assertEqual(header.url_toggle, '-2.3.4')
+        header = MetricHeader("H", 4, [("-", 2), ("", 3), ("-", 4)])
+        self.assertEqual(header.url_toggle, "-2.3.4")
 
 
 class MetricResultTest(TestCase):
+    databases = {"default", "second"}
 
     def test_default(self):
-        result = MetricResult(connections['default'], [('foo', 1, 2), ('bar', 3, 4)])
-        self.assertEqual(result.alias, 'default')
+        result = MetricResult(connections["default"], [("foo", 1, 2), ("bar", 3, 4)])
+        self.assertEqual(result.alias, "default")
         self.assertEqual(
             sorted(result.dsn.split()),
-            sorted('user=someuser password=xxx dbname=test_somedb'.split()),
+            sorted(
+                "user=someuser host=localhost password=xxx dbname=test_somedb".split()
+            ),
         )
-        self.assertEqual(result.records, [('foo', 1, 2), ('bar', 3, 4)])
+        self.assertEqual(result.records, [("foo", 1, 2), ("bar", 3, 4)])
 
     def test_second(self):
-        result = MetricResult(connections['second'], [('foo', 1, 2), ('bar', 3, 4)])
-        self.assertEqual(result.alias, 'second')
+        result = MetricResult(connections["second"], [("foo", 1, 2), ("bar", 3, 4)])
+        self.assertEqual(result.alias, "second")
         self.assertEqual(
             sorted(result.dsn.split()),
-            sorted('user=otheruser dbname=test_otherdb'.split()),
+            sorted(
+                "user=otheruser host=localhost password=xxx dbname=test_otherdb".split()
+            ),
         )
-        self.assertEqual(result.records, [('foo', 1, 2), ('bar', 3, 4)])
+        self.assertEqual(result.records, [("foo", 1, 2), ("bar", 3, 4)])
 
 
 class StyleAssertionMixin:
-
     def assertRecordStylesEqual(self, metric_class, records, expecteds):
         metric = metric_class()
         for record, expected in zip(records, expecteds):
@@ -365,61 +383,58 @@ class StyleAssertionMixin:
 
 
 class AvailableExtensionsTest(StyleAssertionMixin, SimpleTestCase):
-
     def test_get_record_style(self):
         records = [
-            ('ltree', '1.0', None, 'bla'),
-            ('ltree', '1.0', '0.0', 'bla'),
-            ('ltree', '4.0', '4.0', 'bla'),
-            ('ltree', '5.0', '5.0.1', 'bla'),
+            ("ltree", "1.0", None, "bla"),
+            ("ltree", "1.0", "0.0", "bla"),
+            ("ltree", "4.0", "4.0", "bla"),
+            ("ltree", "5.0", "5.0.1", "bla"),
         ]
         expecteds = [
             None,
-            'warning',
-            'ok',
-            'info',
+            "warning",
+            "ok",
+            "info",
         ]
         self.assertRecordStylesEqual(AvailableExtensions, records, expecteds)
 
 
 class CacheHitsTest(StyleAssertionMixin, SimpleTestCase):
-
     def test_get_record_item_style(self):
         records = [
-            (123, 456, 'N/A'),
-            (123, 456, '0.94449'),
-            (123, 456, '0.95'),
-            (123, 456, '0.98999'),
-            (123, 456, '0.99'),
+            (123, 456, "N/A"),
+            (123, 456, "0.94449"),
+            (123, 456, "0.95"),
+            (123, 456, "0.98999"),
+            (123, 456, "0.99"),
         ]
         expecteds = [
             (None, None, None),
-            (None, None, 'critical'),
-            (None, None, 'warning'),
-            (None, None, 'warning'),
-            (None, None, 'ok'),
+            (None, None, "critical"),
+            (None, None, "warning"),
+            (None, None, "warning"),
+            (None, None, "ok"),
         ]
         self.assertRecordItemStylesEqual(CacheHits, records, expecteds)
 
 
 class IndexUsageTest(StyleAssertionMixin, SimpleTestCase):
-
     def test_get_record_style(self):
         records = [
-            ('table1', 12.34, 0),
-            ('table1', 12.34, 9999),
-            ('table1', 94.99, 10000),
-            ('table1', 95.00, 10000),
-            ('table1', 98.99, 10000),
-            ('table1', 99.00, 10000),
+            ("table1", 12.34, 0),
+            ("table1", 12.34, 9999),
+            ("table1", 94.99, 10000),
+            ("table1", 95.00, 10000),
+            ("table1", 98.99, 10000),
+            ("table1", 99.00, 10000),
         ]
         expecteds = [
             None,
             None,
-            'critical',
-            'warning',
-            'warning',
-            'ok',
+            "critical",
+            "warning",
+            "warning",
+            "ok",
         ]
         self.assertRecordStylesEqual(IndexUsage, records, expecteds)
 
@@ -431,23 +446,26 @@ def gen_metric_test_case(metric_class):
 
     def test_get_data_no_ordering(self):
         metric = self.metric_class()
-        metric.ordering = ''
+        metric.ordering = ""
         metric.get_data()
 
     def test_get_data_explicit_ordering(self):
-        metric = self.metric_class(ordering='1.-2')
+        metric = self.metric_class(ordering="1.-2")
         metric.get_data()
 
     def test_repr(self):
-        self.assertEqual(repr(self.metric_class()), '<Metric "%s">' % self.metric_class.label)
+        self.assertEqual(
+            repr(self.metric_class()), '<Metric "%s">' % self.metric_class.label
+        )
 
-    tc_name = 'Dynamic_' + metric_class.__name__ + 'Test'
+    tc_name = "Dynamic_" + metric_class.__name__ + "Test"
     attrs = {
-        'metric_class': metric_class,
-        'test_get_data_default_ordering': test_get_data_default_ordering,
-        'test_get_data_no_ordering': test_get_data_no_ordering,
-        'test_get_data_explicit_ordering': test_get_data_explicit_ordering,
-        'test_repr': test_repr,
+        "databases": {"default", "second"},
+        "metric_class": metric_class,
+        "test_get_data_default_ordering": test_get_data_default_ordering,
+        "test_get_data_no_ordering": test_get_data_no_ordering,
+        "test_get_data_explicit_ordering": test_get_data_explicit_ordering,
+        "test_repr": test_repr,
     }
     cls = type(tc_name, (TestCase,), attrs)
     return tc_name, cls

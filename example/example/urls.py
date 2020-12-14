@@ -18,14 +18,16 @@ from django.contrib import admin
 
 if django.VERSION >= (2, 0):
     from django.urls import include, path
+
     urlpatterns = [
-        path('admin/postgres-metrics/', include('postgres_metrics.urls')),
-        path('admin/', admin.site.urls),
+        path("admin/postgres-metrics/", include("postgres_metrics.urls")),
+        path("admin/", admin.site.urls),
     ]
 else:
     # Remove when dropping Django 1.11
     from django.conf.urls import include, url
+
     urlpatterns = [
-        url(r'^admin/postgres-metrics/', include('postgres_metrics.urls')),
-        url(r'^admin/', admin.site.urls),
+        url(r"^admin/postgres-metrics/", include("postgres_metrics.urls")),
+        url(r"^admin/", admin.site.urls),
     ]

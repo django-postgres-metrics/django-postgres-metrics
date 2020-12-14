@@ -18,7 +18,11 @@ def metrics_view(request, name):
     ordering = request.GET.get(ORDER_VAR)
     metric = Metric(ordering)
 
-    return render(request, 'postgres_metrics/table.html', {
-        'metric': metric,
-        'results': metric.get_data(),
-    })
+    return render(
+        request,
+        "postgres_metrics/table.html",
+        {
+            "metric": metric,
+            "results": metric.get_data(),
+        },
+    )

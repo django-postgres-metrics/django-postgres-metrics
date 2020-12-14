@@ -1,4 +1,20 @@
 [build-system]
 requires = ["setuptools>=42", "wheel", "setuptools_scm[toml]>=5,<6"]
 
+[tool.black]
+target-version = ['py38']
+
+[tool.coverage.run]
+branch = true
+source = ["postgres_metrics/"]
+
+[tool.coverage.report]
+show_missing = true
+fail_under = 100
+
+[tool.isort]
+combine_as_imports = true
+known_first_party = ["postgres_metrics", "tests"]
+profile = "black"
+
 [tool.setuptools_scm]

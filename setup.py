@@ -7,7 +7,7 @@ setuptools.setup(
     name="django-postgres-metrics",
     author="Markus Holtermann",
     author_email="info@markusholtermann.eu",
-    description="A Django application that exposes a bunch of PostgreSQL database metrics.",
+    description="A Django app that exposes a bunch of PostgreSQL database metrics.",
     license="BSD",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -16,7 +16,14 @@ setuptools.setup(
         exclude=["*.tests", "*.tests.*", "tests.*", "tests"]
     ),
     include_package_data=True,
-    extras_require={"test": ["tox"]},
+    extras_require={
+        "dev": ["pre-commit"],
+        "test": [
+            "coverage[toml]>=5,<6",
+            "Django",
+            "psycopg2",
+        ],
+    },
     setup_requires=["setuptools_scm>=5<6"],
     use_scm_version=True,
     classifiers=[
@@ -30,6 +37,9 @@ setuptools.setup(
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
     ],
     python_requires=">=3.5",
 )

@@ -8,7 +8,7 @@ Welcome to django-postgres-metrics's documentation!
    background
    getting-started
    contributing/index
-   ref/index
+   ref/modules
    changelog
 
 
