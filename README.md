@@ -1,7 +1,7 @@
 # django-postgres-metrics
 
-![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/MarkusH/django-postgres-metrics/CI/master?style=for-the-badge)
-![Codecov branch](https://img.shields.io/codecov/c/gh/MarkusH/django-postgres-metrics/master?style=for-the-badge)
+![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/django-postgres-metrics/django-postgres-metrics/Lint%20&%20Test/master?style=for-the-badge)
+![Codecov branch](https://img.shields.io/codecov/c/gh/django-postgres-metrics/django-postgres-metrics/master?style=for-the-badge)
 ![PyPI](https://img.shields.io/pypi/v/django-postgres-metrics?style=for-the-badge)
 
 A Django application that exposes a bunch of PostgreSQL database metrics.
