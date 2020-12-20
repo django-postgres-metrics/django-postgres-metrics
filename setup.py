@@ -12,6 +12,12 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/django-postgres-metrics/django-postgres-metrics",
+    project_urls={
+        "CI": "https://github.com/django-postgres-metrics/django-postgres-metrics/actions",  # noqa
+        "Changelog": "https://django-postgres-metrics.readthedocs.io/en/latest/changelog.html",  # noqa
+        "Documentation": "https://django-postgres-metrics.readthedocs.io/en/latest/index.html",  # noqa
+        "Issues": "https://github.com/django-postgres-metrics/django-postgres-metrics/issues",  # noqa
+    },
     packages=setuptools.find_packages(
         exclude=["*.tests", "*.tests.*", "tests.*", "tests"]
     ),
