@@ -7,6 +7,12 @@ Changelog
 Under Development
 =================
 
+* Dropped support for Django 1.11, 2.0, and 2.1.
+
+  .. warning::
+
+     Use version 0.7 for Django 1.11, 2.0, or 2.1 support!
+
 0.7.2 (2020-12-22)
 ==================
 
@@ -28,7 +34,6 @@ Under Development
 
      This is the last version to support Django < 2.2. Version 0.8 will only
      support Django 2.2, 3.0, and 3.1!
-
 
 0.6.2 (2018-03-20)
 ==================
