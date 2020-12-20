@@ -4,25 +4,36 @@ Changelog
 
 .. currentmodule:: postgres_metrics
 
-0.7.0 (under development)
-=========================
+Under Development
+=================
 
-* ...
+0.7.0 (2020-12-20)
+==================
 
-0.6.2
-=====
+* Updated project setup by moving to GitHub Actions
+
+* Added compatibility for Django 1.11 to 3.1
+
+  .. warning::
+
+     This is the last version to support Django < 2.2. Version 0.8 will only
+     support Django 2.2, 3.0, and 3.1!
+
+
+0.6.2 (2018-03-20)
+==================
 
 * Added missing installation instruction.
 
 * Documentation building is now part of the CI tests.
 
-0.6.1
-=====
+0.6.1 (2018-03-20)
+==================
 
 * Fix release bundling.
 
-0.6.0
-=====
+0.6.0 (2018-03-20)
+==================
 
 * Added permission support for metrics. Users with ``is_staff=True`` can now
   be given access to each metric individually.
@@ -45,13 +56,13 @@ Changelog
 * Added a :class:`Detailed Index Usage metric <metrics.DetailedIndexUsage>`
   that shows the index usage off a table per index.
 
-0.5.0
-=====
+0.5.0 (2017-12-25)
+==================
 
 * Added the list of metrics on a metric's detail page
 
-0.4.0
-=====
+0.4.0 (2017-12-25)
+==================
 
 * Underscores in metric column headers are now replaced by spaces
 
@@ -61,15 +72,15 @@ Changelog
 
 * Added per metric record and record item styling
 
-0.3.0
-=====
+0.3.0 (2017-11-28)
+==================
 
 * Added description to ``setup.py``
 
 * The metric results can now be sorted on any column
 
-0.2.0
-=====
+0.2.0 (2017-11-21)
+==================
 
 * Switched to `Read The Docs <https://github.com/rtfd/sphinx_rtd_theme>`__
   theme for docs.
@@ -79,12 +90,12 @@ Changelog
 * Fixed table styling in metric views. The tables now look more like Django
   Admin's ChangeList
 
-0.1.1
-=====
+0.1.1 (2017-11-21)
+==================
 
 * Excluded ``tests`` from built packages.
 
-0.1.0
-=====
+0.1.0 (2017-11-21)
+==================
 
 * Initial Release

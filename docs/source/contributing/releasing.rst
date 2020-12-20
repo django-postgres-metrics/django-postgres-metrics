@@ -12,6 +12,9 @@ Issuing a new Release
      $ git tag -s "x.y.z"
      $ git push --tags origin master
 
-* Go to https://github.com/django-postgres-metrics/django-postgres-metrics/releases
-  and click "Add release notes" for the newly pushed release, and update the
-  release notes there as well.
+* `Update the release nodes
+  <https://github.com/django-postgres-metrics/django-postgres-metrics/releases>`_
+  on GitHub for the newly pushed release.
+
+* Update the versions in `ReadTheDocs
+  <https://readthedocs.org/projects/django-postgres-metrics/versions/>`_.
