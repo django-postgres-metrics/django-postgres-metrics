@@ -20,6 +20,10 @@
   min-height: 0;
 }
 
+.app-postgres_metrics table#result_list td {
+  word-wrap: anywhere;
+}
+
 tr.pgm-critical,
 td.pgm-critical {
   background-color: #ffefef;
