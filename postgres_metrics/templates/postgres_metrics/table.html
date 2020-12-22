@@ -22,14 +22,14 @@
 {% block content %}
 <h1>{{ metric.label }}</h1>
 <div id="content-main">
+    {% if metric.description %}
+    <div id="toolbar">
+        {{ metric.description|safe }}
+    </div>
+    {% endif %}
     {% for result in results %}
     <div class="module filtered" id="changelist">
         {% if forloop.first %}
-            {% if metric.description %}
-            <div id="toolbar">
-                {{ metric.description|safe }}
-            </div>
-            {% endif %}
             <div id="changelist-filter">
                 <h2>{% trans 'PostgreSQL Metrics' %}</h2>
                 {% get_postgres_metrics as postgres_metrics %}

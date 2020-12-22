@@ -7,6 +7,8 @@ Changelog
 Under Development
 =================
 
+* Fixed layout issues with Django's new admin design in 3.1.
+
 0.7.0 (2020-12-20)
 ==================
 
