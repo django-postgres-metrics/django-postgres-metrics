@@ -34,6 +34,7 @@ setuptools.setup(
             "coverage[toml]>=5,<6",
             "Django",
             "psycopg2",
+            "selenium==3.141.0",
         ],
     },
     setup_requires=["setuptools_scm>=5<6"],

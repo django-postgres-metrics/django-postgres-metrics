@@ -103,6 +103,13 @@ jobs:
         uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+      - uses: actions/upload-artifact@v2
+        with:
+          name: "screnshots-py${{ matrix.python-version }}-dj${{ matrix.django-version }}"
+          path: tests/output/
+          if-no-files-found: error
+          retention-days: 1
+
   docs:
     runs-on: ubuntu-latest
     needs: [lint]
