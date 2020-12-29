@@ -109,6 +109,14 @@ jobs:
           path: tests/output/
           if-no-files-found: error
           retention-days: 1
+      - name: Post screenshots
+        if: "${{ matrix.python-version == '3.9' && matrix.django-version == '3.1' }}"
+        run: |
+          python -m pip install imgbox-cli
+          imgbox --json tests/output/*.png > imgbox-response.json
+          python post_screenshot_comment.py "$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")" "$(readlink -f imgbox-response.json)"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   docs:
     runs-on: ubuntu-latest
