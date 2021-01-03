@@ -73,16 +73,7 @@ urlpatterns = [
 ]
 ```
 
-For Django 1.11:
-
-```python
-from django.conf.urls import include, url
-
-urlpatterns = [
-    url(r'^admin/postgres-metrics/', include('postgres_metrics.urls')),
-    url(r'^admin/', admin.site.urls),
-]
-```
+This is what a metric could look like: ![Metric example](docs/source/_static/screenshot.png)
 
 ## Security
 

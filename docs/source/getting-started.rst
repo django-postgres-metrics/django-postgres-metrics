@@ -64,21 +64,17 @@ For Django 2.0 and up:
         path('admin/', admin.site.urls),
     ]
 
-For Django 1.11 and before:
-
-.. code-block:: bash
-
-    from django.conf.urls import include, url
-    urlpatterns = [
-        url(r'^admin/postgres-metrics/', include('postgres_metrics.urls')),
-        url(r'^admin/', admin.site.urls),
-    ]
-
 Congratulations, you made it!
 
 When you now browse to the Django Admin with superuser permissions, you'll see
 a "PostgreSQL Metrics" section at the bottom left, listing all available
 metrics.
+
+This is what a metric could look like:
+
+.. figure:: _static/screenshot.png
+    :alt: Metric example
+
 
 Designing Your Own Metric
 -------------------------

@@ -16,6 +16,10 @@ Under Development
 * Added a :class:`Sequence Usage <metrics.SequenceUsage>`
   that shows the extend to which a PostgreSQL sequence is been used.
 
+* Added a screenshot of what a metric looks like to the README and docs (`#39
+  <https://github.com/django-postgres-metrics/django-postgres-metrics/issues/39>`_
+  ).
+
 0.7.2 (2020-12-22)
 ==================
 
