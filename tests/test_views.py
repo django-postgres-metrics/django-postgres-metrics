@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.conf.urls import include, url as path
 from django.contrib import admin
 from django.contrib.auth.models import Permission, User
@@ -11,7 +12,7 @@ urlpatterns = [
 
 @override_settings(ROOT_URLCONF=__name__)
 class TestMetricsView(TestCase):
-    databases = {"default", "second"}
+    databases = {name for name in settings.DATABASES if name != "sqlite"}
 
     @classmethod
     def setUpTestData(cls):

@@ -72,26 +72,56 @@ WSGI_APPLICATION = "wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "HOST": "localhost",
-        "NAME": "somedb",
-        "USER": "someuser",
-        "PASSWORD": "somepass",
-    },
-    "second": {
-        "ENGINE": "django.db.backends.postgresql",
-        "HOST": "localhost",
-        "NAME": "otherdb",
-        "USER": "otheruser",
-        "PASSWORD": "otherpass",
-    },
-    "sqlite": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": ":memory:",
-    },
-}
+pg_services = os.getenv("PG_VERSIONS") or ""
+pg_versions = list(map(int, filter(str, map(str.strip, pg_services.split(",")))))
+
+if not pg_versions:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "HOST": "localhost",
+            "PORT": 5432,
+            "NAME": "somedb",
+            "USER": "someuser",
+            "PASSWORD": "somepass",
+        },
+        "second": {
+            "ENGINE": "django.db.backends.postgresql",
+            "HOST": "localhost",
+            "PORT": 5432,
+            "NAME": "otherdb",
+            "USER": "otheruser",
+            "PASSWORD": "otherpass",
+        },
+        "sqlite": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": ":memory:",
+        },
+    }
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "HOST": "localhost",
+            "PORT": 5400 + pg_versions[0],
+            "NAME": "pg%d" % pg_versions[0],
+            "USER": "postgres",
+            "PASSWORD": "postgres",
+        },
+        "sqlite": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": ":memory:",
+        },
+    }
+    for pg_version in pg_versions[1:]:
+        DATABASES["postgres%d" % pg_version] = {
+            "ENGINE": "django.db.backends.postgresql",
+            "HOST": "localhost",
+            "PORT": 5400 + pg_version,
+            "NAME": "pg%d" % pg_version,
+            "USER": "postgres",
+            "PASSWORD": "postgres",
+        }
 
 # Password validation
 # https://docs.djangoproject.com/en/dev/ref/settings/#auth-password-validators

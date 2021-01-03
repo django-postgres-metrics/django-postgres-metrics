@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.db import connections
 from django.test import SimpleTestCase, TestCase
@@ -53,7 +54,7 @@ class MetricRegistryTest(SimpleTestCase):
 
 
 class MetricTest(TestCase):
-    databases = {"default", "second"}
+    databases = {name for name in settings.DATABASES if name != "sqlite"}
 
     def test_required_arguments(self):
         msg = (
@@ -157,14 +158,15 @@ class MetricTest(TestCase):
                 MetricHeader("count", 2, [("-", 2), ("", 1)]),
             ],
         )
-        # Two databases
-        self.assertEqual(len(data), 2)
-        # 4 apps
-        self.assertEqual(len(data[0].records), 4)
-        self.assertEqual(len(data[1].records), 4)
-        # 2 columns
-        self.assertEqual(len(data[0].records[0]), 2)
-        self.assertEqual(len(data[1].records[0]), 2)
+
+        num_databases = len(settings.DATABASES) - 1  # One SQLite3 database
+        self.assertEqual(len(data), num_databases)
+        for i in range(num_databases):
+            with self.subTest(db_number=i):
+                # 4 apps
+                self.assertEqual(len(data[i].records), 4)
+                # 2 columns
+                self.assertEqual(len(data[i].records[0]), 2)
 
     def test_get_record_style(self):
         class MyMetric(Metric):
@@ -339,29 +341,28 @@ class MetricHeaderTest(SimpleTestCase):
 
 
 class MetricResultTest(TestCase):
-    databases = {"default", "second"}
+    databases = {name for name in settings.DATABASES if name != "sqlite"}
 
-    def test_default(self):
-        result = MetricResult(connections["default"], [("foo", 1, 2), ("bar", 3, 4)])
-        self.assertEqual(result.alias, "default")
-        self.assertEqual(
-            sorted(result.dsn.split()),
-            sorted(
-                "user=someuser host=localhost password=xxx dbname=test_somedb".split()
-            ),
-        )
-        self.assertEqual(result.records, [("foo", 1, 2), ("bar", 3, 4)])
+    def test_db(self):
+        for dbname, dbcfg in settings.DATABASES.items():
+            if dbname == "sqlite":
+                continue
 
-    def test_second(self):
-        result = MetricResult(connections["second"], [("foo", 1, 2), ("bar", 3, 4)])
-        self.assertEqual(result.alias, "second")
-        self.assertEqual(
-            sorted(result.dsn.split()),
-            sorted(
-                "user=otheruser host=localhost password=xxx dbname=test_otherdb".split()
-            ),
-        )
-        self.assertEqual(result.records, [("foo", 1, 2), ("bar", 3, 4)])
+            with self.subTest(dbname=dbname):
+                result = MetricResult(
+                    connections[dbname], [("foo", 1, 2), ("bar", 3, 4)]
+                )
+                self.assertEqual(result.alias, dbname)
+                self.assertEqual(
+                    sorted(result.dsn.split()),
+                    sorted(
+                        (
+                            "host=localhost port=%d user=%s password=xxx dbname=%s"
+                            % (dbcfg["PORT"], dbcfg["USER"], dbcfg["NAME"])
+                        ).split()
+                    ),
+                )
+                self.assertEqual(result.records, [("foo", 1, 2), ("bar", 3, 4)])
 
 
 class StyleAssertionMixin:
@@ -480,7 +481,7 @@ def gen_metric_test_case(metric_class):
 
     tc_name = "Dynamic_" + metric_class.__name__ + "Test"
     attrs = {
-        "databases": {"default", "second"},
+        "databases": {name for name in settings.DATABASES if name != "sqlite"},
         "metric_class": metric_class,
         "test_get_data_default_ordering": test_get_data_default_ordering,
         "test_get_data_no_ordering": test_get_data_no_ordering,
