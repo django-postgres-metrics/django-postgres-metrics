@@ -73,7 +73,8 @@ urlpatterns = [
 ]
 ```
 
-This is what a metric could look like: ![Metric example](docs/source/_static/screenshot.png)
+This is what a metric could look like:
+![Metric example](https://github.com/django-postgres-metrics/django-postgres-metrics/blob/master/docs/source/_static/screenshot.png)
 
 ## Security
 
