@@ -7,6 +7,9 @@ Changelog
 Under Development
 =================
 
+0.8.0 (2021-01-03)
+==================
+
 * Dropped support for Django 1.11, 2.0, and 2.1.
 
   .. warning::
