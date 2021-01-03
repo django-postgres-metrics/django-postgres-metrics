@@ -13,6 +13,9 @@ Under Development
 
      Use version 0.7 for Django 1.11, 2.0, or 2.1 support!
 
+* Added a :class:`Sequence Usage <metrics.SequenceUsage>`
+  that shows the extend to which a PostgreSQL sequence is been used.
+
 0.7.2 (2020-12-22)
 ==================
 

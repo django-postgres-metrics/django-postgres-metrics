@@ -72,14 +72,14 @@ class MakeScreenshotTest(SeleniumTestCase):
     def make_screenshot(self, name):
         height = self.selenium.execute_script("return document.body.scrollHeight")
         old_size = self.selenium.get_window_size()
-        self.selenium.set_window_size(old_size["width"], height)
+        self.selenium.set_window_size(1024, height)
         try:
             self.selenium.save_screenshot(
                 "tests/output/%02d-%s.png" % (MakeScreenshotTest.counter, name)
             )
             MakeScreenshotTest.counter += 1
         finally:
-            self.selenium.set_window_size(old_size["width"], old_size["height"])
+            self.selenium.set_window_size(1024, old_size["height"])
 
     def test_make_screenshot_index(self):
         self.make_screenshot("index")

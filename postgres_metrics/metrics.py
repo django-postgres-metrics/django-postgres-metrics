@@ -587,3 +587,60 @@ class AvailableExtensions(Metric):
 
 
 registry.register(AvailableExtensions)
+
+
+class SequenceUsage(Metric):
+    """
+    Show the sequence usage within a PostgreSQL database. A usage over 90%
+    will be marked as red, and a usage over 75% will be marked as yellow.
+    """
+
+    label = _("Sequence Usage")
+    ordering = "-6.1.2.3"
+    slug = "sequence-usage"
+    sql = """
+        SELECT
+            tabcls.relname "table",
+            attrib.attname "column",
+            seqcls.relname "sequence",
+            seq.last_value "last_value",
+            seq.max_value "max_value",
+            round(
+                (
+                    100::float * COALESCE(seq.last_value, 0)
+                    / (seq.max_value - seq.start_value + 1)
+                )::numeric,
+                2::int
+            ) percent_sequence_used
+        FROM
+            pg_class AS seqcls
+        INNER JOIN
+            pg_sequences AS seq
+            ON seqcls.relname = seq.sequencename
+        INNER JOIN
+            pg_depend AS dep
+            ON seqcls.relfilenode = dep.objid
+        INNER JOIN
+            pg_class AS tabcls
+            ON dep.refobjid = tabcls.relfilenode
+        INNER JOIN
+            pg_attribute AS attrib
+            ON
+                attrib.attnum = dep.refobjsubid
+                AND attrib.attrelid = dep.refobjid
+        WHERE
+            seqcls.relkind = 'S'
+        {ORDER_BY}
+        ;
+    """
+
+    def get_record_style(self, record):
+        usage = record[5]
+        if usage >= 75.00:
+            return "critical"
+        if usage >= 50.00:
+            return "warning"
+        return "ok"
+
+
+registry.register(SequenceUsage)

@@ -38,7 +38,7 @@ class GetPostgresMetricsTest(TestCase):
             (
                 self.superuser,
                 "available-extensions cache-hits detailed-index-usage index-size index-"
-                "usage table-size ",
+                "usage sequence-usage table-size ",
             ),
         ]
         rf = RequestFactory()

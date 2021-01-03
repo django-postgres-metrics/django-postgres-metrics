@@ -10,6 +10,7 @@ from postgres_metrics.metrics import (
     MetricHeader,
     MetricRegistry,
     MetricResult,
+    SequenceUsage,
     registry,
 )
 
@@ -437,6 +438,25 @@ class IndexUsageTest(StyleAssertionMixin, SimpleTestCase):
             "ok",
         ]
         self.assertRecordStylesEqual(IndexUsage, records, expecteds)
+
+
+class SequenceUsageTest(StyleAssertionMixin, SimpleTestCase):
+    def test_get_record_style(self):
+        records = [
+            ("table1", "id", "table1_id_seq", None, 10000, 0.00),
+            ("table1", "id", "table1_id_seq", 4999, 10000, 49.99),
+            ("table1", "id", "table1_id_seq", 5000, 10000, 50.00),
+            ("table1", "id", "table1_id_seq", 7499, 10000, 74.99),
+            ("table1", "id", "table1_id_seq", 7500, 10000, 75.00),
+        ]
+        expecteds = [
+            "ok",
+            "ok",
+            "warning",
+            "warning",
+            "critical",
+        ]
+        self.assertRecordStylesEqual(SequenceUsage, records, expecteds)
 
 
 def gen_metric_test_case(metric_class):
