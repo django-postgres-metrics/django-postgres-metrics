@@ -34,16 +34,24 @@ def get_image_urls(filename: str) -> List[Tuple[str, str, str]]:
     ]
 
 
-def format_body(images: List[Tuple[str, str, str]]) -> str:
+def format_img(img: Tuple[str, str, str]):
+    return f"| [{img[0]}]({img[2]}) " f"| [![]({img[1]})]({img[2]}) " "| "
+
+
+def format_body(imgs: List[Tuple[str, str, str]]) -> str:
     rows = [
         BODY_PREFIX,
-        "| Metric name | Screenshot |",
-        "| ----------- | ---------- |",
+        "| Metric name | Screenshot |   | Metric name | Screenshot |",
+        "| ----------- | ---------- | - | ----------- | ---------- |",
     ]
+
     rows.extend(
         [
-            f"| [{image[0]}]({image[2]}) | [![]({image[1]})]({image[2]}) |"
-            for image in images
+            (
+                format_img(imgs[i])
+                + (format_img(imgs[i + 1]) if i < len(imgs) - 1 else "")
+            )
+            for i in range(0, len(imgs), 2)
         ]
     )
     return "\n".join(rows)
