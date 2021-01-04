@@ -7,6 +7,8 @@ Changelog
 Under Development
 =================
 
+* Added support for translatable column titles.
+
 0.8.0 (2021-01-03)
 ==================
 

@@ -227,8 +227,13 @@ class Metric(metaclass=MetricMeta):
        ``urlize()`` method to create ``<a></a>`` HTML tags around links.
     """
 
-    #: The label is what is used in the Django Admin views. Consider marking
-    #: this string as translateable.
+    #: A list of strings used as column headers in the admin. Consider making
+    #: the strings translateable. If the attribute is undefined, the column
+    #: names returned by the database will be used.
+    header_labels = None
+
+    #: The label is what is used in the Django Admin views. Consider making
+    #: this string translateable.
     label = ""
 
     #: The default ordering that should be applied to the SQL query by default.
@@ -289,14 +294,23 @@ class Metric(metaclass=MetricMeta):
                 continue
             with connection.cursor() as cursor:
                 cursor.execute(self.full_sql)
-                self.headers = [
-                    MetricHeader(c.name, index, self.parsed_ordering)
-                    for index, c in enumerate(cursor.description, start=1)
-                ]
+                if self.header_labels is None:
+                    self.header_labels = [c.name for c in cursor.description]
                 data = cursor.fetchall()
             db = MetricResult(connection, data)
             results.append(db)
         return results
+
+    @cached_property
+    def headers(self):
+        """
+        A wrapper around the :attr:`header_labels` to make the tables in the
+        admin sortable.
+        """
+        return [
+            MetricHeader(label, index, self.parsed_ordering)
+            for index, label in enumerate(self.header_labels, start=1)
+        ]
 
     @cached_property
     def parsed_ordering(self):
@@ -386,6 +400,7 @@ class CacheHits(Metric):
     http://www.craigkerstiens.com/2012/10/01/understanding-postgres-performance/)
     """
 
+    header_labels = [_("Reads"), _("Hits"), _("Ratio")]
     label = _("Cache Hits")
     slug = "cache-hits"
     sql = """
@@ -423,14 +438,15 @@ registry.register(CacheHits)
 
 
 class IndexSize(Metric):
+    header_labels = [_("Table"), _("Index"), _("Size")]
     label = _("Index Size")
     ordering = "1.2"
     slugify = "index-size"
     sql = """
         SELECT
-            relname "table",
-            indexrelname "index",
-            pg_size_pretty(pg_relation_size(indexrelid)) size
+            relname,
+            indexrelname,
+            pg_size_pretty(pg_relation_size(indexrelid))
         FROM
             pg_stat_user_indexes
         {ORDER_BY}
@@ -453,13 +469,19 @@ class DetailedIndexUsage(Metric):
     compared to the other indexes on the table.
     """
 
+    header_labels = [
+        _("Table"),
+        _("Index"),
+        _("Index Scan over Sequential Scan"),
+        _("Index Scan on table"),
+    ]
     label = _("Detailed Index Usage")
     ordering = "1.2"
     slug = "detailed-index-usage"
     sql = """
         SELECT
-            t.relname "table",
-            i.indexrelname "index",
+            t.relname,
+            i.indexrelname,
             CASE t.seq_scan + t.idx_scan
                 WHEN 0
                     THEN round(0.0, 2)
@@ -468,13 +490,13 @@ class DetailedIndexUsage(Metric):
                         (100::float * i.idx_scan / (t.seq_scan + t.idx_scan))::numeric,
                         2::int
                     )
-            END "index scan over sequential scan",
+            END,
             CASE t.idx_scan
                 WHEN 0
                     THEN round(0.0, 2)
                 ELSE
                     round((100::float * i.idx_scan / t.idx_scan)::numeric, 2::int)
-            END "index scan on table"
+            END
         FROM
             pg_stat_user_tables t
         INNER JOIN
@@ -501,6 +523,7 @@ class IndexUsage(Metric):
     http://www.craigkerstiens.com/2012/10/01/understanding-postgres-performance/)
     """
 
+    header_labels = [_("Table"), _("Index used (in %)"), _("Num rows")]
     label = _("Index Usage")
     ordering = "2"
     slug = "index-usage"
@@ -510,8 +533,8 @@ class IndexUsage(Metric):
             round(
                 (100::float * idx_scan / (seq_scan + idx_scan))::numeric,
                 2::int
-            ) percent_of_times_index_used,
-            n_live_tup rows_in_table
+            ),
+            n_live_tup
         FROM
             pg_stat_user_tables
         WHERE
@@ -536,13 +559,14 @@ registry.register(IndexUsage)
 
 
 class TableSize(Metric):
+    header_labels = [_("Table"), _("Size")]
     label = _("Table Size")
     ordering = "1"
     slugify = "table-size"
     sql = """
         SELECT
-            relname "table",
-            pg_size_pretty(pg_relation_size(relid)) size
+            relname,
+            pg_size_pretty(pg_relation_size(relid))
         FROM
             pg_stat_user_tables
         {ORDER_BY}
@@ -591,27 +615,36 @@ registry.register(AvailableExtensions)
 
 class SequenceUsage(Metric):
     """
-    Show the sequence usage within a PostgreSQL database. A usage over 90%
-    will be marked as red, and a usage over 75% will be marked as yellow.
+    Show the sequence usage within a PostgreSQL database. A usage over 75%
+    will be marked as red, and a usage over 50% will be marked as yellow.
     """
 
+    header_labels = [
+        _("Table"),
+        _("Column"),
+        _("Sequence"),
+        _("Last value"),
+        _("Max value"),
+        _("Used (in %)"),
+    ]
     label = _("Sequence Usage")
+    min_pg_version = 100000
     ordering = "-6.1.2.3"
     slug = "sequence-usage"
     sql = """
         SELECT
-            tabcls.relname "table",
-            attrib.attname "column",
-            seqcls.relname "sequence",
-            seq.last_value "last_value",
-            seq.max_value "max_value",
+            tabcls.relname,
+            attrib.attname,
+            seqcls.relname,
+            seq.last_value,
+            seq.max_value,
             round(
                 (
                     100::float * COALESCE(seq.last_value, 0)
                     / (seq.max_value - seq.start_value + 1)
                 )::numeric,
                 2::int
-            ) percent_sequence_used
+            )
         FROM
             pg_class AS seqcls
         INNER JOIN
