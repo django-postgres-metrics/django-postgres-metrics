@@ -9,6 +9,8 @@ Under Development
 
 * Added support for translatable column titles.
 
+* Added support for metrics to only be available on certain PostgreSQL versions.
+
 0.8.0 (2021-01-03)
 ==================
 

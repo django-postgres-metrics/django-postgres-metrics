@@ -141,11 +141,26 @@ class MetricResult:
        The rows returned by a metric for the given database.
     """
 
+    holds_data = True
+
     def __init__(self, connection, records):
         connection.ensure_connection()
         self.alias = connection.alias
         self.dsn = connection.connection.dsn
         self.records = records
+
+
+class NoMetricResult(MetricResult):
+    """
+    Internal class to pass an error message to the template when a metric is
+    not available.
+    """
+
+    holds_data = False
+
+    def __init__(self, connection, reason):
+        super().__init__(connection, [])
+        self.reason = reason
 
 
 class MetricMeta(type):
@@ -236,6 +251,18 @@ class Metric(metaclass=MetricMeta):
     #: this string translateable.
     label = ""
 
+    #: The maximum PostgreSQL version possible to provide the metric data.
+    #: If not explicitly specified, every PostgreSQL version is suitable. This
+    # value is checked against
+    # :attr:`django.db.backends.postgresql.base.DatabaseWrapper.pg_version`.
+    max_pg_version = None
+
+    #: The minimum PostgreSQL version necessary to provide the metric data.
+    #: If not explicitly specified, every PostgreSQL version is suitable. This
+    # value is checked against
+    # :attr:`django.db.backends.postgresql.base.DatabaseWrapper.pg_version`.
+    min_pg_version = None
+
     #: The default ordering that should be applied to the SQL query by default.
     #: This needs to be a valid ordering string as defined on
     #: :attr:`parsed_ordering`.
@@ -292,12 +319,24 @@ class Metric(metaclass=MetricMeta):
         for connection in connections.all():
             if connection.vendor != "postgresql":
                 continue
-            with connection.cursor() as cursor:
-                cursor.execute(self.full_sql)
-                if self.header_labels is None:
-                    self.header_labels = [c.name for c in cursor.description]
-                data = cursor.fetchall()
-            db = MetricResult(connection, data)
+            if (
+                self.min_pg_version is None
+                or connection.pg_version >= self.min_pg_version
+            ) and (
+                self.max_pg_version is None
+                or connection.pg_version <= self.max_pg_version
+            ):
+                with connection.cursor() as cursor:
+                    cursor.execute(self.full_sql)
+                    if self.header_labels is None:
+                        self.header_labels = [c.name for c in cursor.description]
+                    data = cursor.fetchall()
+                db = MetricResult(connection, data)
+            else:
+                db = NoMetricResult(
+                    connection,
+                    "This metric is not supported on this PostgreSQL version.",
+                )
             results.append(db)
         return results
 
@@ -317,7 +356,7 @@ class Metric(metaclass=MetricMeta):
         """
         Turn an ordering string like ``1.5.-3.-2.6`` into the respective abstraction.
 
-        Given :attr:`ordering` as ``1.5.-3.-2.6`` return a lis of 2-tuples
+        Given :attr:`ordering` as ``1.5.-3.-2.6`` return a list of 2-tuples
         like ``[('', 1), ('', 5), ('-', 3), ('-', 2), ('', 6)]``.
         """
         if self.ordering:

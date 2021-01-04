@@ -64,10 +64,14 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for record in result.records %}
-                    <tr class="{% cycle 'row1' 'row2' %} {% record_style %}">{% for item in record %}<td class="{% record_item_style %}">{{ item }}</td>{% endfor %}</tr>
-                    {% endfor %}
-                    {% resetcycle %}
+                    {% if result.holds_data %}
+                        {% for record in result.records %}
+                        <tr class="{% cycle 'row1' 'row2' %} {% record_style %}">{% for item in record %}<td class="{% record_item_style %}">{{ item }}</td>{% endfor %}</tr>
+                        {% endfor %}
+                        {% resetcycle %}
+                    {% else %}
+                        <tr class="pgm-critical"><td colspan="{{ metric.headers|length }}">{{ result.reason }}</td></tr>
+                    {% endif %}
                 </tbody>
             </table>
         </div>
