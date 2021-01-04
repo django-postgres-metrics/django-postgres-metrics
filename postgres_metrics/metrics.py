@@ -464,7 +464,7 @@ class CacheHits(Metric):
     """
 
     def get_record_item_style(self, record, item, index):
-        if index == 2 and item != "N/A":
+        if index == 2 and item is not None and item != "N/A":
             ratio = float(item)
             if ratio < 0.95:
                 return "critical"
