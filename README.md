@@ -1,8 +1,12 @@
 # django-postgres-metrics
 
-![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/django-postgres-metrics/django-postgres-metrics/Lint%20&%20Test/master?style=for-the-badge)
-![Codecov branch](https://img.shields.io/codecov/c/gh/django-postgres-metrics/django-postgres-metrics/master?style=for-the-badge)
-![PyPI](https://img.shields.io/pypi/v/django-postgres-metrics?style=for-the-badge)
+[![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/django-postgres-metrics/django-postgres-metrics/Lint%20&%20Test/master?style=for-the-badge)](https://github.com/django-postgres-metrics/django-postgres-metrics/actions?query=branch%3Amaster+event%3Apush)
+[![Codecov branch](https://img.shields.io/codecov/c/gh/django-postgres-metrics/django-postgres-metrics/master?style=for-the-badge)](https://app.codecov.io/gh/django-postgres-metrics/django-postgres-metrics/branch/master)
+[![Read the Docs](https://img.shields.io/readthedocs/django-postgres-metrics?style=for-the-badge)](https://django-postgres-metrics.readthedocs.io/)
+[![Version](https://img.shields.io/pypi/v/django-postgres-metrics?label=Version&style=for-the-badge)](https://pypi.org/project/django-postgres-metrics/)
+![License](https://img.shields.io/pypi/l/django-postgres-metrics?style=for-the-badge)
+![Python Versions](https://img.shields.io/pypi/pyversions/django-postgres-metrics?label=Python&style=for-the-badge)
+![Django Versions](https://img.shields.io/pypi/djversions/django-postgres-metrics?color=%230C4B33&label=Django&style=for-the-badge)
 
 A Django application that exposes a bunch of PostgreSQL database metrics.
 
