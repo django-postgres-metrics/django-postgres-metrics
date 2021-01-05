@@ -43,8 +43,8 @@ jobs:
     name: "Test Python ${{ matrix.python-version }} & Django ${{ matrix.django-version }}"
     needs: [lint]
     services:
-      postgres:
-        image: postgres
+      postgres95:
+        image: postgres:9.5
         env:
           POSTGRES_PASSWORD: postgres
         options: >-
@@ -53,7 +53,62 @@ jobs:
           --health-timeout 5s
           --health-retries 5
         ports:
-          - 5432:5432
+          - 5495:5432
+      postgres96:
+        image: postgres:9.6
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5496:5432
+      postgres10:
+        image: postgres:10
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5410:5432
+      postgres11:
+        image: postgres:11
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5411:5432
+      postgres12:
+        image: postgres:12
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5412:5432
+      postgres13:
+        image: postgres:13
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5413:5432
     strategy:
       matrix:
         django-version: ["2.2", "3.0", "3.1"]
@@ -84,18 +139,12 @@ jobs:
           python -m pip install -U pip
           python -m pip install Django~=${{ matrix.django-version }}.0
           python -m pip install '.[test]'
-      - name: Create additional DB users
-        run: |
-          psql -c "CREATE ROLE someuser WITH LOGIN PASSWORD 'somepass' CREATEDB;"
-          psql -c "CREATE ROLE otheruser WITH LOGIN PASSWORD 'otherpass' CREATEDB;"
-        env:
-          PGHOST: localhost
-          PGPASSWORD: postgres
-          PGUSER: postgres
       - name: Run tests
         run: |
           coverage run "$(command -v django-admin.py)" test --pythonpath . -v 2 --settings=tests.settings
           coverage report
+        env:
+          PG_VERSIONS: "95,96,10,11,12,13"
       - name: Upload coverage to codecov.io
         uses: codecov/codecov-action@v1
         with:
