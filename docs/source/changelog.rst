@@ -7,9 +7,15 @@ Changelog
 Under Development
 =================
 
+0.9.0 (2021-01-05)
+==================
+
 * Added support for translatable column titles.
 
 * Added support for metrics to only be available on certain PostgreSQL versions.
+
+* Fixed an issue in the :class:`Cache Hits <metrics.CacheHits>` metric when a
+  database doesn't track those metrics.
 
 0.8.0 (2021-01-03)
 ==================
