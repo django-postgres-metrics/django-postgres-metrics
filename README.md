@@ -91,7 +91,11 @@ should normally receive a response within a week. If I haven't got back to you w
 
 ## Contributing
 
-The uses [pre-commit](https://pre-commit.com/) for linting and formatting of source code:
+The project [black](https://pypi.org/project/black/) and
+[isort](https://pypi.org/project/isort/) for formatting its code.
+[flake8](https://pypi.org/project/flake8/) is used for linting. All these are
+combined into [pre-commit](https://pre-commit.com/) to run before each commit
+and push. To set it up:
 
 ```console
 (env)$ python -m pip install '.[dev,test]'
