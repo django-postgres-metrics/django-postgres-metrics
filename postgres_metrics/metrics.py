@@ -485,10 +485,16 @@ class IndexSize(Metric):
         SELECT
             relname,
             indexrelname,
-            pg_size_pretty(pg_relation_size(indexrelid))
-        FROM
-            pg_stat_user_indexes
-        {ORDER_BY}
+            pg_size_pretty(index_size)
+        FROM (
+            SELECT
+                relname,
+                indexrelname,
+                pg_relation_size(indexrelid) AS index_size
+            FROM
+                pg_stat_user_indexes
+            {ORDER_BY}
+        ) AS t
         ;
     """
 
@@ -627,15 +633,25 @@ class TableSize(Metric):
     sql = """
         SELECT
             relname,
-            pg_size_pretty(pg_total_relation_size(relid)) as total_size,
-            pg_size_pretty(pg_table_size(relid)) as table_size,
-            pg_size_pretty(pg_relation_size(relid, 'main')) as relation_size_main,
-            pg_size_pretty(pg_relation_size(relid, 'fsm')) as relation_size_fsm,
-            pg_size_pretty(pg_relation_size(relid, 'vm')) as relation_size_vm,
-            pg_size_pretty(pg_relation_size(relid, 'init')) as relation_size_init
-        FROM
-            pg_stat_user_tables
-        {ORDER_BY}
+            pg_size_pretty(total_size),
+            pg_size_pretty(table_size),
+            pg_size_pretty(relation_size_main),
+            pg_size_pretty(relation_size_fsm),
+            pg_size_pretty(relation_size_vm),
+            pg_size_pretty(relation_size_init)
+        FROM (
+            SELECT
+                relname,
+                pg_total_relation_size(relid) AS total_size,
+                pg_table_size(relid) AS table_size,
+                pg_relation_size(relid, 'main') AS relation_size_main,
+                pg_relation_size(relid, 'fsm') AS relation_size_fsm,
+                pg_relation_size(relid, 'vm') AS relation_size_vm,
+                pg_relation_size(relid, 'init') AS relation_size_init
+            FROM
+                pg_stat_user_tables
+            {ORDER_BY}
+        ) AS t
         ;
     """
 
