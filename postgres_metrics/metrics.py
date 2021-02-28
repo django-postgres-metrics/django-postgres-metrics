@@ -598,14 +598,41 @@ registry.register(IndexUsage)
 
 
 class TableSize(Metric):
-    header_labels = [_("Table"), _("Size")]
+    """
+    The "size" of a table in PostgreSQL can be different, depending on what to
+    include when calculating "the size".
+
+    The "Total size" for a relation is equal to the "Table size" plus all
+    indexes.
+
+    The "size of * fork" refers to the "main" data fork, the Free Space Map
+    (fsm), Visibility Map (vm), and the initialization fork.
+
+    See also the PostgreSQL documentation on on the physical storage:
+    https://www.postgresql.org/docs/current/storage.html
+    """
+
+    header_labels = [
+        _("Table"),
+        _("Total size"),
+        _("Table size"),
+        _("Size of 'main' fork"),
+        _("Size of 'fsm' fork"),
+        _("Size of 'vm' fork"),
+        _("Size of 'init' fork"),
+    ]
     label = _("Table Size")
     ordering = "1"
     slugify = "table-size"
     sql = """
         SELECT
             relname,
-            pg_size_pretty(pg_relation_size(relid))
+            pg_size_pretty(pg_total_relation_size(relid)) as total_size,
+            pg_size_pretty(pg_table_size(relid)) as table_size,
+            pg_size_pretty(pg_relation_size(relid, 'main')) as relation_size_main,
+            pg_size_pretty(pg_relation_size(relid, 'fsm')) as relation_size_fsm,
+            pg_size_pretty(pg_relation_size(relid, 'vm')) as relation_size_vm,
+            pg_size_pretty(pg_relation_size(relid, 'init')) as relation_size_init
         FROM
             pg_stat_user_tables
         {ORDER_BY}
