@@ -10,7 +10,7 @@ Issuing a new Release
   .. code-block:: console
 
      $ git tag -s "x.y.z"
-     $ git push --tags origin master
+     $ git push --tags origin main
 
 * `Update the release nodes
   <https://github.com/django-postgres-metrics/django-postgres-metrics/releases>`_
