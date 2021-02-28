@@ -3,10 +3,10 @@ name: Lint & Test
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
     branches:
-      - master
+      - main
 
 jobs:
   lint:
@@ -159,7 +159,7 @@ jobs:
           if-no-files-found: error
           retention-days: 1
       - name: Post screenshots
-        if: "${{ github.ref != 'refs/heads/master' &&  matrix.python-version == '3.9' && matrix.django-version == '3.1' }}"
+        if: "${{ github.ref != 'refs/heads/main' &&  matrix.python-version == '3.9' && matrix.django-version == '3.1' }}"
         run: |
           python -m pip install imgbox-cli
           imgbox --json tests/output/*.png > imgbox-response.json
