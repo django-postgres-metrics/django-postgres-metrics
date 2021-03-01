@@ -7,6 +7,15 @@ Changelog
 Under Development
 =================
 
+0.10.0 (2021-03-01)
+===================
+
+* Use humanized sorting in the :class:`Index Size <metrics.IndexSize>` and
+  :class:`Table Size <metrics.TableSize>` metrics.
+
+* Extended the :class:`Table Size <metrics.TableSize>` metric with additional
+  information.
+
 0.9.0 (2021-01-05)
 ==================
 
