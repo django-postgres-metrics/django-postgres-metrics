@@ -1,6 +1,6 @@
 # django-postgres-metrics
 
-[![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/django-postgres-metrics/django-postgres-metrics/Lint%20&%20Test/main?style=for-the-badge)](https://github.com/django-postgres-metrics/django-postgres-metrics/actions?query=branch%3Amain+event%3Apush)
+[![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/django-postgres-metrics/django-postgres-metrics/Test%20&%20Deploy/main?style=for-the-badge)](https://github.com/django-postgres-metrics/django-postgres-metrics/actions?query=branch%3Amain+event%3Apush)
 [![Codecov branch](https://img.shields.io/codecov/c/gh/django-postgres-metrics/django-postgres-metrics/main?style=for-the-badge)](https://app.codecov.io/gh/django-postgres-metrics/django-postgres-metrics/branch/main)
 [![Read the Docs](https://img.shields.io/readthedocs/django-postgres-metrics?style=for-the-badge)](https://django-postgres-metrics.readthedocs.io/)
 [![Version](https://img.shields.io/pypi/v/django-postgres-metrics?label=Version&style=for-the-badge)](https://pypi.org/project/django-postgres-metrics/)
