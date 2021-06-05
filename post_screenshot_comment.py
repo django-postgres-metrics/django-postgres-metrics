@@ -90,6 +90,7 @@ if __name__ == "__main__":
     comment_id = find_screenshot_comment_id(pr_id)
     images = get_image_urls(sys.argv[2])
     body = format_body(images)
+    print(body)
     token = os.environ["GITHUB_TOKEN"]
     if comment_id:
         update_comment(comment_id, body, token)
