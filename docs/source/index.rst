@@ -13,7 +13,7 @@ Welcome to django-postgres-metrics's documentation!
 
 
 Indices and tables
-==================
+------------------
 
 * :ref:`genindex`
 * :ref:`modindex`
