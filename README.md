@@ -1,12 +1,12 @@
 # django-postgres-metrics
 
-[![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/django-postgres-metrics/django-postgres-metrics/Test%20&%20Deploy/main?style=for-the-badge)](https://github.com/django-postgres-metrics/django-postgres-metrics/actions?query=branch%3Amain+event%3Apush)
-[![Codecov branch](https://img.shields.io/codecov/c/gh/django-postgres-metrics/django-postgres-metrics/main?style=for-the-badge)](https://app.codecov.io/gh/django-postgres-metrics/django-postgres-metrics/branch/main)
+[![GitHub Build Status](https://img.shields.io/github/workflow/status/django-postgres-metrics/django-postgres-metrics/Test%20&%20Deploy/main?style=for-the-badge)](https://github.com/django-postgres-metrics/django-postgres-metrics/actions?query=branch%3Amain+event%3Apush)
+[![Codecov coverage](https://img.shields.io/codecov/c/gh/django-postgres-metrics/django-postgres-metrics/main?style=for-the-badge)](https://app.codecov.io/gh/django-postgres-metrics/django-postgres-metrics/branch/main)
 [![Read the Docs](https://img.shields.io/readthedocs/django-postgres-metrics?style=for-the-badge)](https://django-postgres-metrics.readthedocs.io/)
 [![Version](https://img.shields.io/pypi/v/django-postgres-metrics?label=Version&style=for-the-badge)](https://pypi.org/project/django-postgres-metrics/)
-![License](https://img.shields.io/pypi/l/django-postgres-metrics?style=for-the-badge)
-![Python Versions](https://img.shields.io/pypi/pyversions/django-postgres-metrics?label=Python&style=for-the-badge)
-![Django Versions](https://img.shields.io/pypi/djversions/django-postgres-metrics?color=%230C4B33&label=Django&style=for-the-badge)
+![License: BSD](https://img.shields.io/pypi/l/django-postgres-metrics?style=for-the-badge)
+[![Python Versions: see setup.py](https://img.shields.io/pypi/pyversions/django-postgres-metrics?label=Python&style=for-the-badge)](https://github.com/django-postgres-metrics/django-postgres-metrics/blob/main/setup.py)
+[![Django Versions: see setup.py](https://img.shields.io/pypi/djversions/django-postgres-metrics?color=%230C4B33&label=Django&style=for-the-badge)](https://github.com/django-postgres-metrics/django-postgres-metrics/blob/main/setup.py)
 
 A Django application that exposes a bunch of PostgreSQL database metrics.
 
