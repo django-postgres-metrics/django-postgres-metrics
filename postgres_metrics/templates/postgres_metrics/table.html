@@ -13,7 +13,7 @@
 <div class="breadcrumbs">
     <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
     &rsaquo; <a href="{% url 'admin:index' %}#postgres-metrics">{% trans 'PostgreSQL Metrics' %}</a>
-    &rsaquo; {{ metric.label }}
+    &rsaquo; <span aria-current="page">{{ metric.label }}</span>
 </div>
 {% endblock %}
 
@@ -36,7 +36,7 @@
                     {% for iter_metric in postgres_metrics %}
                     {% url "postgres-metrics:show" name=iter_metric.slug as metric_url %}
                         <li{% if metric.slug == iter_metric.slug %} class="selected"{% endif %}>
-                            <a href="{{ metric_url }}" title="{{ iter_metric.label }}">{{ iter_metric.label }}</a>
+                            <a href="{{ metric_url }}" title="{{ iter_metric.label }}" {% if metric.slug == iter_metric.slug %}aria-current="page"{% endif %}>{{ iter_metric.label }}</a>
                         </li>
                     {% endfor %}
                 </ul>

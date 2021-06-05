@@ -83,7 +83,7 @@ class TestMetricsView(TestCase):
         )
         self.assertInHTML(
             '<li class="selected"><a href="/postgres-metrics/index-size/" '
-            'title="Index Size">Index Size</a></li>',
+            'title="Index Size" aria-current="page">Index Size</a></li>',
             result.content.decode(),
         )
 
