@@ -83,7 +83,7 @@ This is what a metric could look like:
 ## Security
 
 If you found or if you think you found a security issue please get in touch via
-`info+django-postgres-metrics *AT* markusholtermann *DOT* eu`.
+`info+django-postgres-metrics *at* markusholtermann *dot* eu`.
 
 I'm working about this in my free time. I don't have time to monitor the email 24/7. But you
 should normally receive a response within a week. If I haven't got back to you within
