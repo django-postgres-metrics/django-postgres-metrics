@@ -22,6 +22,7 @@ def metrics_view(request, name):
         request,
         "postgres_metrics/table.html",
         {
+            "title": metric.label,
             "metric": metric,
             "results": metric.get_data(),
             "opts": {"app_label": "postgres_metrics", "model_name": metric.slug},
