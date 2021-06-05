@@ -614,7 +614,7 @@ class TableSize(Metric):
     The "size of * fork" refers to the "main" data fork, the Free Space Map
     (fsm), Visibility Map (vm), and the initialization fork.
 
-    See also the PostgreSQL documentation on on the physical storage:
+    See also the PostgreSQL documentation on the physical storage:
     https://www.postgresql.org/docs/current/storage.html
     """
 
