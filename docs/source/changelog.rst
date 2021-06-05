@@ -10,7 +10,7 @@ Under Development
 0.10.1 (2021-04-06)
 ===================
 
-* Use [pre-commit.ci](https://results.pre-commit.ci/repo/github/111322592) for linting
+* Use `pre-commit.ci <https://results.pre-commit.ci/repo/github/111322592>`_ for linting
 
 * Use a single workflow file
 
