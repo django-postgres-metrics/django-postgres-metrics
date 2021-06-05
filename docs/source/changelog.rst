@@ -7,6 +7,12 @@ Changelog
 Under Development
 =================
 
+* Added dark-mode support. (`PR #59
+  <https://github.com/django-postgres-metrics/django-postgres-metrics/pull/59>`_)
+
+* Fixed several accessibility issues. (`PR #58
+  <https://github.com/django-postgres-metrics/django-postgres-metrics/pull/58>`_)
+
 0.10.1 (2021-04-06)
 ===================
 

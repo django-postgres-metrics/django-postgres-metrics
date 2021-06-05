@@ -26,20 +26,20 @@
 
 tr.pgm-critical,
 td.pgm-critical {
-  background-color: #ffefef;
+  background-color: var(--message-error-bg);
 }
 
 tr.pgm-warning,
 td.pgm-warning {
-  background-color: #ffffcc;
+  background-color: var(--message-warning-bg);
 }
 
 tr.pgm-ok,
 td.pgm-ok {
-  background-color: #ddffdd;
+  background-color: var(--message-success-bg);
 }
 
 tr.pgm-info,
 td.pgm-info {
-  background-color: #9adeff;
+  background-color: var(--breadcrumbs-bg);
 }
