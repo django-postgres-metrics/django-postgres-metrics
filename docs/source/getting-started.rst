@@ -73,7 +73,8 @@ metrics.
 This is what a metric could look like:
 
 .. figure:: _static/screenshot.png
-    :alt: Metric example
+    :target: _static/screenshot.png
+    :alt: Screenshot of the Detailed Index Usage metric, with help text, and a table with rows for each index
 
 
 Designing Your Own Metric
