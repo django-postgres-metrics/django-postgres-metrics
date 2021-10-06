@@ -7,6 +7,8 @@ Changelog
 Under Development
 =================
 
+* Added support for Django 4.0 and Python 3.10.
+
 * Added dark-mode support. (`PR #59
   <https://github.com/django-postgres-metrics/django-postgres-metrics/pull/59>`_)
 

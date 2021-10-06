@@ -2,11 +2,11 @@ import re
 
 from django.core.exceptions import ImproperlyConfigured
 from django.db import connections
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 from django.utils.functional import cached_property
 from django.utils.html import escape, urlize
 from django.utils.text import normalize_newlines, slugify
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 
 class MetricRegistry:
@@ -177,7 +177,7 @@ class MetricMeta(type):
 
             docstring = attrs.get("__doc__")
             if docstring and docstring.strip():
-                docstring = normalize_newlines(force_text(docstring))
+                docstring = normalize_newlines(force_str(docstring))
                 docstring = "\n".join(line.strip() for line in docstring.split("\n"))
                 paras = re.split("\n{2,}", docstring)
                 paras = [

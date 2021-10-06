@@ -26,14 +26,14 @@ setuptools.setup(
         "dev": ["pre-commit"],
         "docs": [
             "Django",
-            "psycopg2",
+            "psycopg2<2.9",
             "sphinx_rtd_theme",
             "Sphinx>=3.0,<3.4",
         ],
         "test": [
             "coverage[toml]>=5,<6",
             "Django",
-            "psycopg2",
+            "psycopg2<2.9",
             "selenium==3.141.0",
         ],
     },
@@ -47,6 +47,7 @@ setuptools.setup(
         "Framework :: Django :: 3.0",
         "Framework :: Django :: 3.1",
         "Framework :: Django :: 3.2",
+        "Framework :: Django :: 4.0",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: BSD License",
         "Operating System :: OS Independent",
@@ -57,6 +58,7 @@ setuptools.setup(
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
     ],
     python_requires=">=3.5",
 )

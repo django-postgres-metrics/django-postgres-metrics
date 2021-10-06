@@ -1,12 +1,12 @@
 from django.conf import settings
-from django.conf.urls import include, url as path
 from django.contrib import admin
 from django.contrib.auth.models import Permission, User
 from django.test import TestCase, override_settings
+from django.urls import include, re_path
 
 urlpatterns = [
-    path("^postgres-metrics/", include("postgres_metrics.urls")),
-    path("^admin/", admin.site.urls),
+    re_path("^postgres-metrics/", include("postgres_metrics.urls")),
+    re_path("^admin/", admin.site.urls),
 ]
 
 
