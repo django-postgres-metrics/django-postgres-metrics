@@ -7,6 +7,8 @@ Changelog
 Under Development
 =================
 
+* Added support for PostgreSQL 14.
+
 * Added support for Django 4.0 and Python 3.10.
 
 * Added dark-mode support. (`PR #59
