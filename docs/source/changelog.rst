@@ -7,6 +7,9 @@ Changelog
 Under Development
 =================
 
+0.11.0 (2021-10-06)
+===================
+
 * Added support for PostgreSQL 14.
 
 * Added support for Django 4.0 and Python 3.10.
