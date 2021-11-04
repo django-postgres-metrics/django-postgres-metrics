@@ -26,14 +26,14 @@ setuptools.setup(
         "dev": ["pre-commit"],
         "docs": [
             "Django",
-            "psycopg2<2.9",
+            "psycopg2",
             "sphinx_rtd_theme>=1.0,<2.0",
             "Sphinx>=4.0,<5.0",
         ],
         "test": [
             "coverage[toml]>=5,<6",
             "Django",
-            "psycopg2<2.9",
+            "psycopg2",
             "selenium==3.141.0",
         ],
     },
