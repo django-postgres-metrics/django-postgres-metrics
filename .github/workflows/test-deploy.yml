@@ -94,7 +94,7 @@ jobs:
           - 5414:5432
     strategy:
       matrix:
-        django-version: ["2.2.0", "3.0.0", "3.1.0", "3.2.0", "4.0b1"]
+        django-version: ["2.2.0", "3.0.0", "3.1.0", "3.2.0", "4.0.0"]
         python-version: ["3.5", "3.6", "3.7", "3.8", "3.9", "3.10"]
         exclude:
           # 3.0
@@ -111,11 +111,11 @@ jobs:
           - django-version: "3.2.0"
             python-version: "3.5"
           # 4.0
-          - django-version: "4.0b1"
+          - django-version: "4.0.0"
             python-version: "3.5"
-          - django-version: "4.0b1"
+          - django-version: "4.0.0"
             python-version: "3.6"
-          - django-version: "4.0b1"
+          - django-version: "4.0.0"
             python-version: "3.7"
       fail-fast: false
     steps:
@@ -141,7 +141,7 @@ jobs:
           if [ "${{ matrix.django-version }}" = "3.2.0" ] ; then
             export PG_VERSIONS="96,10,11,12,13,14"
           else
-            if [ "${{ matrix.django-version }}" = "4.0b1" ] ; then
+            if [ "${{ matrix.django-version }}" = "4.0.0" ] ; then
               export PG_VERSIONS="10,11,12,13,14"
             fi
           fi
