@@ -47,7 +47,6 @@ if django.VERSION[:2] < (3, 0):
     class SeleniumTestCase(BaseSeleniumTestCase, metaclass=SeleniumTestCaseBase):
         pass
 
-
 else:
     SeleniumTestCase = BaseSeleniumTestCase
 
