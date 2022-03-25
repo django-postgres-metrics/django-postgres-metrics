@@ -7,6 +7,12 @@ Changelog
 Under Development
 =================
 
+* Dropped official support for Django 3.0 and 3.1.
+
+  .. warning::
+
+     Use version 0.11 for Django 3.0 or 3.1 support!
+
 * Loosened the requirements for psycopg2 on Django 3.1 and above. There's no
   need to limit to ``psycopg2<2.9`` anymore.
 
