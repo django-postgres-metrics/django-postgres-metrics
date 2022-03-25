@@ -7,6 +7,9 @@ Changelog
 Under Development
 =================
 
+* Loosened the requirements for psycopg2 on Django 3.1 and above. There's no
+  need to limit to ``psycopg2<2.9`` anymore.
+
 0.11.0 (2021-10-06)
 ===================
 
