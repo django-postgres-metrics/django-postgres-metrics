@@ -27,8 +27,8 @@ setuptools.setup(
         "docs": [
             "Django",
             "psycopg2<2.9",
-            "sphinx_rtd_theme",
-            "Sphinx>=3.0,<3.4",
+            "sphinx_rtd_theme>=1.0,<2.0",
+            "Sphinx>=4.0,<5.0",
         ],
         "test": [
             "coverage[toml]>=5,<6",
