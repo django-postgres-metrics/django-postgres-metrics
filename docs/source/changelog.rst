@@ -7,6 +7,9 @@ Changelog
 Under Development
 =================
 
+0.12.0 (2022-03-25)
+===================
+
 * Dropped official support for Django 3.0 and 3.1.
 
   .. warning::
