@@ -1,1 +1,1 @@
-.[docs]
+.[cli,docs]

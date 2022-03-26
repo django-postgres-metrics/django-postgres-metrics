@@ -13,6 +13,8 @@ Under Development
 
      Use version 0.12 for Python 3.5 support!
 
+* Add the ``pgm_list_metrics`` and ``pgm_show_metric`` management commands.
+
 0.12.0 (2022-03-25)
 ===================
 

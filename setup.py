@@ -23,6 +23,9 @@ setuptools.setup(
     ),
     include_package_data=True,
     extras_require={
+        "cli": [
+            "django-rich>=1.0,<2.0",
+        ],
         "dev": ["pre-commit"],
         "docs": [
             "Django",
