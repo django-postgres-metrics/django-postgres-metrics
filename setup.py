@@ -22,10 +22,10 @@ setuptools.setup(
         exclude=["*.tests", "*.tests.*", "tests.*", "tests"]
     ),
     include_package_data=True,
+    install_requires=[
+        "django-rich>=1.0,<2.0",
+    ],
     extras_require={
-        "cli": [
-            "django-rich>=1.0,<2.0",
-        ],
         "dev": ["pre-commit"],
         "docs": [
             "Django",
