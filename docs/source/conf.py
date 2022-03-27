@@ -72,4 +72,5 @@ html_static_path = ["_static"]
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
     "django": ("http://django.readthedocs.org/en/latest/", None),
+    "rich": ("http://rich.readthedocs.org/en/latest/", None),
 }

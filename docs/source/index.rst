@@ -2,11 +2,13 @@ Welcome to django-postgres-metrics's documentation!
 ===================================================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Contents:
 
    background
    getting-started
+   usage
+   designing-your-own
    contributing/index
    ref/modules
    changelog
