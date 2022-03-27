@@ -66,8 +66,6 @@ TEMPLATES = [
 
 Lastly, you need to add a URL path to your global `urls.py` _before_ the `admin` URL patterns.
 
-For Django 2.0 and up:
-
 ```python
 from django.urls import include, path
 
