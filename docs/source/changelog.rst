@@ -7,6 +7,12 @@ Changelog
 Under Development
 =================
 
+* Dropped official support for Python 3.5.
+
+  .. warning::
+
+     Use version 0.12 for Python 3.5 support!
+
 0.12.0 (2022-03-25)
 ===================
 
