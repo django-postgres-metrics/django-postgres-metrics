@@ -23,7 +23,7 @@ setuptools.setup(
     ),
     include_package_data=True,
     install_requires=[
-        "django-rich>=1.0,<2.0",
+        "django-rich>=1.0",
     ],
     extras_require={
         "dev": ["pre-commit"],
