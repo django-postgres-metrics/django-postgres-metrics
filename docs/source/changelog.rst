@@ -7,6 +7,9 @@ Changelog
 Under Development
 =================
 
+0.13.0 (2022-03-27)
+===================
+
 * Dropped official support for Python 3.5.
 
   .. warning::

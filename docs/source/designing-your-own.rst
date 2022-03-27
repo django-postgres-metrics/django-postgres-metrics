@@ -57,6 +57,7 @@ A short explanation of what the metric class attributes do:
    The actual SQL you want to run. The ``{ORDER_BY}`` part is replaced with
    ``ORDER BY 2 DESC, 1`` in the example.
 
+
 Styling Metric Output
 ---------------------
 
@@ -87,6 +88,7 @@ do any expensive calculations here!
 
 django-postgres-metrics ships four pre-defined styles: ``ok``, ``warning``,
 ``critical`` and ``info`` that you can return.
+
 
 Styling Record Items
 ~~~~~~~~~~~~~~~~~~~~
