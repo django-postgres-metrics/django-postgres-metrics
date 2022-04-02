@@ -15,10 +15,9 @@ RICH_STYLE_MAPPING = {
 
 
 class Command(RichCommand):
+    help = "Show the selected metric."
+
     def add_arguments(self, parser):
-        """
-        Entry point for subclassed commands to add custom arguments.
-        """
         parser.add_argument("metric", help="The metric's slug")
 
     def handle(self, *args, **options):

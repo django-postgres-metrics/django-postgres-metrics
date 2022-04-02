@@ -7,6 +7,8 @@ Changelog
 Under Development
 =================
 
+* Set help messages for management commands introduced in version 0.13.0.
+
 * Fix slug attributes on ``IndexSize`` and ``TableSize`` metrics.
 
 0.13.0 (2022-03-27)

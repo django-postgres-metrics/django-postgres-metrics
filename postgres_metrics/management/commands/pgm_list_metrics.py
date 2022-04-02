@@ -8,6 +8,8 @@ from postgres_metrics.metrics import registry as metrics_registry
 
 
 class Command(RichCommand):
+    help = "List all available metrics."
+
     def handle(self, *args, **options):
         table = Table()
         table.add_column("Slug", no_wrap=True)
