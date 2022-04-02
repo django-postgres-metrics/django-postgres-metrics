@@ -480,7 +480,7 @@ class IndexSize(Metric):
     header_labels = [_("Table"), _("Index"), _("Size")]
     label = _("Index Size")
     ordering = "1.2"
-    slugify = "index-size"
+    slug = "index-size"
     sql = """
         SELECT
             relname,
@@ -629,7 +629,7 @@ class TableSize(Metric):
     ]
     label = _("Table Size")
     ordering = "1"
-    slugify = "table-size"
+    slug = "table-size"
     sql = """
         SELECT
             relname,
