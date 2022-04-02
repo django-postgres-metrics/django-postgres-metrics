@@ -7,9 +7,14 @@ Changelog
 Under Development
 =================
 
+0.13.1 (2022-04-02)
+===================
+
 * Set help messages for management commands introduced in version 0.13.0.
 
 * Fix slug attributes on ``IndexSize`` and ``TableSize`` metrics.
+
+* Remove upper bound on django-rich dependency.
 
 0.13.0 (2022-03-27)
 ===================
