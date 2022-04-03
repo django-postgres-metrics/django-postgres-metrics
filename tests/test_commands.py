@@ -1,4 +1,5 @@
 import io
+import os
 from contextlib import contextmanager
 from functools import partial
 from unittest import mock
@@ -9,6 +10,7 @@ from django.db import connection
 from django.test import TestCase
 from rich.console import Console
 
+from postgres_metrics.management.commands import pgm_list_metrics, pgm_show_metric
 from postgres_metrics.metrics import (
     MetricResult,
     NoMetricResult,
@@ -21,16 +23,32 @@ class RichConsoleMixin:
     def patch_console(self):
         with mock.patch(
             "django_rich.management.RichCommand.make_rich_console",
-            partial(Console, width=200),
+            partial(Console, width=200, record=True),
         ):
             yield
 
 
-class TestListMetricsCommand(RichConsoleMixin, TestCase):
+class SaveSVGMixin:
+    counter = 0
+
+    def setUp(self):
+        os.makedirs("tests/output/", exist_ok=True)
+
+    def save_svg(self, cmd, name):
+        cmd.console.save_svg(
+            "tests/output/console-%02d-%s.svg" % (SaveSVGMixin.counter, name),
+            title="django-postgres-metrics: %s" % name,
+        )
+        SaveSVGMixin.counter += 1
+
+
+class TestListMetricsCommand(SaveSVGMixin, RichConsoleMixin, TestCase):
     def test_call(self):
         stdout = io.StringIO()
         with self.patch_console():
-            call_command("pgm_list_metrics", stdout=stdout)
+            cmd = pgm_list_metrics.Command()
+            call_command(cmd, stdout=stdout)
+            self.save_svg(cmd, "list")
         out = stdout.getvalue()
         self.assertIn(" Slug ", out)
         self.assertIn(" Label ", out)
@@ -41,7 +59,7 @@ class TestListMetricsCommand(RichConsoleMixin, TestCase):
                 self.assertIn(str(Metric.slug), out)
 
 
-class TestShowMetricCommand(RichConsoleMixin, TestCase):
+class TestShowMetricCommand(SaveSVGMixin, RichConsoleMixin, TestCase):
     databases = {name for name in settings.DATABASES if name != "sqlite"}
 
     def test_call_generic(self):
@@ -50,7 +68,9 @@ class TestShowMetricCommand(RichConsoleMixin, TestCase):
             metric.get_data()
             stdout = io.StringIO()
             with self.patch_console():
-                call_command("pgm_show_metric", str(metric.slug), stdout=stdout)
+                cmd = pgm_show_metric.Command()
+                call_command(cmd, str(metric.slug), stdout=stdout)
+                self.save_svg(cmd, metric.slug)
             out = stdout.getvalue()
             for header in metric.headers:
                 with self.subTest(metric=metric, header=header):
