@@ -74,7 +74,7 @@ class MakeScreenshotTest(SeleniumTestCase):
         self.selenium.set_window_size(1024, height)
         try:
             self.selenium.save_screenshot(
-                "tests/output/%02d-%s.png" % (MakeScreenshotTest.counter, name)
+                "tests/output/view-%02d-%s.png" % (MakeScreenshotTest.counter, name)
             )
             MakeScreenshotTest.counter += 1
         finally:

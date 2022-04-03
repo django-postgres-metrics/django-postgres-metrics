@@ -76,7 +76,9 @@ urlpatterns = [
 ```
 
 This is what a metric could look like:
-![Screenshot of the Detailed Index Usage metric, with help text, and a table with rows for each index](https://github.com/django-postgres-metrics/django-postgres-metrics/blob/main/docs/source/_static/screenshot.png)
+![Screenshot of the Detailed Index Usage metric, with help text, and a table with rows for each index](https://github.com/django-postgres-metrics/django-postgres-metrics/blob/main/docs/source/_static/screenshot-view.png)
+
+![The same output but using the pgm_show_metric management command](https://github.com/django-postgres-metrics/django-postgres-metrics/blob/main/docs/source/_static/screenshot-cmd-show.svg)
 
 ## Security
 

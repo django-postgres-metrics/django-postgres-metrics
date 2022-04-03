@@ -1,0 +1,167 @@
+<svg width="2664.0" height="1418" viewBox="0 0 2664.0 1418"
+     xmlns="http://www.w3.org/2000/svg">
+    <style>
+        @font-face {
+            font-family: "Fira Code";
+            src: local("FiraCode-Regular"),
+                 url("https://cdnjs.cloudflare.com/ajax/libs/firacode/6.2.0/woff2/FiraCode-Regular.woff2") format("woff2"),
+                 url("https://cdnjs.cloudflare.com/ajax/libs/firacode/6.2.0/woff/FiraCode-Regular.woff") format("woff");
+            font-style: normal;
+            font-weight: 400;
+        }
+        @font-face {
+            font-family: "Fira Code";
+            src: local("FiraCode-Bold"),
+                 url("https://cdnjs.cloudflare.com/ajax/libs/firacode/6.2.0/woff2/FiraCode-Bold.woff2") format("woff2"),
+                 url("https://cdnjs.cloudflare.com/ajax/libs/firacode/6.2.0/woff/FiraCode-Bold.woff") format("woff");
+            font-style: bold;
+            font-weight: 700;
+        }
+        span {
+            display: inline-block;
+            white-space: pre;
+            vertical-align: top;
+            font-size: 18px;
+            font-family:'Fira Code','Cascadia Code',Monaco,Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace;
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        .blink {
+           animation: blinker 1s infinite;
+        }
+        @keyframes blinker {
+            from { opacity: 1.0; }
+            50% { opacity: 0.3; }
+            to { opacity: 1.0; }
+        }
+        #wrapper {
+            padding: 140px;
+            padding-top: 100px;
+        }
+        #terminal {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #0c0c0c;
+            border-radius: 14px;
+            outline: 1px solid #484848;
+        }
+        #terminal:after {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            content: '';
+            border-radius: 14px;
+            background: rgb(71,77,102);
+            background: linear-gradient(90deg, #804D69 0%, #4E4B89 100%);
+            transform: rotate(-4.5deg);
+            z-index: -1;
+        }
+        #terminal-header {
+            position: relative;
+            width: 100%;
+            background-color: #2e2e2e;
+            margin-bottom: 12px;
+            font-weight: bold;
+            border-radius: 14px 14px 0 0;
+            color: #f2f2f2;
+            font-size: 18px;
+            box-shadow: inset 0px -1px 0px 0px #4e4e4e,
+                        inset 0px -4px 8px 0px #1a1a1a;
+        }
+        #terminal-title-tab {
+            display: inline-block;
+            margin-top: 14px;
+            margin-left: 124px;
+            font-family: sans-serif;
+            padding: 14px 28px;
+            border-radius: 6px 6px 0 0;
+            background-color: #0c0c0c;
+            box-shadow: inset 0px 1px 0px 0px #4e4e4e,
+                        0px -4px 4px 0px #1e1e1e,
+                        inset 1px 0px 0px 0px #4e4e4e,
+                        inset -1px 0px 0px 0px #4e4e4e;
+        }
+        #terminal-traffic-lights {
+            position: absolute;
+            top: 24px;
+            left: 20px;
+        }
+        #terminal-body {
+            line-height: 22px;
+            padding: 14px;
+        }
+        .r1 {color: #f2f2f2; text-decoration-color: #f2f2f2;background-color: #0c0c0c;}
+.r2 {font-weight: bold;color: #f2f2f2; text-decoration-color: #f2f2f2;;background-color: #0c0c0c;}
+    </style>
+    <foreignObject x="0" y="0" width="100%" height="100%">
+        <body xmlns="http://www.w3.org/1999/xhtml">
+            <div id="wrapper">
+                <div id="terminal">
+                    <div id='terminal-header'>
+                        <svg id="terminal-traffic-lights" width="90" height="21" viewBox="0 0 90 21" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="14" cy="8" r="8" fill="#ff6159"/>
+                            <circle cx="38" cy="8" r="8" fill="#ffbd2e"/>
+                            <circle cx="62" cy="8" r="8" fill="#28c941"/>
+                        </svg>
+                        <div id="terminal-title-tab">django-postgres-metrics: list</div>
+                    </div>
+                    <div id='terminal-body'>
+                        <div><span class="r1">┏━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓</span><span class="r1">                                                                         </span></div>
+<div><span class="r1">┃</span><span class="r2"> Slug                 </span><span class="r1">┃</span><span class="r2"> Label                </span><span class="r1">┃</span><span class="r2"> Description                                                                   </span><span class="r1">┃</span><span class="r1">                                                                         </span></div>
+<div><span class="r1">┡━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩</span><span class="r1">                                                                         </span></div>
+<div><span class="r1">│ </span><span class="r1">available-extensions</span><span class="r1"> │ </span><span class="r1">Available Extensions</span><span class="r1"> │ </span><span class="r1">PostgreSQL can be extended by installing extensions with the CREATE          </span><span class="r1"> │</span><span class="r1">                                                                         </span></div>
+<div><span class="r1">│                      │                      │ </span><span class="r1">EXTENSION command. The list of available extensions on each database is      </span><span class="r1"> │</span><span class="r1">                                                                         </span></div>
+<div><span class="r1">│                      │                      │ </span><span class="r1">shown below.                                                                 </span><span class="r1"> │</span><span class="r1">                                                                         </span></div>
+<div><span class="r1">│ </span><span class="r1">cache-hits          </span><span class="r1"> │ </span><span class="r1">Cache Hits          </span><span class="r1"> │ </span><span class="r1">The typical rule for most applications is that only a fraction of its data   </span><span class="r1"> │</span><span class="r1">                                                                         </span></div>
+<div><span class="r1">│                      │                      │ </span><span class="r1">is regularly accessed. As with many other things data can tend to follow     </span><span class="r1"> │</span><span class="r1">                                                                         </span></div>
+<div><span class="r1">│                      │                      │ </span><span class="r1">the 80/20 rule with 20% of your data accounting for 80% of the reads and     </span><span class="r1"> │</span><span class="r1">                                                                         </span></div>
+<div><span class="r1">│                      │                      │ </span><span class="r1">often times its higher than this. Postgres itself actually tracks access     </span><span class="r1"> │</span><span class="r1">                                                                         </span></div>
+<div><span class="r1">│                      │                      │ </span><span class="r1">patterns of your data and will on its own keep frequently accessed data in   </span><span class="r1"> │</span><span class="r1">                                                                         </span></div>
+<div><span class="r1">│                      │                      │ </span><span class="r1">cache. Generally you want your database to have a cache hit rate of about    </span><span class="r1"> │</span><span class="r1">                                                                         </span></div>
+<div><span class="r1">│                      │                      │ </span><span class="r1">99%.                                                                         </span><span class="r1"> │</span><span class="r1">                                                                         </span></div>
+<div><span class="r1">│                      │                      │ </span><span class="r1">                                                                             </span><span class="r1"> │</span><span class="r1">                                                                         </span></div>
+<div><span class="r1">│                      │                      │ </span><span class="r1">(Source:                                                                     </span><span class="r1"> │</span><span class="r1">                                                                         </span></div>
+<div><span class="r1">│                      │                      │ </span><span class="r1">http://www.craigkerstiens.com/2012/10/01/understanding-postgres-performance/)</span><span class="r1"> │</span><span class="r1">                                                                         </span></div>
+<div><span class="r1">│ </span><span class="r1">detailed-index-usage</span><span class="r1"> │ </span><span class="r1">Detailed Index Usage</span><span class="r1"> │ </span><span class="r1">A metric similar to &quot;Index Usage&quot; but broken down by index.                  </span><span class="r1"> │</span><span class="r1">                                                                         </span></div>
+<div><span class="r1">│                      │                      │ </span><span class="r1">                                                                             </span><span class="r1"> │</span><span class="r1">                                                                         </span></div>
+<div><span class="r1">│                      │                      │ </span><span class="r1">The &quot;index scan over sequential scan&quot; column shows how frequently an index   </span><span class="r1"> │</span><span class="r1">                                                                         </span></div>
+<div><span class="r1">│                      │                      │ </span><span class="r1">was used in comparison to the total number of sequential and index scans on  </span><span class="r1"> │</span><span class="r1">                                                                         </span></div>
+<div><span class="r1">│                      │                      │ </span><span class="r1">the table.                                                                   </span><span class="r1"> │</span><span class="r1">                                                                         </span></div>
+<div><span class="r1">│                      │                      │ </span><span class="r1">                                                                             </span><span class="r1"> │</span><span class="r1">                                                                         </span></div>
+<div><span class="r1">│                      │                      │ </span><span class="r1">Similarly, the &quot;index scan on table&quot; shows how often an index was used       </span><span class="r1"> │</span><span class="r1">                                                                         </span></div>
+<div><span class="r1">│                      │                      │ </span><span class="r1">compared to the other indexes on the table.                                  </span><span class="r1"> │</span><span class="r1">                                                                         </span></div>
+<div><span class="r1">│ </span><span class="r1">index-size          </span><span class="r1"> │ </span><span class="r1">Index Size          </span><span class="r1"> │ </span><span class="r1">                                                                             </span><span class="r1"> │</span><span class="r1">                                                                         </span></div>
+<div><span class="r1">│ </span><span class="r1">index-usage         </span><span class="r1"> │ </span><span class="r1">Index Usage         </span><span class="r1"> │ </span><span class="r1">While there is no perfect answer, if you&#x27;re not somewhere around 99% on any  </span><span class="r1"> │</span><span class="r1">                                                                         </span></div>
+<div><span class="r1">│                      │                      │ </span><span class="r1">table over 10,000 rows you may want to consider adding an index. When        </span><span class="r1"> │</span><span class="r1">                                                                         </span></div>
+<div><span class="r1">│                      │                      │ </span><span class="r1">examining where to add an index you should look at what kind of queries      </span><span class="r1"> │</span><span class="r1">                                                                         </span></div>
+<div><span class="r1">│                      │                      │ </span><span class="r1">you&#x27;re running. Generally you&#x27;ll want to add indexes where you&#x27;re looking    </span><span class="r1"> │</span><span class="r1">                                                                         </span></div>
+<div><span class="r1">│                      │                      │ </span><span class="r1">up by some other id or on values that you&#x27;re commonly filtering on such as   </span><span class="r1"> │</span><span class="r1">                                                                         </span></div>
+<div><span class="r1">│                      │                      │ </span><span class="r1">created_at fields.                                                           </span><span class="r1"> │</span><span class="r1">                                                                         </span></div>
+<div><span class="r1">│                      │                      │ </span><span class="r1">                                                                             </span><span class="r1"> │</span><span class="r1">                                                                         </span></div>
+<div><span class="r1">│                      │                      │ </span><span class="r1">(Source:                                                                     </span><span class="r1"> │</span><span class="r1">                                                                         </span></div>
+<div><span class="r1">│                      │                      │ </span><span class="r1">http://www.craigkerstiens.com/2012/10/01/understanding-postgres-performance/)</span><span class="r1"> │</span><span class="r1">                                                                         </span></div>
+<div><span class="r1">│ </span><span class="r1">sequence-usage      </span><span class="r1"> │ </span><span class="r1">Sequence Usage      </span><span class="r1"> │ </span><span class="r1">Show the sequence usage within a PostgreSQL database. A usage over 75%       </span><span class="r1"> │</span><span class="r1">                                                                         </span></div>
+<div><span class="r1">│                      │                      │ </span><span class="r1">will be marked as red, and a usage over 50% will be marked as yellow.        </span><span class="r1"> │</span><span class="r1">                                                                         </span></div>
+<div><span class="r1">│ </span><span class="r1">table-size          </span><span class="r1"> │ </span><span class="r1">Table Size          </span><span class="r1"> │ </span><span class="r1">The &quot;size&quot; of a table in PostgreSQL can be different, depending on what to   </span><span class="r1"> │</span><span class="r1">                                                                         </span></div>
+<div><span class="r1">│                      │                      │ </span><span class="r1">include when calculating &quot;the size&quot;.                                         </span><span class="r1"> │</span><span class="r1">                                                                         </span></div>
+<div><span class="r1">│                      │                      │ </span><span class="r1">                                                                             </span><span class="r1"> │</span><span class="r1">                                                                         </span></div>
+<div><span class="r1">│                      │                      │ </span><span class="r1">The &quot;Total size&quot; for a relation is equal to the &quot;Table size&quot; plus all        </span><span class="r1"> │</span><span class="r1">                                                                         </span></div>
+<div><span class="r1">│                      │                      │ </span><span class="r1">indexes.                                                                     </span><span class="r1"> │</span><span class="r1">                                                                         </span></div>
+<div><span class="r1">│                      │                      │ </span><span class="r1">                                                                             </span><span class="r1"> │</span><span class="r1">                                                                         </span></div>
+<div><span class="r1">│                      │                      │ </span><span class="r1">The &quot;size of * fork&quot; refers to the &quot;main&quot; data fork, the Free Space Map      </span><span class="r1"> │</span><span class="r1">                                                                         </span></div>
+<div><span class="r1">│                      │                      │ </span><span class="r1">(fsm), Visibility Map (vm), and the initialization fork.                     </span><span class="r1"> │</span><span class="r1">                                                                         </span></div>
+<div><span class="r1">│                      │                      │ </span><span class="r1">                                                                             </span><span class="r1"> │</span><span class="r1">                                                                         </span></div>
+<div><span class="r1">│                      │                      │ </span><span class="r1">See also the PostgreSQL documentation on the physical storage:               </span><span class="r1"> │</span><span class="r1">                                                                         </span></div>
+<div><span class="r1">│                      │                      │ </span><span class="r1">https://www.postgresql.org/docs/current/storage.html                         </span><span class="r1"> │</span><span class="r1">                                                                         </span></div>
+<div><span class="r1">└──────────────────────┴──────────────────────┴───────────────────────────────────────────────────────────────────────────────┘</span><span class="r1">                                                                         </span></div>
+<div><span class="r1"></span><span class="r1">                                                                                                                                                                                                        </span></div>
+                    </div>
+                </div>
+            </div>
+        </body>
+    </foreignObject>
+</svg>
