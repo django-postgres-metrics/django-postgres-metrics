@@ -7,6 +7,16 @@ Changelog
 Under Development
 =================
 
+* Dropped official support for Python 3.6.
+
+  .. warning::
+
+     Use version 0.13.1 for Python 3.6 support!
+
+* Added support for Django 4.1 and Django 4.2.
+
+* Added support for Python 3.11.
+
 0.13.1 (2022-04-02)
 ===================
 
