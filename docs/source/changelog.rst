@@ -154,7 +154,7 @@ Under Development
 
 * The hard dependency on psycopg2 was dropped because installing wheel files
   of psycopg2 can be troublesome `as outlined by the project maintainers
-  <http://initd.org/psycopg/articles/2018/02/08/psycopg-274-released/>`__. When
+  <https://www.psycopg.org/articles/2018/02/08/psycopg-274-released/>`__. When
   using django-postgres-metrics you now need to install psycopg2 or
   psycopg2-binary explicitly. This is usually not an issue as either one is
   required by Django anyway to use Django's PostgreSQL database backend.
