@@ -7,6 +7,9 @@ Changelog
 Under Development
 =================
 
+0.14.0 (2023-06-05)
+===================
+
 * Dropped official support for Python 3.6.
 
   .. warning::
