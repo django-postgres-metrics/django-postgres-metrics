@@ -28,8 +28,8 @@ Start by installing `django-postgres-metrics` from PyPI:
 (env)$ python -m pip install django-postgres-metrics
 ```
 
-You will also need to make sure to have `psycopg2` installed which is already a requirement by
-Django for PostgreSQL support anyway.
+You will also need to make sure to have `psycopg2` or `psycopg` installed which
+is already a requirement by Django for PostgreSQL support anyway.
 
 Then you need to add `postgres_metrics` to your `INSTALLED_APPS` list. Due to the way
 `django-postgres-metrics` works, you need to include it \_before\* the `admin` app:
@@ -105,5 +105,5 @@ and push. To set it up:
 To run the unit tests:
 
 ```console
-(env)$ django-admin.py test -v 2 --settings=tests.settings
+(env)$ django-admin test -v 2 --settings=tests.settings
 ```

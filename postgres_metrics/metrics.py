@@ -8,6 +8,13 @@ from django.utils.html import escape, urlize
 from django.utils.text import normalize_newlines, slugify
 from django.utils.translation import gettext_lazy as _
 
+try:
+    import psycopg  # noqa
+
+    HAS_PSYCOPG = True
+except ImportError:
+    HAS_PSYCOPG = False
+
 
 class MetricRegistry:
     def __init__(self):
@@ -134,7 +141,9 @@ class MetricResult:
     .. attribute:: dsn
 
        The PostgreSQL connection string per `psycopg2
-       <http://initd.org/psycopg/docs/connection.html#connection.dsn>`_.
+       <https://www.psycopg.org/docs/connection.html#connection.dsn>`_ or
+       `psycopg
+       <https://www.psycopg.org/psycopg3/docs/api/connections.html#psycopg.Connection.connect>`_.
 
     .. attribute:: records
 
@@ -146,7 +155,10 @@ class MetricResult:
     def __init__(self, connection, records):
         connection.ensure_connection()
         self.alias = connection.alias
-        self.dsn = connection.connection.dsn
+        if HAS_PSYCOPG:
+            self.dsn = connection.connection.info.dsn
+        else:
+            self.dsn = connection.connection.dsn
         self.records = records
 
 

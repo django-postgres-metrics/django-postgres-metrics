@@ -13,7 +13,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    name: "Test Python ${{ matrix.python-version }} & Django ${{ matrix.django-version }}"
+    name: "Test Python ${{ matrix.python-version }} & Django ${{ matrix.django-version }} with ${{ matrix.psycopg }}"
     services:
       postgres95:
         image: postgres:9.5
@@ -92,24 +92,58 @@ jobs:
           --health-retries 5
         ports:
           - 5414:5432
+      postgres15:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5415:5432
     strategy:
       matrix:
-        django-version: ["2.2.0", "3.2.0", "4.0.0"]
-        python-version: ["3.6", "3.7", "3.8", "3.9", "3.10"]
+        django-version: ["2.2.0", "3.2.0", "4.0.0", "4.1.0", "4.2.0"]
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+        psycopg: ["psycopg2", "psycopg"]
         exclude:
+          # 2.2
+          - django-version: "2.2.0"
+            python-version: "3.10"
+          - django-version: "2.2.0"
+            python-version: "3.11"
+          - django-version: "2.2.0"
+            psycopg: "psycopg"
+          # 3.2
+          - django-version: "3.2.0"
+            python-version: "3.11"
+          - django-version: "3.2.0"
+            psycopg: "psycopg"
           # 4.0
           - django-version: "4.0.0"
-            python-version: "3.6"
+            python-version: "3.7"
           - django-version: "4.0.0"
+            python-version: "3.11"
+          - django-version: "4.0.0"
+            psycopg: "psycopg"
+          # 4.1
+          - django-version: "4.1.0"
+            python-version: "3.7"
+          - django-version: "4.1.0"
+            psycopg: "psycopg"
+          # 4.2
+          - django-version: "4.2.0"
             python-version: "3.7"
       fail-fast: false
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         name: Configure pip caching
         with:
           path: ~/.cache/pip
@@ -122,42 +156,47 @@ jobs:
           python -m pip install Django~=${{ matrix.django-version }}
           if [ "${{ matrix.django-version }}" = "2.2.0" ] ; then
             python -m pip install 'psycopg2<2.9'
+          else
+            python -m pip install ${{ matrix.psycopg }}
           fi
           python -m pip install '.[test]'
       - name: Run tests
         run: |
-          if [ "${{ matrix.django-version }}" = "3.2.0" ] ; then
-            export PG_VERSIONS="96,10,11,12,13,14"
+          if [ "${{ matrix.django-version }}" = "2.2.0" ] ; then
+            export PG_VERSIONS="96,10,11,12,13,14,15"
           else
-            if [ "${{ matrix.django-version }}" = "4.0.0" ] ; then
-              export PG_VERSIONS="10,11,12,13,14"
+            if [ "${{ matrix.django-version }}" = "3.2.0" ] ; then
+              export PG_VERSIONS="96,10,11,12,13,14,15"
+            else
+              if [ "${{ matrix.django-version }}" = "4.0.0" ] ; then
+                export PG_VERSIONS="10,11,12,13,14,15"
+              else
+                if [ "${{ matrix.django-version }}" = "4.1.0" ] ; then
+                  export PG_VERSIONS="11,12,13,14,15"
+                fi
+              fi
             fi
           fi
           coverage run "$(command -v django-admin)" test --pythonpath . -v 2 --settings=tests.settings
           coverage report
         env:
-          PG_VERSIONS: "95,96,10,11,12,13,14"
+          PG_VERSIONS: "12,13,14,15"
       - name: Upload coverage to codecov.io
-        uses: codecov/codecov-action@v1
+        uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-      - uses: actions/upload-artifact@v2
-        with:
-          name: "screnshots-py${{ matrix.python-version }}-dj${{ matrix.django-version }}"
-          path: tests/output/
-          if-no-files-found: error
 
   deploy:
     if: ${{ github.event_name == 'push' && contains(github.ref, 'refs/tags/') }}
     runs-on: ubuntu-latest
     needs: [test]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: "3.9"
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         name: Configure pip caching
         with:
           path: ~/.cache/pip
