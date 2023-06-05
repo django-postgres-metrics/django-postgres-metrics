@@ -7,6 +7,9 @@ Changelog
 Under Development
 =================
 
+0.15.0 (2023-06-05)
+===================
+
 * Dropped official support for Django 2.2 and Django 4.0
 
   .. warning::
