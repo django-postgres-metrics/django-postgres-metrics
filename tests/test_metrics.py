@@ -356,7 +356,7 @@ class MetricResultTest(TestCase):
                 self.assertEqual(result.alias, dbname)
                 if django.VERSION[:2] >= (4, 2):
                     expected_string = (
-                        "client_encoding=UTF8 *** "
+                        "client_encoding=UTF8"
                         "host=localhost port=%d user=%s password=xxx dbname=%s"
                     ) % (dbcfg["PORT"], dbcfg["USER"], dbcfg["NAME"])
 
