@@ -7,6 +7,12 @@ Changelog
 Under Development
 =================
 
+* Dropped official support for Django 2.2 and Django 4.0
+
+  .. warning::
+
+     Use version 0.14.0 for Django 2.2 or Django 4.0 support!
+
 0.14.0 (2023-06-05)
 ===================
 
