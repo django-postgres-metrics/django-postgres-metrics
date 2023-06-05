@@ -1,3 +1,4 @@
+import django
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.db import connections
@@ -353,14 +354,21 @@ class MetricResultTest(TestCase):
                     connections[dbname], [("foo", 1, 2), ("bar", 3, 4)]
                 )
                 self.assertEqual(result.alias, dbname)
+                if django.VERSION[:2] >= (4, 2):
+                    expected_string = (
+                        "client_encoding=UTF8 *** "
+                        "host=localhost port=%d user=%s password=xxx dbname=%s"
+                    ) % (dbcfg["PORT"], dbcfg["USER"], dbcfg["NAME"])
+
+                else:
+                    expected_string = (
+                        "host=localhost port=%d user=%s password=xxx dbname=%s"
+                        % (dbcfg["PORT"], dbcfg["USER"], dbcfg["NAME"])
+                    )
+
                 self.assertEqual(
                     sorted(result.dsn.split()),
-                    sorted(
-                        (
-                            "host=localhost port=%d user=%s password=xxx dbname=%s"
-                            % (dbcfg["PORT"], dbcfg["USER"], dbcfg["NAME"])
-                        ).split()
-                    ),
+                    sorted(expected_string.split()),
                 )
                 self.assertEqual(result.records, [("foo", 1, 2), ("bar", 3, 4)])
 
