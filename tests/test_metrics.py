@@ -5,6 +5,7 @@ from django.db import connections
 from django.test import SimpleTestCase, TestCase
 
 from postgres_metrics.metrics import (
+    HAS_PSYCOPG,
     AvailableExtensions,
     CacheHits,
     IndexUsage,
@@ -354,21 +355,23 @@ class MetricResultTest(TestCase):
                     connections[dbname], [("foo", 1, 2), ("bar", 3, 4)]
                 )
                 self.assertEqual(result.alias, dbname)
-                if django.VERSION[:2] >= (4, 2):
-                    expected_string = (
-                        "client_encoding=UTF8 *** "
-                        "host=localhost port=%d user=%s password=xxx dbname=%s"
-                    ) % (dbcfg["PORT"], dbcfg["USER"], dbcfg["NAME"])
 
-                else:
-                    expected_string = (
-                        "host=localhost port=%d user=%s password=xxx dbname=%s"
-                        % (dbcfg["PORT"], dbcfg["USER"], dbcfg["NAME"])
-                    )
+                expected = [
+                    "host=localhost",
+                    "port=%d" % dbcfg["PORT"],
+                    "user=%s" % dbcfg["USER"],
+                    "dbname=%s" % dbcfg["NAME"],
+                ]
+
+                if not HAS_PSYCOPG:
+                    expected += ["password=xxx"]
+
+                if django.VERSION[:2] >= (4, 2):
+                    expected += ["client_encoding=UTF8"]
 
                 self.assertEqual(
                     sorted(result.dsn.split()),
-                    sorted(expected_string.split()),
+                    sorted(expected),
                 )
                 self.assertEqual(result.records, [("foo", 1, 2), ("bar", 3, 4)])
 
