@@ -155,7 +155,7 @@ class MetricResult:
         connection.ensure_connection()
         self.alias = connection.alias
         if HAS_PSYCOPG:
-            self.dsn = connection.connection.conninfo
+            self.dsn = connection.connection.info.dsn
         else:
             self.dsn = connection.connection.dsn
         self.records = records
