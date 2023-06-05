@@ -138,12 +138,12 @@ jobs:
             python-version: "3.7"
       fail-fast: false
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         name: Configure pip caching
         with:
           path: ~/.cache/pip
@@ -183,7 +183,7 @@ jobs:
         env:
           PG_VERSIONS: "12,13,14,15"
       - name: Upload coverage to codecov.io
-        uses: codecov/codecov-action@v1
+        uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
 
@@ -192,12 +192,12 @@ jobs:
     runs-on: ubuntu-latest
     needs: [test]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: "3.9"
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         name: Configure pip caching
         with:
           path: ~/.cache/pip
