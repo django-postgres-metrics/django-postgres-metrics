@@ -9,10 +9,11 @@ from django.utils.text import normalize_newlines, slugify
 from django.utils.translation import gettext_lazy as _
 
 try:
-    import psycopg
-    HAS_PSYCOPG=True
+    import psycopg  # noqa
+
+    HAS_PSYCOPG = True
 except ImportError:
-    HAS_PSYCOPG=False
+    HAS_PSYCOPG = False
 
 
 class MetricRegistry:
