@@ -39,7 +39,7 @@ setuptools.setup(
             "selenium==4.13.0",
         ],
     },
-    setup_requires=["setuptools_scm>=5,<8"],
+    setup_requires=["setuptools_scm>=5,<9"],
     use_scm_version=True,
     classifiers=[
         "Development Status :: 5 - Production/Stable",
