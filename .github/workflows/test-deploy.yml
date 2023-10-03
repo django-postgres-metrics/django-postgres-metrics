@@ -1,4 +1,4 @@
-name: Test & Deploy
+name: CI
 
 on:
   push:
@@ -92,25 +92,38 @@ jobs:
           --health-retries 5
         ports:
           - 5415:5432
+      postgres16:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5415:5432
     strategy:
       matrix:
-        django-version: ["3.2.0", "4.1.0", "4.2.0"]
-        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+        django-version: ["3.2.0", "4.1.0", "4.2.0", "5.0a1"]
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
         psycopg: ["psycopg2", "psycopg"]
         exclude:
           # 3.2
           - django-version: "3.2.0"
             python-version: "3.11"
           - django-version: "3.2.0"
+            python-version: "3.12"
+          - django-version: "3.2.0"
             psycopg: "psycopg"
           # 4.1
           - django-version: "4.1.0"
-            python-version: "3.7"
-          - django-version: "4.1.0"
             psycopg: "psycopg"
-          # 4.2
-          - django-version: "4.2.0"
-            python-version: "3.7"
+          # 5.0
+          - django-version: "5.0a1"
+            python-version: "3.8"
+          - django-version: "5.0a1"
+            python-version: "3.9"
       fail-fast: false
     steps:
       - uses: actions/checkout@v3
@@ -132,16 +145,16 @@ jobs:
       - name: Run tests
         run: |
           if [ "${{ matrix.django-version }}" = "3.2.0" ] ; then
-            export PG_VERSIONS="96,10,11,12,13,14,15"
+            export PG_VERSIONS="96,10,11,12,13,14,15,16"
           else
             if [ "${{ matrix.django-version }}" = "4.1.0" ] ; then
-              export PG_VERSIONS="11,12,13,14,15"
+              export PG_VERSIONS="11,12,13,14,15,16"
             fi
           fi
           coverage run "$(command -v django-admin)" test --pythonpath . -v 2 --settings=tests.settings
           coverage report
         env:
-          PG_VERSIONS: "12,13,14,15"
+          PG_VERSIONS: "12,13,14,15,16"
       - name: Upload coverage to codecov.io
         uses: codecov/codecov-action@v3
         with:

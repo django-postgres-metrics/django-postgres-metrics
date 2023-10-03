@@ -7,6 +7,18 @@ Changelog
 Under Development
 =================
 
+* Dropped official support for Python 3.7
+
+  .. warning::
+
+     Use version 0.15.0 for Python 3.7 support!
+
+* Added support for Django 5.0.
+
+* Added support for Python 3.12.
+
+* Added support for PostgreSQL 16.
+
 0.15.0 (2023-06-05)
 ===================
 
