@@ -369,6 +369,9 @@ class MetricResultTest(TestCase):
                 if django.VERSION[:2] >= (4, 2):
                     expected += ["client_encoding=UTF8"]
 
+                if django.VERSION[:2] >= (4, 2) and HAS_PSYCOPG:
+                    expected += ["sslcertmode=allow"]
+
                 self.assertEqual(
                     sorted(result.dsn.split()),
                     sorted(expected),
