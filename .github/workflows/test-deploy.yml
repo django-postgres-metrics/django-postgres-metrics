@@ -102,7 +102,7 @@ jobs:
           --health-timeout 5s
           --health-retries 5
         ports:
-          - 5415:5432
+          - 5416:5432
     strategy:
       matrix:
         django-version: ["3.2.0", "4.1.0", "4.2.0", "5.0a1"]
