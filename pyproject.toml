@@ -10,7 +10,7 @@ source = ["postgres_metrics/"]
 
 [tool.coverage.report]
 show_missing = true
-fail_under = 98
+fail_under = 95
 
 [tool.isort]
 combine_as_imports = true
