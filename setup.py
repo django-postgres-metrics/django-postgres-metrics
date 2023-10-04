@@ -34,7 +34,7 @@ setuptools.setup(
             "Sphinx>=4.0,<8.0",
         ],
         "test": [
-            "coverage[toml]>=5,<6",
+            "coverage[toml]>=5,<8",
             "Django",
             "selenium==4.13.0",
         ],
