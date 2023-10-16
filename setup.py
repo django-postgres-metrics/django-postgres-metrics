@@ -36,7 +36,7 @@ setuptools.setup(
         "test": [
             "coverage[toml]>=5,<8",
             "Django",
-            "selenium==4.13.0",
+            "selenium==4.14.0",
         ],
     },
     setup_requires=["setuptools_scm>=5,<9"],
