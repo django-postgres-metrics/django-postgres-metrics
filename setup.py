@@ -30,7 +30,7 @@ setuptools.setup(
         "docs": [
             "Django",
             "psycopg2",
-            "sphinx_rtd_theme>=1.0,<2.0",
+            "sphinx_rtd_theme>=1.0,<3.0",
             "Sphinx>=4.0,<8.0",
         ],
         "test": [
